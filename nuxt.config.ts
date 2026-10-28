@@ -2,7 +2,7 @@ import { fontEmitPlugin } from "./font-processor";
 import { fileURLToPath } from "node:url";
 
 export default defineNuxtConfig({
-  modules: ["@nuxt/image", "@unocss/nuxt"],
+  modules: ["@nuxt/image", "@unocss/nuxt", "@pinia/nuxt", "nuxt-drizzle"],
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
   hooks: {
