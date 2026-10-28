@@ -1,4 +1,5 @@
 import { fontEmitPlugin } from "./font-processor";
+import { fileURLToPath } from "node:url";
 
 export default defineNuxtConfig({
   modules: ["@nuxt/image", "@unocss/nuxt"],
@@ -10,5 +11,8 @@ export default defineNuxtConfig({
         config.plugins?.push(fontEmitPlugin);
       }
     },
+  },
+  alias: {
+    // "@assets": fileURLToPath(new URL("./public/assets", import.meta.url)), // example usege (m)
   },
 });
