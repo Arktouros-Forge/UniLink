@@ -10,6 +10,8 @@ import {
   index,
 } from "drizzle-orm/pg-core";
 
+import { sql } from "drizzle-orm";
+
 import { users } from "./users";
 import { categories } from "./categories";
 
@@ -31,41 +33,50 @@ export const teamMemberStatusEnum = pgEnum("team_member_status", [
   "accepted",
 ]);
 
-export const competitions = pgTable("competitions", {
-  id: uuid("id").defaultRandom().primaryKey(),
+export const competitions = pgTable(
+  "competitions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
 
-  title: text("title").notNull(),
-  description: text("description").notNull(),
-  deadline: timestamp("deadline", {
-    withTimezone: true,
-  }).notNull(),
+    title: text("title").notNull(),
+    description: text("description").notNull(),
+    deadline: timestamp("deadline", {
+      withTimezone: true,
+    }).notNull(),
 
-  maxTeamSize: integer("max_team_size"),
+    maxTeamSize: integer("max_team_size"),
 
-  host: text("host").notNull(),
-  sourceUrl: text("source_url"),
-  imageUrl: text("image_url"),
+    host: text("host").notNull(),
+    sourceUrl: text("source_url"),
+    imageUrl: text("image_url"),
 
-  status: competitionStatusEnum("status").notNull().default("draft"),
+    status: competitionStatusEnum("status").notNull().default("draft"),
 
-  createdBy: uuid("created_by")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+    createdBy: uuid("created_by")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
 
-  createdByRole: competitionCreatorRoleEnum("created_by_role").notNull(),
+    createdByRole: competitionCreatorRoleEnum("created_by_role").notNull(),
 
-  createdAt: timestamp("created_at", {
-    withTimezone: true,
-  })
-    .notNull()
-    .defaultNow(),
+    createdAt: timestamp("created_at", {
+      withTimezone: true,
+    })
+      .notNull()
+      .defaultNow(),
 
-  updatedAt: timestamp("updated_at", {
-    withTimezone: true,
-  })
-    .notNull()
-    .defaultNow(),
-});
+    updatedAt: timestamp("updated_at", {
+      withTimezone: true,
+    })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("competitions_title_host_unique").on(
+      sql`lower(btrim(${table.title}))`,
+      sql`lower(btrim(${table.host}))`,
+    ),
+  ],
+);
 
 export const competitionCategories = pgTable(
   "competition_categories",

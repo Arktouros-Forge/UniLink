@@ -5,8 +5,9 @@ export default defineEventHandler(async (event) => {
   const user = await getCurrentUser(event);
 
   if (!user) {
-    setResponseStatus(event, 401);
-    return errorResponse("You are not logged in");
+    const response = errorResponse("You are not logged in", null, 401);
+    setResponseStatus(event, response.statusCode);
+    return response;
   }
 
   return successResponse(user, "Profile retrieved successfully");

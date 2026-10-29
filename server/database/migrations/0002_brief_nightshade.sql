@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "competitions_title_host_unique" ON "competitions" USING btree (lower(btrim("title")),lower(btrim("host")));

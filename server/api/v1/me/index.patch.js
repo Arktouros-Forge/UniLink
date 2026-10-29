@@ -1,7 +1,5 @@
-import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { db } from "@database";
-import { users } from "@database/schema/index";
+import { updateUserProfile } from "@server/services/users/users.service.js";
 import { getCurrentUser } from "@server/utils/current-user.js";
 import { successResponse, errorResponse } from "@server/utils/api-response.js";
 
@@ -22,45 +20,35 @@ export default defineEventHandler(async (event) => {
   const user = await getCurrentUser(event);
 
   if (!user) {
-    setResponseStatus(event, 401);
-    return errorResponse("You are not logged in");
+    const response = errorResponse("You are not logged in", null, 401);
+    setResponseStatus(event, response.statusCode);
+    return response;
   }
 
   const body = await readBody(event);
   const result = profileSchema.safeParse(body);
 
   if (!result.success) {
-    setResponseStatus(event, 422);
-
-    return errorResponse(
+    const response = errorResponse(
       "Validation failed",
       result.error.issues.map((issue) => ({
         field: issue.path.join("."),
         message: issue.message,
       })),
+      422,
     );
+
+    setResponseStatus(event, response.statusCode);
+    return response;
   }
 
-  const [updatedUser] = await db
-    .update(users)
-    .set({
-      ...result.data,
-      updatedAt: new Date(),
-    })
-    .where(eq(users.id, user.id))
-    .returning({
-      id: users.id,
-      username: users.username,
-      fullName: users.fullName,
-      nim: users.nim,
-      email: users.email,
-      phone: users.phone,
-      role: users.role,
-      year: users.year,
-      personalWebsite: users.personalWebsite,
-      profilePhotoUrl: users.profilePhotoUrl,
-      status: users.status,
-    });
+  const updatedUser = await updateUserProfile(user.id, result.data);
+
+  if (!updatedUser) {
+    const response = errorResponse("User not found", null, 404);
+    setResponseStatus(event, response.statusCode);
+    return response;
+  }
 
   return successResponse(updatedUser, "Profile updated successfully");
 });

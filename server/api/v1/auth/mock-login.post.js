@@ -8,8 +8,9 @@ const TEST_USER_ID = "00000000-0000-4000-8000-000000000001";
 
 export default defineEventHandler(async (event) => {
   if (!import.meta.dev) {
-    setResponseStatus(event, 404);
-    return errorResponse("Not found");
+    const response = errorResponse("Not found", null, 404);
+    setResponseStatus(event, response.statusCode);
+    return response;
   }
 
   const [user] = await db
@@ -25,10 +26,13 @@ export default defineEventHandler(async (event) => {
     .limit(1);
 
   if (!user) {
-    setResponseStatus(event, 404);
-    return errorResponse(
+    const response = errorResponse(
       "Test Profile 1 not found. Run your seed script first.",
+      null,
+      404,
     );
+    setResponseStatus(event, response.statusCode);
+    return response;
   }
 
   setCookie(event, "unilink_test_user", user.id, {

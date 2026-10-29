@@ -14,7 +14,9 @@ export default defineNuxtConfig({
       }
     },
   },
-
+  nuxtZod: {
+    zodVersion: "v4",
+  },
   alias: {
     "@server": fileURLToPath(new URL("./server", import.meta.url)),
     "@database": fileURLToPath(new URL("./server/database", import.meta.url)),
