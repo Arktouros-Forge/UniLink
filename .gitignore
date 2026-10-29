@@ -25,3 +25,5 @@ logs
 
 # Custom
 public/assets/fonts
+
+# server/database/migrations

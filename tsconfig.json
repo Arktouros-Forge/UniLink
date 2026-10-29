@@ -16,7 +16,12 @@
   ],
   "compilerOptions": {
     "paths": {
-      // "@assets": ["./public/assets"], // example usage (m)
+      "@server": ["./server/index.ts"],
+      "@server/*": ["./server/*"],
+      "@database": ["./server/database/index.ts"],
+      "@database/*": ["./server/database/*"],
+      "@app": ["./app"],
+      "@app/*": ["./app/*"],
     },
   },
 }
