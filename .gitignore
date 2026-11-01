@@ -27,3 +27,5 @@ logs
 public/assets/fonts
 
 # server/database/migrations
+
+App.md

@@ -43,7 +43,6 @@ export async function getCompetitions({ userId, q, categoryId, page, limit }) {
         title: competitions.title,
         description: competitions.description,
         maxTeamSize: competitions.maxTeamSize,
-        host: competitions.host,
         sourceUrl: competitions.sourceUrl,
         imageUrl: competitions.imageUrl,
         status: competitions.status,
