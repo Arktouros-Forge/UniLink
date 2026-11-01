@@ -1,0 +1,17 @@
+{
+  "siteName": "UniLink",
+  "tagline": "Saling terhubung. Saling bertumbuh.",
+  "slogan": "Dari kampus. Untuk sesama.",
+  "event": "TecFest 2026",
+  "university": "Universitas Udayana",
+  "city": "Bali",
+  "locale": "id-ID",
+  "timezone": "Asia/Makassar",
+  "timezoneLabel": "WITA",
+  "whatsappBase": "https://wa.me/",
+  "greeting": "Halo, teman kampus!",
+  "authPanel": {
+    "title": "Bangun koneksi, bukan sekadar daftar teman.",
+    "text": "Temukan teman belajar, bantu sesama, dan bentuk tim dari kampusmu sendiri."
+  }
+}

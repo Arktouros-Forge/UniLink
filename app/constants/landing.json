@@ -1,0 +1,39 @@
+{
+  "hero": {
+    "title": "Saling terhubung. Saling bertumbuh.",
+    "text": "Temukan teman belajar, bantu sesama, dan bangun tim dari kampusmu sendiri.",
+    "primary": "Mulai bersama UniLink",
+    "secondary": "Lihat cara kerja",
+    "note": "Gratis untuk mahasiswa. Lanjut ngobrol lewat WhatsApp."
+  },
+  "featuresTitle": "Satu tempat untuk kolaborasi kampus",
+  "features": [
+    { "title": "Study Match", "text": "Teman yang tepat untuk hal yang ingin kamu pelajari.", "icon": "i-keyline-book-open" },
+    { "title": "Tim kompetisi", "text": "Satukan keahlian. Bawa gagasanmu lebih jauh.", "icon": "i-keyline-trophy" },
+    { "title": "Jadwal dan tugas", "text": "Kuliah, tenggat, dan dosen dalam satu tempat.", "icon": "i-keyline-calendar" }
+  ],
+  "facts": [
+    { "value": "2 arah", "label": "Cari bantuan atau pasang Help Sign" },
+    { "value": "1 tim", "label": "Per kompetisi, terbuka untuk semua" },
+    { "value": "WhatsApp", "label": "Lanjut ngobrol setelah cocok" }
+  ],
+  "stepsTitle": "Cara kerja",
+  "steps": [
+    { "title": "Daftar dan pilih keahlian", "text": "Buat profil singkat dan tandai apa yang bisa kamu bantu.", "meta": "2 menit" },
+    { "title": "Cari atau pasang Help Sign", "text": "Temukan teman yang cocok, atau biarkan mereka datang kepadamu.", "meta": "Study Match" },
+    { "title": "Lanjut lewat WhatsApp", "text": "Setelah permintaan diterima, kalian terhubung langsung.", "meta": "Tanpa chat dalam aplikasi" },
+    { "title": "Bentuk tim dan ikut kompetisi", "text": "Buat tim, terima anggota, dan laporkan hasilnya.", "meta": "Competition Match" }
+  ],
+  "cta": {
+    "title": "Mulai dari satu langkah kecil.",
+    "text": "Daftar sekarang dan temukan teman yang tepat untuk kuliahmu.",
+    "button": "Mulai bersama UniLink"
+  },
+  "howItWorks": {
+    "meta": "Panduan singkat",
+    "title": "Empat langkah, tanpa ribet.",
+    "text": "UniLink fokus pada pertemuan yang tepat. Obrolan berlanjut di WhatsApp.",
+    "consentTitle": "Persetujuan dulu.",
+    "consentText": "Nomor telepon hanya dibagikan setelah kamu menerima permintaan."
+  }
+}

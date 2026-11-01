@@ -1,0 +1,7 @@
+[
+  { "id": "c1", "name": "Pemrograman", "slug": "pemrograman", "description": "Hackathon dan lomba coding", "color": "#1e3fa6" },
+  { "id": "c2", "name": "Desain UI/UX", "slug": "desain-ui-ux", "description": "Desain antarmuka", "color": "#d6382d" },
+  { "id": "c3", "name": "Data", "slug": "data", "description": "Data science dan analitik", "color": "#f4b942" },
+  { "id": "c4", "name": "Keamanan Siber", "slug": "keamanan-siber", "description": "CTF dan keamanan", "color": "#1f7a4d" },
+  { "id": "c5", "name": "Bisnis", "slug": "bisnis", "description": "Business plan dan startup", "color": "#7a4fb0" }
+]

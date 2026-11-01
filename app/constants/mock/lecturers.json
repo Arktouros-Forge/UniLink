@@ -1,0 +1,6 @@
+[
+  { "id": "l1", "name": "Dr. I Made Sudarma", "email": "sudarma@unud.ac.id", "phone": "+6281234567890", "nidn": "0012345678", "bio": "Algoritma dan struktur data" },
+  { "id": "l2", "name": "Ni Luh Putu Ayu", "email": "luhayu@unud.ac.id", "phone": "+6281298765432", "nidn": "0023456789", "bio": "Basis data dan sistem informasi" },
+  { "id": "l3", "name": "I Gede Arya Wiguna", "email": "arya@unud.ac.id", "phone": "", "nidn": "0034567890", "bio": "Jaringan komputer" },
+  { "id": "l4", "name": "Prof. Komang Dewi", "email": "dewi@unud.ac.id", "phone": "+6281311122233", "nidn": "0045678901", "bio": "Statistika dan analitik" }
+]
