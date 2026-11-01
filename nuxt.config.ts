@@ -7,7 +7,7 @@ export default defineNuxtConfig({
     "@unocss/nuxt",
     "@pinia/nuxt",
     "nuxt-zod",
-    "nuxt-charts",
+    // "nuxt-charts",
     "auto-skeleton-vue/nuxt",
   ],
 

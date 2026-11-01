@@ -5,12 +5,16 @@ import { successResponse, errorResponse } from "@server/utils/api-response.js";
 
 const profileSchema = z
   .object({
-    username: z.string().min(3).max(30).optional(),
     fullName: z.string().min(2).max(100).optional(),
     phone: z.string().nullable().optional(),
-    year: z.number().int().min(2018).max(2030).nullable().optional(),
     personalWebsite: z.string().url().nullable().optional(),
     profilePhotoUrl: z.string().url().nullable().optional(),
+    skills: z
+      .array(z.string().uuid())
+      .refine((ids) => new Set(ids).size === ids.length, {
+        message: "Duplicate skill IDs are not allowed",
+      })
+      .optional(),
   })
   .refine((data) => Object.keys(data).length > 0, {
     message: "Provide at least one field to update",
@@ -42,13 +46,24 @@ export default defineEventHandler(async (event) => {
     return response;
   }
 
-  const updatedUser = await updateUserProfile(user.id, result.data);
+  const resultUpdate = await updateUserProfile(user.id, result.data);
 
-  if (!updatedUser) {
-    const response = errorResponse("User not found", null, 404);
+  if (!resultUpdate.success) {
+    const response =
+      resultUpdate.reason === "USER_NOT_FOUND"
+        ? errorResponse("User not found", null, 404)
+        : errorResponse(
+            "One or more skills do not exist",
+            resultUpdate.invalidSkillIds?.map((id) => ({
+              field: "skills",
+              message: `Invalid skill ID: ${id}`,
+            })),
+            422,
+          );
+
     setResponseStatus(event, response.statusCode);
     return response;
   }
 
-  return successResponse(updatedUser, "Profile updated successfully");
+  return successResponse(resultUpdate.data, "Profile updated successfully");
 });

@@ -1,10 +1,15 @@
 import { z } from "zod";
-import { addUserSkill } from "@server/services/users/user-skills.service.js";
+import { changeUserEmail } from "@server/services/users/account.service";
 import { getCurrentUser } from "@server/utils/current-user.js";
 import { successResponse, errorResponse } from "@server/utils/api-response.js";
 
-const bodySchema = z.object({
-  skillId: z.uuid(),
+const emailSchema = z.object({
+  currentPassword: z.string().min(1),
+  newEmail: z
+    .string()
+    .trim()
+    .email()
+    .transform((email) => email.toLowerCase()),
 });
 
 export default defineEventHandler(async (event) => {
@@ -16,14 +21,7 @@ export default defineEventHandler(async (event) => {
     return response;
   }
 
-  if (user.role !== "student") {
-    const response = errorResponse("Student access required", null, 403);
-    setResponseStatus(event, response.statusCode);
-    return response;
-  }
-
-  const body = await readBody(event);
-  const result = bodySchema.safeParse(body);
+  const result = emailSchema.safeParse(await readBody(event));
 
   if (!result.success) {
     const response = errorResponse(
@@ -39,27 +37,24 @@ export default defineEventHandler(async (event) => {
     return response;
   }
 
-  const resultData = await addUserSkill(user.id, result.data.skillId);
+  const outcome = await changeUserEmail(
+    user.id,
+    result.data.currentPassword,
+    result.data.newEmail,
+  );
 
-  if (!resultData.success) {
-    const statusCode = resultData.reason === "SKILL_NOT_FOUND" ? 404 : 409;
+  if (!outcome.success) {
+    const errors = {
+      USER_NOT_FOUND: ["User not found", 404],
+      INVALID_CURRENT_PASSWORD: ["Current password is incorrect", 401],
+      EMAIL_ALREADY_IN_USE: ["Email is already in use", 409],
+    };
 
-    const message =
-      resultData.reason === "SKILL_NOT_FOUND"
-        ? "Skill not found"
-        : "Skill already added";
-
+    const [message, statusCode] = errors[outcome.reason];
     const response = errorResponse(message, null, statusCode);
     setResponseStatus(event, response.statusCode);
     return response;
   }
 
-  const response = successResponse(
-    resultData.data,
-    "Skill added successfully",
-    201,
-  );
-
-  setResponseStatus(event, response.statusCode);
-  return response;
+  return successResponse(outcome.data, "Email changed successfully");
 });
