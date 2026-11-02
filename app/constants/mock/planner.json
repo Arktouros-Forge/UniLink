@@ -1,0 +1,17 @@
+{
+  "tasks": [
+    { "id": 1, "title": "Laporan Basis Data", "course": "Basis Data", "due": "5 Nov 2026", "priority": "high", "done": false },
+    { "id": 2, "title": "Kuis Kalkulus 2", "course": "Kalkulus", "due": "8 Nov 2026", "priority": "medium", "done": false },
+    { "id": 3, "title": "Presentasi RPL", "course": "Rekayasa Perangkat Lunak", "due": "12 Nov 2026", "priority": "medium", "done": false },
+    { "id": 4, "title": "Bab 2 Proposal TecFest", "course": "Proyek", "due": "20 Nov 2026", "priority": "high", "done": false },
+    { "id": 5, "title": "Rangkuman Jaringan", "course": "Jaringan Komputer", "due": "28 Okt 2026", "priority": "low", "done": true }
+  ],
+  "events": [
+    { "id": 1, "title": "Basis Data", "day": 0, "start": "08:00", "end": "09:40", "room": "Lab 2", "lecturer": "Dr. Ni Made Sari, M.Kom", "color": "blue" },
+    { "id": 2, "title": "Kalkulus 2", "day": 0, "start": "10:00", "end": "11:40", "room": "A-204", "lecturer": "Prof. I Gede Arta, Ph.D", "color": "red" },
+    { "id": 3, "title": "Jaringan Komputer", "day": 1, "start": "09:00", "end": "10:40", "room": "B-101", "lecturer": "Dr. Kadek Wirawan, M.T", "color": "yellow" },
+    { "id": 4, "title": "Rekayasa Perangkat Lunak", "day": 2, "start": "13:00", "end": "14:40", "room": "Lab 1", "lecturer": "Ir. Putu Ayu Lestari, M.Sc", "color": "blue" },
+    { "id": 5, "title": "Kalkulus 2", "day": 3, "start": "08:00", "end": "09:40", "room": "A-204", "lecturer": "Prof. I Gede Arta, Ph.D", "color": "red" },
+    { "id": 6, "title": "Basis Data", "day": 4, "start": "10:00", "end": "11:40", "room": "Lab 2", "lecturer": "Dr. Ni Made Sari, M.Kom", "color": "blue" }
+  ]
+}

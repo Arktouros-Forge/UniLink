@@ -1,6 +1,0 @@
-[
-  { "id": "k-1", "title": "Laporan praktikum basis data", "notes": "Sertakan ERD dan skrip SQL.", "dueDate": "2026-11-03", "priority": "high", "completed": false },
-  { "id": "k-2", "title": "Kirim proposal TecFest", "notes": "Format PDF sesuai buku panduan.", "dueDate": "2026-11-18", "priority": "high", "completed": false },
-  { "id": "k-3", "title": "Baca bab 5 Statistika", "notes": "", "dueDate": "2026-11-06", "priority": "medium", "completed": false },
-  { "id": "k-4", "title": "Rapikan catatan Kalkulus", "notes": "", "dueDate": "2026-10-30", "priority": "low", "completed": true }
-]

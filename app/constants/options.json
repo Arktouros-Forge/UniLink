@@ -1,70 +1,40 @@
 {
-  "years": ["2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030"],
+  "years": [2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030],
   "priorities": [
-    { "value": "low", "label": "Rendah" },
-    { "value": "medium", "label": "Sedang" },
-    { "value": "high", "label": "Tinggi" }
+    { "value": "low", "label": "Rendah", "tone": "neutral" },
+    { "value": "medium", "label": "Sedang", "tone": "yellow" },
+    { "value": "high", "label": "Tinggi", "tone": "red" }
   ],
-  "priorityTone": { "low": "neutral", "medium": "yellow", "high": "red" },
   "taskFilters": [
-    { "key": "all", "label": "Semua" },
-    { "key": "pending", "label": "Berjalan" },
-    { "key": "done", "label": "Selesai" }
+    { "value": "all", "label": "Semua" },
+    { "value": "active", "label": "Aktif" },
+    { "value": "done", "label": "Selesai" }
   ],
-  "days": [
-    { "key": 1, "short": "Sen", "label": "Senin" },
-    { "key": 2, "short": "Sel", "label": "Selasa" },
-    { "key": 3, "short": "Rab", "label": "Rabu" },
-    { "key": 4, "short": "Kam", "label": "Kamis" },
-    { "key": 5, "short": "Jum", "label": "Jumat" },
-    { "key": 6, "short": "Sab", "label": "Sabtu" },
-    { "key": 7, "short": "Min", "label": "Minggu" }
-  ],
-  "requestStatus": {
+  "days": ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"],
+  "statusTone": {
     "pending": { "label": "Menunggu", "tone": "yellow" },
     "accepted": { "label": "Diterima", "tone": "green" },
     "declined": { "label": "Ditolak", "tone": "red" },
     "expired": { "label": "Kedaluwarsa", "tone": "neutral" },
-    "cancelled": { "label": "Dibatalkan", "tone": "neutral" }
-  },
-  "signStatus": {
-    "open": { "label": "Terbuka", "tone": "blue" },
-    "fulfilled": { "label": "Terpenuhi", "tone": "green" },
-    "closed": { "label": "Ditutup", "tone": "neutral" },
-    "expired": { "label": "Kedaluwarsa", "tone": "neutral" }
-  },
-  "competitionStatus": {
-    "draft": { "label": "Draf", "tone": "neutral" },
-    "published": { "label": "Terbuka", "tone": "blue" },
-    "closed": { "label": "Ditutup", "tone": "neutral" }
-  },
-  "teamResult": {
-    "unknown": { "label": "Belum dilaporkan", "tone": "neutral" },
-    "won": { "label": "Menang", "tone": "green" },
-    "lost": { "label": "Belum menang", "tone": "red" }
-  },
-  "userStatus": {
     "active": { "label": "Aktif", "tone": "green" },
-    "blocked": { "label": "Diblokir", "tone": "red" }
+    "open": { "label": "Dibuka", "tone": "green" },
+    "closed": { "label": "Ditutup", "tone": "neutral" },
+    "blocked": { "label": "Diblokir", "tone": "red" },
+    "won": { "label": "Juara", "tone": "yellow" },
+    "participated": { "label": "Berpartisipasi", "tone": "blue" },
+    "inprogress": { "label": "Berjalan", "tone": "blue" }
   },
-  "eventColors": {
-    "blue": "border-l-brand-blue",
-    "red": "border-l-brand-red",
-    "yellow": "border-l-brand-yellow"
-  },
+  "eventColors": { "blue": "bg-brand-blue", "red": "bg-brand-red", "yellow": "bg-brand-yellow" },
   "onboardingSteps": [
-    { "title": "Siapa kamu?", "text": "Data dasar agar teman sekampus mengenalmu." },
-    { "title": "Apa keahlianmu?", "text": "Pilih keahlian yang bisa kamu bantu. Boleh dilewati." },
-    { "title": "Lengkapi profilmu", "text": "Situs pribadi dan foto bersifat opsional." },
-    { "title": "Tinjau profilmu", "text": "Periksa kembali sebelum mulai." }
+    { "title": "Profil dasar", "text": "Ceritakan sedikit tentang dirimu." },
+    { "title": "Keahlian", "text": "Pilih keahlian yang kamu kuasai atau ingin pelajari." },
+    { "title": "Kontak WhatsApp", "text": "Nomor hanya dibagikan setelah kamu menerima permintaan." },
+    { "title": "Siap berangkat", "text": "Profilmu siap. Mulai temukan teman belajar." }
   ],
-  "limits": {
-    "pendingRequests": 5,
-    "dailyActions": 20,
-    "activeSigns": 3,
-    "signsPerWeek": 3,
-    "signDays": 14,
-    "requestDays": 7,
-    "maxSkills": 20
-  }
+  "limits": { "pending": 5, "perDay": 20, "activeSigns": 3, "signsPerWeek": 3, "signDays": 14, "requestDays": 7 },
+  "userFilters": [
+    { "value": "all", "label": "Semua" },
+    { "value": "active", "label": "Aktif" },
+    { "value": "blocked", "label": "Diblokir" }
+  ]
 }

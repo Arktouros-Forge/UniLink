@@ -1,33 +1,18 @@
 <script setup>
-import { useReferenceStore } from "@app/stores/reference";
+import { lecturers } from "@app/constants/mock/people.json";
+import { lecturer as schema } from "@app/constants/forms.json";
+import { useMock } from "@app/composables/useMock";
 
-definePageMeta({ layout: "admin" });
-
-const reference = useReferenceStore();
-const columns = [
-  { key: "name", label: "Nama" },
-  { key: "email", label: "Email" },
-  { key: "phone", label: "Telepon" },
-  { key: "nidn", label: "NIDN" },
-];
-const fields = [
-  { key: "name", label: "Nama", required: true },
-  { key: "email", label: "Email", type: "email" },
-  { key: "phone", label: "Telepon", type: "tel" },
-  { key: "nidn", label: "NIDN" },
-  { key: "bio", label: "Bio", as: "textarea" },
-];
+definePageMeta({ layout: "admin", middleware: "auth" });
+const { pending } = useMock("admin-lecturers", { rows: lecturers });
+const rows = ref(lecturers.map((item) => ({ ...item })));
+const columns = [{ key: "name", label: "Nama" }, { key: "email", label: "Email" }, { key: "phone", label: "Telepon" }];
+const save = (row) => {
+  rows.value = row.id ? rows.value.map((item) => (item.id === row.id ? row : item)) : [{ ...row, id: Date.now() }, ...rows.value];
+};
+const remove = (row) => (rows.value = rows.value.filter((item) => item.id !== row.id));
 </script>
 
 <template>
-  <AdminCrud
-    title="Dosen"
-    text="Data dosen untuk jadwal kuliah."
-    :rows="reference.lecturers"
-    :columns="columns"
-    :fields="fields"
-    @add="reference.lecturerCrud.add"
-    @update="reference.lecturerCrud.update"
-    @remove="reference.lecturerCrud.remove"
-  />
+  <AdminCrud id="admin-lecturers-table" title="Dosen" :columns="columns" :rows="rows" :schema="schema" add-label="Tambah dosen" :loading="pending" @save="save" @remove="remove" />
 </template>

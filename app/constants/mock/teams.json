@@ -1,6 +1,0 @@
-[
-  { "id": "t1", "competitionId": "k1", "name": "Tim Garuda", "description": "Mencari satu anggota dengan keahlian basis data.", "maxMembers": 4, "creatorId": "u1", "result": "unknown", "members": [{ "userId": "u1", "status": "accepted" }, { "userId": "u2", "status": "accepted" }, { "userId": "u5", "status": "pending" }] },
-  { "id": "t2", "competitionId": "k1", "name": "Nusa Code", "description": "Fokus pada aplikasi edukasi.", "maxMembers": 4, "creatorId": "u3", "result": "unknown", "members": [{ "userId": "u3", "status": "accepted" }] },
-  { "id": "t3", "competitionId": "k2", "name": "Pixel Bali", "description": "Tim desain dan frontend.", "maxMembers": 3, "creatorId": "u3", "result": "unknown", "members": [{ "userId": "u3", "status": "accepted" }] },
-  { "id": "t4", "competitionId": "k4", "name": "Root Access", "description": "Peserta CTF kampus.", "maxMembers": 3, "creatorId": "u2", "result": "won", "members": [{ "userId": "u2", "status": "accepted" }] }
-]

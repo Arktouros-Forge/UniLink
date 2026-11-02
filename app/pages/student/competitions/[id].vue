@@ -1,69 +1,55 @@
 <script setup>
-import { useCompetitionsStore } from "@app/stores/competitions";
-import { useReferenceStore } from "@app/stores/reference";
-import { useAuthStore } from "@app/stores/auth";
-import { useUiStore } from "@app/stores/ui";
-import { formatDeadline } from "@app/utils/format";
+import { competitions, teams } from "@app/constants/mock/competitions.json";
+import { team as teamSchema } from "@app/constants/forms.json";
+import { statusTone } from "@app/constants/options.json";
+import { useMock } from "@app/composables/useMock";
 
-definePageMeta({ layout: "student" });
-
+definePageMeta({ layout: "student", middleware: "auth" });
 const route = useRoute();
-const competitions = useCompetitionsStore();
-const reference = useReferenceStore();
-const auth = useAuthStore();
-const ui = useUiStore();
-
-const competition = computed(() => competitions.competitions.find((item) => item.id === route.params.id));
-if (!competition.value) throw createError({ statusCode: 404, statusMessage: "Kompetisi tidak ditemukan" });
-
-const teams = computed(() => competitions.teamsFor(competition.value.id));
-const myTeam = computed(() => competitions.teamOf(competition.value.id, auth.currentId));
-const closed = computed(() => competitions.isClosed(competition.value));
-const modal = ref(false);
-const form = reactive({ name: "", description: "" });
-
-const create = async () => {
-  const team = competitions.createTeam({ competitionId: competition.value.id, name: form.name, description: form.description, maxMembers: competition.value.maxTeamSize || 10 }, auth.currentId);
-  modal.value = false;
-  ui.notify("Tim dibuat", "good");
-  await navigateTo(`/student/competitions/teams/${team.id}`);
-};
+const item = computed(() => competitions.find((entry) => entry.id === Number(route.params.id)) || competitions[0]);
+const list = computed(() => teams.filter((entry) => entry.competition === item.value.id));
+const { pending } = useMock(`competition-${route.params.id}`, { item: item.value });
+const open = ref(false);
 </script>
 
 <template>
-  <div class="grid gap-6">
-    <NuxtLink to="/student/competitions" class="type-small flex items-center gap-1 text-mute"><span class="i-keyline-arrow-left" />Kembali</NuxtLink>
-    <NuxtImg v-if="competition.imageUrl" :src="competition.imageUrl" :alt="competition.title" class="h-56 w-full rounded-[8px] object-cover" />
-    <header class="grid gap-3">
-      <div class="flex flex-wrap gap-1.5">
-        <AppChip v-for="id in competition.categoryIds" :key="id">{{ reference.categoriesById[id]?.name }}</AppChip>
-        <AppChip tone="outline">{{ competition.level }}</AppChip>
-        <AppChip v-if="closed" tone="red">Ditutup</AppChip>
+  <div class="flex flex-col gap-6">
+    <NuxtLink to="/student/competitions" class="btn-ghost self-start"><span class="i-keyline-icons-arrow-left" />Kompetisi</NuxtLink>
+    <AutoSkeleton :loading="pending" id="competition-detail">
+      <div class="card !p-0 overflow-hidden">
+        <span class="block h-1.5 bg-brand-red" />
+        <NuxtImg v-if="item.image" :src="item.image" :alt="item.title" class="w-full h-56 object-cover" />
+        <div class="p-6 flex flex-col gap-4">
+          <div class="flex flex-wrap gap-2">
+            <UiChip v-for="category in item.categories" :key="category" tone="blue">{{ category }}</UiChip>
+            <UiChip :tone="statusTone[item.status].tone">{{ statusTone[item.status].label }}</UiChip>
+          </div>
+          <h1 class="type-h1">{{ item.title }}</h1>
+          <p class="type-body">{{ item.about }}</p>
+          <div class="flex flex-wrap gap-6 type-small">
+            <span><span class="i-keyline-icons-building mr-1.5" />{{ item.host }}</span>
+            <span><span class="i-keyline-icons-calendar mr-1.5" />{{ item.deadline }}</span>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <button class="btn-primary" :disabled="item.status !== 'open'" @click="open = true"><span class="i-keyline-icons-plus" />Buat tim</button>
+            <a :href="item.source" target="_blank" rel="noopener" class="btn-secondary"><span class="i-keyline-icons-arrow-up-right" />Situs resmi</a>
+          </div>
+        </div>
       </div>
-      <h1 class="type-h1">{{ competition.title }}</h1>
-      <p class="type-body text-mute">{{ competition.host }} · {{ formatDeadline(competition.deadline) }}</p>
-      <p class="type-body">{{ competition.description }}</p>
-      <div class="flex flex-wrap gap-2">
-        <AppButton v-if="myTeam" :to="`/student/competitions/teams/${myTeam.id}`">Lihat timku</AppButton>
-        <AppButton v-else-if="!closed" @click="modal = true"><span class="i-keyline-plus" />Buat tim</AppButton>
-        <AppButton v-if="competition.sourceUrl" :href="competition.sourceUrl" variant="secondary"><span class="i-keyline-arrow-up-right" />Sumber resmi</AppButton>
-      </div>
-    </header>
-
-    <section>
-      <SectionTitle title="Tim terdaftar" />
+    </AutoSkeleton>
+    <h2 class="type-h2">Tim terbuka</h2>
+    <AutoSkeleton :loading="pending" id="competition-teams">
       <div class="grid gap-4 md:grid-cols-2">
-        <TeamCard v-for="team in teams" :key="team.id" :team="team" />
+        <NuxtLink v-for="team in list" :key="team.id" :to="`/student/competitions/teams/${team.id}`" class="card flex flex-col gap-2 hover:border-brand-blue">
+          <h3 class="type-h3">{{ team.name }}</h3>
+          <p class="type-small">{{ team.idea }}</p>
+          <p class="type-meta">{{ team.members.length }}/{{ team.max }} anggota · Ketua {{ team.leader }}</p>
+        </NuxtLink>
       </div>
-      <AppEmpty v-if="!teams.length" title="Belum ada tim" text="Jadilah yang pertama membuat tim." icon="i-keyline-users" />
-    </section>
-
-    <AppModal v-model="modal" title="Buat tim">
-      <form class="grid gap-4" @submit.prevent="create">
-        <AppInput v-model="form.name" label="Nama tim" required />
-        <AppInput v-model="form.description" label="Deskripsi" as="textarea" :rows="3" />
-        <AppButton type="submit" block>Buat tim</AppButton>
-      </form>
-    </AppModal>
+      <UiEmpty v-if="!list.length" title="Belum ada tim" text="Jadilah yang pertama membuat tim." icon="i-keyline-icons-users" />
+    </AutoSkeleton>
+    <UiModal :open="open" title="Buat tim" @close="open = false">
+      <FieldsForm :schema="teamSchema" submit-label="Buat tim" cancel-label="Batal" @submit="open = false" @cancel="open = false" />
+    </UiModal>
   </div>
 </template>

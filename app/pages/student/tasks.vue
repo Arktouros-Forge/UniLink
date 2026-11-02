@@ -1,44 +1,37 @@
 <script setup>
+import { tasks } from "@app/constants/mock/planner.json";
+import { task as taskSchema } from "@app/constants/forms.json";
 import { taskFilters } from "@app/constants/options.json";
-import { useTasksStore } from "@app/stores/tasks";
-import { useUiStore } from "@app/stores/ui";
+import { useMock } from "@app/composables/useMock";
 
-definePageMeta({ layout: "student" });
-
-const tasks = useTasksStore();
-const ui = useUiStore();
+definePageMeta({ layout: "student", middleware: "auth" });
+const { pending } = useMock("tasks", { tasks });
+const items = ref(tasks.map((item) => ({ ...item })));
 const filter = ref("all");
-const modal = ref(false);
-const editing = ref(null);
-
-const tabs = taskFilters.map((item) => ({ value: item.key, label: item.label }));
-const list = computed(() => tasks.list(filter.value));
-
-const openForm = (task = null) => {
-  editing.value = task;
-  modal.value = true;
-};
-
-const save = (data) => {
-  if (editing.value) tasks.update(editing.value.id, data);
-  else tasks.add({ ...data, completed: false });
-  modal.value = false;
-  ui.notify("Tugas disimpan", "good");
+const open = ref(false);
+const list = computed(() => items.value.filter((item) => filter.value === "all" || (filter.value === "done") === item.done));
+const toggle = (item) => (item.done = !item.done);
+const remove = (item) => (items.value = items.value.filter((entry) => entry.id !== item.id));
+const add = (values) => {
+  items.value = [{ id: Date.now(), done: false, ...values }, ...items.value];
+  open.value = false;
 };
 </script>
 
 <template>
-  <div>
-    <PageHeading title="Tugas" text="Pantau tenggat dan prioritasmu.">
-      <AppButton @click="openForm()"><span class="i-keyline-plus" />Tambah tugas</AppButton>
-    </PageHeading>
-    <AppTabs v-model="filter" :items="tabs" class="mb-6" />
-    <div class="grid gap-3">
-      <TaskCard v-for="task in list" :key="task.id" :task="task" @toggle="tasks.toggle" @edit="openForm" @remove="tasks.remove" />
-    </div>
-    <AppEmpty v-if="!list.length" title="Tidak ada tugas" icon="i-keyline-list-checks" />
-    <AppModal v-model="modal" :title="editing ? 'Ubah tugas' : 'Tambah tugas'">
-      <TaskForm :key="editing?.id ?? 'new'" :initial="editing ?? {}" @save="save" />
-    </AppModal>
+  <div class="flex flex-col gap-6">
+    <UiPageHead title="Tugas" text="Pantau tenggat dan prioritasmu." meta="Perencana">
+      <button class="btn-primary" @click="open = true"><span class="i-keyline-icons-plus" />Tambah tugas</button>
+    </UiPageHead>
+    <UiTabs v-model="filter" :items="taskFilters" />
+    <AutoSkeleton :loading="pending" id="task-list">
+      <div class="flex flex-col gap-3 max-w-[800px]">
+        <TaskItem v-for="item in list" :key="item.id" :item="item" @toggle="toggle" @remove="remove" />
+        <UiEmpty v-if="!list.length" title="Tidak ada tugas" text="Tambahkan tugas pertamamu." icon="i-keyline-icons-list-checks" />
+      </div>
+    </AutoSkeleton>
+    <UiModal :open="open" title="Tambah tugas" @close="open = false">
+      <FieldsForm :schema="taskSchema" :initial="{ priority: 'medium' }" submit-label="Simpan" cancel-label="Batal" @submit="add" @cancel="open = false" />
+    </UiModal>
   </div>
 </template>

@@ -1,54 +1,42 @@
 <script setup>
+import { events } from "@app/constants/mock/planner.json";
+import { event as eventSchema } from "@app/constants/forms.json";
 import { days } from "@app/constants/options.json";
-import { useTimetableStore } from "@app/stores/timetable";
-import { useReferenceStore } from "@app/stores/reference";
-import { useAuthStore } from "@app/stores/auth";
-import { useUiStore } from "@app/stores/ui";
-import { toExportJson, downloadJson } from "@app/utils/timetable";
+import { timezoneLabel } from "@app/constants/site.json";
+import { useMock } from "@app/composables/useMock";
 
-definePageMeta({ layout: "student" });
-
-const timetable = useTimetableStore();
-const reference = useReferenceStore();
-const auth = useAuthStore();
-const ui = useUiStore();
-const modal = ref(false);
-const editing = ref(null);
-
-const filledDays = computed(() => days.filter((day) => timetable.byDay(day.key).length));
-
-const openForm = (event = null) => {
-  editing.value = event;
-  modal.value = true;
+definePageMeta({ layout: "student", middleware: "auth" });
+const { pending } = useMock("timetable", { events });
+const items = ref(events.map((item) => ({ ...item })));
+const day = ref((new Date().getDay() + 6) % 7);
+const open = ref(false);
+const forDay = (index) => items.value.filter((item) => item.day === index).sort((a, b) => a.start.localeCompare(b.start));
+const remove = (item) => (items.value = items.value.filter((entry) => entry.id !== item.id));
+const add = (values) => {
+  items.value = [...items.value, { id: Date.now(), color: "blue", ...values }];
+  open.value = false;
 };
-
-const save = (data) => {
-  if (editing.value) timetable.update(editing.value.id, data);
-  else timetable.add(data);
-  modal.value = false;
-  ui.notify("Jadwal disimpan", "good");
-};
-
-const exportJson = () => downloadJson(toExportJson(auth.user, timetable.events, reference.lecturers), "unilink-timetable.json");
 </script>
 
 <template>
-  <div>
-    <PageHeading title="Jadwal" text="Kuliah mingguan beserta dosennya.">
-      <AppButton variant="secondary" @click="exportJson"><span class="i-keyline-download" />Ekspor JSON</AppButton>
-      <AppButton @click="openForm()"><span class="i-keyline-plus" />Tambah kelas</AppButton>
-    </PageHeading>
-    <div class="grid gap-6">
-      <section v-for="day in filledDays" :key="day.key">
-        <h2 class="type-h3 mb-3">{{ day.label }}</h2>
-        <div class="grid gap-3 md:grid-cols-2">
-          <EventCard v-for="event in timetable.byDay(day.key)" :key="event.id" :event="event" @edit="openForm" @remove="timetable.remove" />
-        </div>
-      </section>
+  <div class="flex flex-col gap-6">
+    <UiPageHead title="Jadwal" :text="`Semua waktu dalam ${timezoneLabel}.`" meta="Perencana">
+      <button class="btn-primary" @click="open = true"><span class="i-keyline-icons-plus" />Tambah kelas</button>
+    </UiPageHead>
+    <div class="flex gap-2 overflow-x-auto md:hidden">
+      <button v-for="(label, index) in days" :key="label" class="chip shrink-0 cursor-pointer" :class="day === index ? 'bg-brand-blue text-onbrand border-brand-blue' : 'bg-card border-edge text-ink'" @click="day = index">{{ label }}</button>
     </div>
-    <AppEmpty v-if="!filledDays.length" title="Jadwal masih kosong" icon="i-keyline-calendar" />
-    <AppModal v-model="modal" :title="editing ? 'Ubah kelas' : 'Tambah kelas'">
-      <EventForm :key="editing?.id ?? 'new'" :initial="editing ?? {}" @save="save" />
-    </AppModal>
+    <AutoSkeleton :loading="pending" id="timetable-grid">
+      <div class="grid gap-4 md:grid-cols-5 xl:grid-cols-7">
+        <section v-for="(label, index) in days" :key="label" class="flex-col gap-3" :class="day === index ? 'flex' : 'hidden md:flex'">
+          <h2 class="type-meta border-b border-rule pb-2">{{ label }}</h2>
+          <EventItem v-for="item in forDay(index)" :key="item.id" :item="item" @remove="remove" />
+          <p v-if="!forDay(index).length" class="type-small">Tidak ada kelas.</p>
+        </section>
+      </div>
+    </AutoSkeleton>
+    <UiModal :open="open" title="Tambah kelas" @close="open = false">
+      <FieldsForm :schema="eventSchema" submit-label="Simpan" cancel-label="Batal" @submit="add" @cancel="open = false" />
+    </UiModal>
   </div>
 </template>

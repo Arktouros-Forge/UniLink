@@ -1,60 +1,47 @@
 <script setup>
-import { teamResult } from "@app/constants/options.json";
-import { useCompetitionsStore } from "@app/stores/competitions";
+import { teams } from "@app/constants/mock/competitions.json";
+import { report as reportSchema } from "@app/constants/forms.json";
 import { useAuthStore } from "@app/stores/auth";
-import { useUiStore } from "@app/stores/ui";
+import { useMock } from "@app/composables/useMock";
 
-definePageMeta({ layout: "student" });
-
+definePageMeta({ layout: "student", middleware: "auth" });
 const route = useRoute();
-const competitions = useCompetitionsStore();
 const auth = useAuthStore();
-const ui = useUiStore();
-
-const team = computed(() => competitions.teams.find((item) => item.id === route.params.id));
-if (!team.value) throw createError({ statusCode: 404, statusMessage: "Tim tidak ditemukan" });
-
-const competition = computed(() => competitions.competitions.find((item) => item.id === team.value.competitionId));
-const isOwner = computed(() => team.value.creatorId === auth.currentId);
-const membership = computed(() => team.value.members.find((member) => member.userId === auth.currentId));
-const full = computed(() => competitions.acceptedCount(team.value) >= team.value.maxMembers);
-const resultOptions = Object.entries(teamResult).map(([value, item]) => ({ value, label: item.label }));
-
-const join = () => {
-  competitions.requestJoin(team.value.id, auth.currentId);
-  ui.notify("Permintaan bergabung terkirim", "good");
-};
+const team = computed(() => teams.find((entry) => entry.id === Number(route.params.id)) || teams[0]);
+const { pending } = useMock(`team-${route.params.id}`, { team: team.value });
+const requests = ref([...team.value.requests]);
+const isLeader = computed(() => team.value.leader === auth.user.name);
+const reportOpen = ref(false);
+const decide = (id) => (requests.value = requests.value.filter((item) => item.id !== id));
 </script>
 
 <template>
-  <div class="grid max-w-2xl gap-6">
-    <NuxtLink :to="`/student/competitions/${competition.id}`" class="type-small flex items-center gap-1 text-mute">
-      <span class="i-keyline-arrow-left" />{{ competition.title }}
-    </NuxtLink>
-    <header class="grid gap-2">
-      <div class="flex items-center gap-3">
-        <h1 class="type-h1">{{ team.name }}</h1>
-        <StatusChip group="teamResult" :value="team.result" />
+  <div class="flex flex-col gap-6 max-w-[800px]">
+    <NuxtLink :to="`/student/competitions/${team.competition}`" class="btn-ghost self-start"><span class="i-keyline-icons-arrow-left" />Kompetisi</NuxtLink>
+    <AutoSkeleton :loading="pending" id="team-detail">
+      <div class="card flex flex-col gap-4">
+        <div class="flex items-center justify-between gap-2"><h1 class="type-h2">{{ team.name }}</h1><UiChip tone="green">{{ team.members.length }}/{{ team.max }}</UiChip></div>
+        <p class="type-body">{{ team.idea }}</p>
+        <div class="flex flex-col gap-2">
+          <div v-for="member in team.members" :key="member" class="flex items-center gap-3"><UiAvatar :name="member" size="size-9" /><span class="type-label">{{ member }}</span><UiChip v-if="member === team.leader" tone="blue">Ketua</UiChip></div>
+        </div>
+        <div class="flex gap-3">
+          <button v-if="!isLeader" class="btn-primary">Ajukan bergabung</button>
+          <button v-else class="btn-secondary" @click="reportOpen = true">Laporkan hasil</button>
+        </div>
       </div>
-      <p class="type-body text-mute">{{ team.description }}</p>
-      <p class="type-meta text-mute">{{ competitions.acceptedCount(team) }} / {{ team.maxMembers }} anggota</p>
-    </header>
-
-    <AppButton v-if="!membership && !full" class="w-fit" @click="join">Minta bergabung</AppButton>
-    <p v-else-if="membership?.status === 'pending'" class="type-small text-mute">Permintaanmu menunggu persetujuan.</p>
-
-    <AppCard class="divide-y divide-rule">
-      <MemberRow v-for="member in team.members" :key="member.userId" :member="member">
-        <template v-if="isOwner && member.userId !== team.creatorId">
-          <AppButton v-if="member.status === 'pending'" size="sm" @click="competitions.acceptMember(team.id, member.userId)">Terima</AppButton>
-          <AppButton variant="ghost" size="sm" aria-label="Keluarkan" @click="competitions.removeMember(team.id, member.userId)"><span class="i-keyline-x" /></AppButton>
-        </template>
-      </MemberRow>
-    </AppCard>
-
-    <AppCard v-if="isOwner" class="grid gap-3">
-      <h2 class="type-h3">Hasil kompetisi</h2>
-      <AppInput :model-value="team.result" as="select" :options="resultOptions" @update:model-value="competitions.reportResult(team.id, $event)" />
-    </AppCard>
+    </AutoSkeleton>
+    <template v-if="isLeader">
+      <h2 class="type-h3">Permintaan bergabung</h2>
+      <div v-for="item in requests" :key="item.id" class="card !p-4 flex items-center gap-3">
+        <UiAvatar :name="item.name" /><div class="flex-1"><p class="type-label">{{ item.name }}</p><p class="type-meta">{{ item.skill }}</p></div>
+        <button class="btn-primary btn-sm" @click="decide(item.id)">Terima</button>
+        <button class="btn-secondary btn-sm" @click="decide(item.id)">Tolak</button>
+      </div>
+      <UiEmpty v-if="!requests.length" title="Tidak ada permintaan" icon="i-keyline-icons-users" />
+    </template>
+    <UiModal :open="reportOpen" title="Laporkan hasil" @close="reportOpen = false">
+      <FieldsForm :schema="reportSchema" submit-label="Kirim laporan" cancel-label="Batal" @submit="reportOpen = false" @cancel="reportOpen = false" />
+    </UiModal>
   </div>
 </template>

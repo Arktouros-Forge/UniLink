@@ -1,35 +1,18 @@
 <script setup>
-import { useReferenceStore } from "@app/stores/reference";
+import { categories } from "@app/constants/mock/people.json";
+import { category as schema } from "@app/constants/forms.json";
+import { useMock } from "@app/composables/useMock";
 
-definePageMeta({ layout: "admin" });
-
-const reference = useReferenceStore();
-const columns = [
-  { key: "name", label: "Nama" },
-  { key: "color", label: "Warna" },
-  { key: "description", label: "Deskripsi" },
-];
-const fields = [
-  { key: "name", label: "Nama", required: true },
-  { key: "slug", label: "Slug", required: true },
-  { key: "color", label: "Warna", type: "color" },
-  { key: "description", label: "Deskripsi", as: "textarea" },
-];
+definePageMeta({ layout: "admin", middleware: "auth" });
+const { pending } = useMock("admin-categories", { rows: categories });
+const rows = ref(categories.map((item) => ({ ...item })));
+const columns = [{ key: "name", label: "Nama" }, { key: "count", label: "Kompetisi" }];
+const save = (row) => {
+  rows.value = row.id ? rows.value.map((item) => (item.id === row.id ? row : item)) : [{ ...row, id: Date.now() }, ...rows.value];
+};
+const remove = (row) => (rows.value = rows.value.filter((item) => item.id !== row.id));
 </script>
 
 <template>
-  <AdminCrud
-    title="Kategori"
-    text="Kategori kompetisi."
-    :rows="reference.categories"
-    :columns="columns"
-    :fields="fields"
-    @add="reference.categoryCrud.add"
-    @update="reference.categoryCrud.update"
-    @remove="reference.categoryCrud.remove"
-  >
-    <template #color="{ row }">
-      <span class="inline-flex items-center gap-2"><span class="size-4 rounded-full" :style="{ background: row.color }" />{{ row.color }}</span>
-    </template>
-  </AdminCrud>
+  <AdminCrud id="admin-categories-table" title="Kategori" :columns="columns" :rows="rows" :schema="schema" add-label="Tambah kategori" :loading="pending" @save="save" @remove="remove" />
 </template>

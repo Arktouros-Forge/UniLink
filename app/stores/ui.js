@@ -1,24 +1,23 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
 
 export const useUiStore = defineStore("ui", () => {
-  const themeCookie = useCookie("unilink-theme", { default: () => "" });
-  const theme = ref(themeCookie.value);
-  const toasts = ref([]);
+  const theme = ref("light");
+  const sidebarOpen = ref(false);
 
-  const setTheme = (value) => {
-    theme.value = value;
-    themeCookie.value = value;
-  };
-  const toggleTheme = () => setTheme(theme.value === "dark" ? "light" : "dark");
-
-  const notify = (message, tone = "default") => {
-    const id = Date.now() + Math.random();
-    toasts.value.push({ id, message, tone });
-    setTimeout(() => {
-      toasts.value = toasts.value.filter((toast) => toast.id !== id);
-    }, 3200);
+  const applyTheme = () => {
+    if (import.meta.client) document.documentElement.classList.toggle("dark", theme.value === "dark");
   };
 
-  return { theme, toasts, setTheme, toggleTheme, notify };
+  const toggleTheme = () => {
+    theme.value = theme.value === "dark" ? "light" : "dark";
+    applyTheme();
+  };
+
+  const initTheme = () => {
+    if (!import.meta.client) return;
+    theme.value = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    applyTheme();
+  };
+
+  return { theme, sidebarOpen, toggleTheme, initTheme };
 });

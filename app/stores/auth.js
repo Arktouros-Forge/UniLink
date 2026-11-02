@@ -1,29 +1,23 @@
 import { defineStore } from "pinia";
-import { computed, reactive, ref } from "vue";
-import { useUsersStore } from "@app/stores/users";
-
-const emptyDraft = () => ({ fullName: "", nim: "", phone: "", year: "", skillIds: [], website: "" });
+import { me } from "@app/constants/mock/people.json";
 
 export const useAuthStore = defineStore("auth", () => {
-  const users = useUsersStore();
-  const currentId = ref("u1");
-  const draft = reactive(emptyDraft());
+  const user = ref({ ...me });
+  const isAuthed = ref(true);
+  const isAdmin = computed(() => user.value?.role === "admin");
 
-  const user = computed(() => users.byId[currentId.value] ?? null);
-  const role = computed(() => user.value?.role ?? "guest");
-  const isLoggedIn = computed(() => Boolean(user.value));
-  const isAdmin = computed(() => role.value === "admin");
-  const homePath = computed(() => (isAdmin.value ? "/admin" : "/student/dashboard"));
-
-  const login = (email) => {
-    const found = users.users.find((item) => item.email === email) ?? users.users.find((item) => item.id === "u1");
-    currentId.value = found.id;
-    return found;
+  const login = (payload = {}) => {
+    user.value = { ...me, ...payload };
+    isAuthed.value = true;
   };
+
   const logout = () => {
-    currentId.value = "";
+    isAuthed.value = false;
   };
-  const resetDraft = () => Object.assign(draft, emptyDraft());
 
-  return { currentId, draft, user, role, isLoggedIn, isAdmin, homePath, login, logout, resetDraft };
+  const updateProfile = (payload) => {
+    user.value = { ...user.value, ...payload };
+  };
+
+  return { user, isAuthed, isAdmin, login, logout, updateProfile };
 });

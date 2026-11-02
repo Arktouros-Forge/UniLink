@@ -1,51 +1,33 @@
 <script setup>
-import { useUsersStore } from "@app/stores/users";
-import { useReferenceStore } from "@app/stores/reference";
-import { useStudyMatchStore } from "@app/stores/studyMatch";
-import { useUiStore } from "@app/stores/ui";
+import { helpers } from "@app/constants/mock/people.json";
+import { request as requestSchema } from "@app/constants/forms.json";
+import { limits } from "@app/constants/options.json";
+import { useMock } from "@app/composables/useMock";
 
-definePageMeta({ layout: "student" });
-
+definePageMeta({ layout: "student", middleware: "auth" });
 const route = useRoute();
-const users = useUsersStore();
-const reference = useReferenceStore();
-const studyMatch = useStudyMatchStore();
-const ui = useUiStore();
-
-const user = computed(() => users.byId[route.params.id]);
-const modal = ref(false);
-
-if (!user.value) throw createError({ statusCode: 404, statusMessage: "Pengguna tidak ditemukan" });
-
-const save = (data) => {
-  studyMatch.send({ helperId: user.value.id, ...data });
-  modal.value = false;
-  ui.notify("Permintaan terkirim", "good");
-};
+const helper = computed(() => helpers.find((item) => item.id === Number(route.params.id)) || helpers[0]);
+const { pending } = useMock(`helper-${route.params.id}`, { helper: helper.value });
+const open = ref(false);
 </script>
 
 <template>
-  <div class="grid max-w-2xl gap-6">
-    <NuxtLink to="/student/study-match" class="type-small flex items-center gap-1 text-mute"><span class="i-keyline-arrow-left" />Kembali</NuxtLink>
-    <AppCard strong class="grid gap-4">
-      <div class="flex items-center gap-4">
-        <AppAvatar :name="user.fullName" size="lg" />
-        <div>
-          <h1 class="type-h1">{{ user.fullName }}</h1>
-          <p class="type-small text-mute">@{{ user.username }} · Angkatan {{ user.year }}</p>
+  <div class="flex flex-col gap-6 max-w-[720px]">
+    <NuxtLink to="/student/study-match" class="btn-ghost self-start"><span class="i-keyline-icons-arrow-left" />Study Match</NuxtLink>
+    <AutoSkeleton :loading="pending" id="helper-detail">
+      <div class="card flex flex-col gap-5">
+        <div class="flex items-center gap-4">
+          <UiAvatar :name="helper.name" size="size-16" />
+          <div class="flex-1"><h1 class="type-h2">{{ helper.name }}</h1><p class="type-small">{{ helper.major }} · Angkatan {{ helper.cohort }}</p></div>
+          <UiChip tone="yellow">{{ helper.match }}%</UiChip>
         </div>
+        <p class="type-body">{{ helper.bio }}</p>
+        <div class="flex flex-wrap gap-2"><UiChip v-for="skill in helper.skills" :key="skill" tone="blue">{{ skill }}</UiChip></div>
+        <button class="btn-primary btn-lg self-start" @click="open = true">Ajak belajar</button>
       </div>
-      <div class="flex flex-wrap gap-1.5">
-        <AppChip v-for="id in user.skillIds" :key="id" tone="brand">{{ reference.skillsById[id]?.name }}</AppChip>
-      </div>
-      <a v-if="user.website" :href="user.website" target="_blank" rel="noopener" class="type-small flex items-center gap-1 text-brand-blue">
-        <span class="i-keyline-globe" />{{ user.website }}
-      </a>
-      <div>
-        <AppButton :disabled="!studyMatch.canSend" @click="modal = true">Kirim permintaan</AppButton>
-        <p v-if="!studyMatch.canSend" class="type-small mt-2 text-brand-red">Batas permintaan tertunda tercapai.</p>
-      </div>
-    </AppCard>
-    <AppModal v-model="modal" title="Kirim permintaan"><RequestForm @save="save" /></AppModal>
+    </AutoSkeleton>
+    <UiModal :open="open" :title="`Ajak ${helper.name} belajar`" :text="`Berlaku ${limits.requestDays} hari.`" @close="open = false">
+      <FieldsForm :schema="requestSchema" submit-label="Kirim permintaan" cancel-label="Batal" @submit="open = false" @cancel="open = false" />
+    </UiModal>
   </div>
 </template>

@@ -1,0 +1,18 @@
+{
+  "requests": [
+    { "id": 1, "from": "Ayu Pratiwi", "topic": "Vue.js", "message": "Bisa belajar komposisi komponen bareng minggu ini?", "status": "pending", "expires": "5 hari lagi" },
+    { "id": 2, "from": "Komang Adi", "topic": "Basis Data", "message": "Butuh teman diskusi normalisasi tabel.", "status": "pending", "expires": "3 hari lagi" },
+    { "id": 3, "from": "Rama Wijaya", "topic": "Python", "message": "Ayo latihan soal kompetisi data.", "status": "accepted", "expires": "Selesai", "phone": "+6281200000003" }
+  ],
+  "signs": [
+    { "id": 1, "title": "Butuh teman belajar Kalkulus 2", "skill": "Kalkulus", "status": "active", "expires": "9 hari lagi", "responses": 3 },
+    { "id": 2, "title": "Cari mentor Pitching deck", "skill": "Pitching", "status": "active", "expires": "12 hari lagi", "responses": 1 },
+    { "id": 3, "title": "Review UI aplikasi lomba", "skill": "UI Design", "status": "expired", "expires": "Kedaluwarsa", "responses": 5 }
+  ],
+  "history": [
+    { "id": 1, "with": "Rama Wijaya", "topic": "Python", "status": "accepted", "date": "12 Okt 2026" },
+    { "id": 2, "with": "Sinta Dewi", "topic": "Pitching", "status": "declined", "date": "3 Okt 2026" },
+    { "id": 3, "with": "Dewi Lestari", "topic": "Kalkulus", "status": "expired", "date": "21 Sep 2026" }
+  ],
+  "stats": { "pending": 2, "activeSigns": 2, "matches": 4 }
+}

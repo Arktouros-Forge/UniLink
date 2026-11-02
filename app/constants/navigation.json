@@ -1,30 +1,32 @@
 {
-  "public": [
+  "publicNav": [
     { "label": "Beranda", "to": "/" },
-    { "label": "Cara kerja", "to": "/how-it-works" }
+    { "label": "Cara kerja", "to": "/how-it-works" },
+    { "label": "Kompetisi", "to": "/auth/login" }
   ],
-  "student": [
-    { "label": "Dasbor", "to": "/student/dashboard", "icon": "i-keyline-layout-dashboard" },
-    { "label": "Study Match", "to": "/student/study-match", "icon": "i-keyline-search" },
-    { "label": "Kotak masuk", "to": "/student/study-match/inbox", "icon": "i-keyline-inbox" },
-    { "label": "Kompetisi", "to": "/student/competitions", "icon": "i-keyline-trophy" },
-    { "label": "Tugas", "to": "/student/tasks", "icon": "i-keyline-list-checks" },
-    { "label": "Jadwal", "to": "/student/timetable", "icon": "i-keyline-calendar" },
-    { "label": "Pengaturan", "to": "/student/settings", "icon": "i-keyline-settings" }
+  "studentNav": [
+    { "label": "Dasbor", "to": "/student/dashboard", "icon": "i-keyline-icons-home" },
+    { "label": "Study Match", "to": "/student/study-match", "icon": "i-keyline-icons-search" },
+    { "label": "Kotak masuk", "to": "/student/study-match/inbox", "icon": "i-keyline-icons-inbox" },
+    { "label": "Riwayat", "to": "/student/study-match/history", "icon": "i-keyline-icons-history" },
+    { "label": "Kompetisi", "to": "/student/competitions", "icon": "i-keyline-icons-trophy" },
+    { "label": "Tugas", "to": "/student/tasks", "icon": "i-keyline-icons-list-checks" },
+    { "label": "Jadwal", "to": "/student/timetable", "icon": "i-keyline-icons-calendar" },
+    { "label": "Pengaturan", "to": "/student/settings", "icon": "i-keyline-icons-settings" }
   ],
-  "studentMobile": [
-    { "label": "Dasbor", "to": "/student/dashboard", "icon": "i-keyline-home" },
-    { "label": "Cari", "to": "/student/study-match", "icon": "i-keyline-search" },
-    { "label": "Kompetisi", "to": "/student/competitions", "icon": "i-keyline-trophy" },
-    { "label": "Jadwal", "to": "/student/timetable", "icon": "i-keyline-calendar" },
-    { "label": "Akun", "to": "/student/settings", "icon": "i-keyline-settings" }
+  "studentTabs": [
+    { "label": "Dasbor", "to": "/student/dashboard", "icon": "i-keyline-icons-home" },
+    { "label": "Cari", "to": "/student/study-match", "icon": "i-keyline-icons-search" },
+    { "label": "Kompetisi", "to": "/student/competitions", "icon": "i-keyline-icons-trophy" },
+    { "label": "Jadwal", "to": "/student/timetable", "icon": "i-keyline-icons-calendar" },
+    { "label": "Akun", "to": "/student/settings", "icon": "i-keyline-icons-settings" }
   ],
-  "admin": [
-    { "label": "Analitik", "to": "/admin", "icon": "i-keyline-chart-bar" },
-    { "label": "Keahlian", "to": "/admin/skills", "icon": "i-keyline-graduation-cap" },
-    { "label": "Kategori", "to": "/admin/categories", "icon": "i-keyline-tag" },
-    { "label": "Dosen", "to": "/admin/lecturers", "icon": "i-keyline-id-card" },
-    { "label": "Kompetisi", "to": "/admin/competitions", "icon": "i-keyline-trophy" },
-    { "label": "Pengguna", "to": "/admin/users", "icon": "i-keyline-users" }
+  "adminNav": [
+    { "label": "Analitik", "to": "/admin", "icon": "i-keyline-icons-chart-bar" },
+    { "label": "Keahlian", "to": "/admin/skills", "icon": "i-keyline-icons-graduation-cap" },
+    { "label": "Kategori", "to": "/admin/categories", "icon": "i-keyline-icons-tag" },
+    { "label": "Dosen", "to": "/admin/lecturers", "icon": "i-keyline-icons-id-card" },
+    { "label": "Kompetisi", "to": "/admin/competitions", "icon": "i-keyline-icons-trophy" },
+    { "label": "Pengguna", "to": "/admin/users", "icon": "i-keyline-icons-users" }
   ]
 }

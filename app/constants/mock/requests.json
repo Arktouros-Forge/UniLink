@@ -1,6 +1,0 @@
-[
-  { "id": "r1", "requesterId": "u2", "helperId": "u1", "initiatedBy": "requester", "signId": "", "subject": "Algoritma dan Pemrograman", "description": "Rekursi pada tree masih membingungkan.", "preferredTime": "Besok sore", "status": "pending", "createdAt": "2026-10-31T03:00:00Z", "expiresAt": "2026-11-07T03:00:00Z" },
-  { "id": "r2", "requesterId": "u1", "helperId": "u5", "initiatedBy": "requester", "signId": "", "subject": "Statistika", "description": "Mohon dibantu memahami distribusi normal.", "preferredTime": "", "status": "accepted", "createdAt": "2026-10-28T03:00:00Z", "expiresAt": "2026-11-04T03:00:00Z" },
-  { "id": "r3", "requesterId": "u1", "helperId": "u3", "initiatedBy": "requester", "signId": "", "subject": "Desain UI/UX", "description": "Review wireframe tugas kuliah.", "preferredTime": "", "status": "pending", "createdAt": "2026-10-31T08:00:00Z", "expiresAt": "2026-11-07T08:00:00Z" },
-  { "id": "r4", "requesterId": "u3", "helperId": "u1", "initiatedBy": "helper", "signId": "g1", "subject": "Kalkulus", "description": "Saya bisa bantu integral parsial, kirim soalnya ya.", "preferredTime": "", "status": "declined", "createdAt": "2026-10-25T03:00:00Z", "expiresAt": "2026-11-01T03:00:00Z" }
-]

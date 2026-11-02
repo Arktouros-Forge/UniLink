@@ -1,44 +1,36 @@
 <script setup>
-import { requestStatus } from "@app/constants/options.json";
-import { useUsersStore } from "@app/stores/users";
-import { useCompetitionsStore } from "@app/stores/competitions";
-import { useStudyMatchStore } from "@app/stores/studyMatch";
-import { useReferenceStore } from "@app/stores/reference";
+import { stats, weekly, topSkills, cohorts } from "@app/constants/mock/analytics.json";
+import { useMock } from "@app/composables/useMock";
 
-definePageMeta({ layout: "admin" });
-
-const users = useUsersStore();
-const competitions = useCompetitionsStore();
-const studyMatch = useStudyMatchStore();
-const reference = useReferenceStore();
-
-const statusBars = computed(() =>
-  Object.entries(requestStatus).map(([key, item]) => ({ label: item.label, value: studyMatch.requests.filter((request) => request.status === key).length })),
-);
-const skillBars = computed(() =>
-  reference.skills
-    .map((skill) => ({ label: skill.name, value: users.students.filter((user) => user.skillIds.includes(skill.id)).length }))
-    .sort((a, b) => b.value - a.value)
-    .slice(0, 6),
-);
-const categoryBars = computed(() =>
-  reference.categories.map((category) => ({ label: category.name, value: competitions.competitions.filter((item) => item.categoryIds.includes(category.id)).length })),
-);
+definePageMeta({ layout: "admin", middleware: "auth" });
+const { pending } = useMock("analytics", { stats }, 800);
+const charts = [
+  { title: "Permintaan per hari", rows: weekly, color: "bg-brand-blue" },
+  { title: "Keahlian teratas", rows: topSkills, color: "bg-brand-red" },
+  { title: "Pengguna per angkatan", rows: cohorts, color: "bg-brand-yellow" },
+];
+const peak = (rows) => Math.max(...rows.map((row) => row.value));
 </script>
 
 <template>
-  <div>
-    <PageHeading title="Analitik" text="Ringkasan aktivitas UniLink." />
-    <div class="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-      <AppStat label="Mahasiswa" :value="users.students.length" icon="i-keyline-users" to="/admin/users" />
-      <AppStat label="Kompetisi" :value="competitions.competitions.length" icon="i-keyline-trophy" to="/admin/competitions" />
-      <AppStat label="Help Sign terbuka" :value="studyMatch.openSigns.length" icon="i-keyline-flag" />
-      <AppStat label="Permintaan" :value="studyMatch.requests.length" icon="i-keyline-inbox" />
-    </div>
-    <div class="grid gap-6 lg:grid-cols-3">
-      <AppCard><SectionTitle title="Status permintaan" /><BarList :items="statusBars" /></AppCard>
-      <AppCard><SectionTitle title="Keahlian terbanyak" /><BarList :items="skillBars" /></AppCard>
-      <AppCard><SectionTitle title="Kompetisi per kategori" /><BarList :items="categoryBars" /></AppCard>
-    </div>
+  <div class="flex flex-col gap-8">
+    <UiPageHead title="Analitik" text="Ringkasan aktivitas UniLink." meta="Admin" />
+    <AutoSkeleton :loading="pending" id="admin-stats">
+      <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <UiStat v-for="item in stats" :key="item.label" :label="item.label" :value="item.value" :note="item.delta" />
+      </div>
+    </AutoSkeleton>
+    <AutoSkeleton :loading="pending" id="admin-charts">
+      <div class="grid gap-4 md:grid-cols-3">
+        <section v-for="chart in charts" :key="chart.title" class="card flex flex-col gap-4">
+          <h2 class="type-h3">{{ chart.title }}</h2>
+          <div v-for="row in chart.rows" :key="row.label" class="flex items-center gap-3">
+            <span class="type-meta w-20 shrink-0 truncate">{{ row.label }}</span>
+            <span class="flex-1 h-3 bg-soft rounded-sm overflow-hidden"><span class="block h-full" :class="chart.color" :style="{ width: `${(row.value / peak(chart.rows)) * 100}%` }" /></span>
+            <span class="type-small w-9 text-right !text-ink">{{ row.value }}</span>
+          </div>
+        </section>
+      </div>
+    </AutoSkeleton>
   </div>
 </template>

@@ -1,6 +1,14 @@
-[
-  { "id": "k1", "title": "GEMASTIK 2026", "host": "Kemdikbud", "level": "Nasional", "description": "Gagasan kampus, dampak untuk negeri. Wakili Udayana bersama timmu.", "categoryIds": ["c1"], "deadline": "2026-11-20T15:59:00Z", "maxTeamSize": 4, "status": "published", "createdByRole": "admin", "sourceUrl": "https://gemastik.kemdikbud.go.id", "imageUrl": "" },
-  { "id": "k2", "title": "UI/UX Sprint Bali", "host": "HMIF Udayana", "level": "Regional", "description": "Rancang solusi digital untuk wisata berkelanjutan dalam 48 jam.", "categoryIds": ["c2"], "deadline": "2026-12-05T15:59:00Z", "maxTeamSize": 3, "status": "published", "createdByRole": "student", "sourceUrl": "", "imageUrl": "" },
-  { "id": "k3", "title": "Data Insight Challenge", "host": "Dicoding", "level": "Nasional", "description": "Temukan wawasan dari data nyata dan presentasikan hasilnya.", "categoryIds": ["c3", "c1"], "deadline": "2026-12-20T15:59:00Z", "maxTeamSize": 0, "status": "published", "createdByRole": "admin", "sourceUrl": "https://dicoding.com", "imageUrl": "" },
-  { "id": "k4", "title": "Capture The Flag Kampus", "host": "Himpunan Keamanan Siber", "level": "Kampus", "description": "Lomba CTF tingkat kampus untuk pemula dan menengah.", "categoryIds": ["c4"], "deadline": "2026-10-25T15:59:00Z", "maxTeamSize": 3, "status": "closed", "createdByRole": "admin", "sourceUrl": "", "imageUrl": "" }
-]
+{
+  "competitions": [
+    { "id": 1, "title": "Gemastik 2026", "host": "Kemdikti", "categories": ["Teknologi"], "deadline": "30 Nov 2026", "source": "https://gemastik.kemdikbud.go.id", "image": null, "status": "open", "about": "Ajang nasional untuk karya TIK mahasiswa dari berbagai bidang.", "teams": 14 },
+    { "id": 2, "title": "Hackathon Bali Digital", "host": "Pemprov Bali", "categories": ["Teknologi", "Bisnis"], "deadline": "12 Des 2026", "source": "https://example.org/bali-hack", "image": null, "status": "open", "about": "Hackathon 48 jam untuk solusi digital pariwisata.", "teams": 9 },
+    { "id": 3, "title": "Lomba Desain Antarmuka", "host": "Design Guild", "categories": ["Desain"], "deadline": "5 Des 2026", "source": "https://example.org/ui-contest", "image": null, "status": "open", "about": "Rancang pengalaman aplikasi mobile untuk layanan kampus.", "teams": 6 },
+    { "id": 4, "title": "Olimpiade Sains Mahasiswa", "host": "Dikti", "categories": ["Sains"], "deadline": "20 Okt 2026", "source": "https://example.org/osn", "image": null, "status": "closed", "about": "Kompetisi sains tingkat nasional.", "teams": 11 }
+  ],
+  "teams": [
+    { "id": 1, "competition": 1, "name": "Tim Garuda Kode", "idea": "Platform pembelajaran adaptif berbasis AI.", "leader": "Alviro Malvin Brine", "members": ["Alviro Malvin Brine", "Ayu Pratiwi", "Komang Adi"], "max": 5, "status": "open", "requests": [ { "id": 1, "name": "Rama Wijaya", "skill": "Python" } ] },
+    { "id": 2, "competition": 1, "name": "Bali Bytes", "idea": "Aplikasi pelaporan sampah warga.", "leader": "Dewi Lestari", "members": ["Dewi Lestari", "Sinta Dewi"], "max": 4, "status": "open", "requests": [] },
+    { "id": 3, "competition": 2, "name": "Segara Dev", "idea": "Dasbor kepadatan wisata.", "leader": "Rama Wijaya", "members": ["Rama Wijaya"], "max": 4, "status": "open", "requests": [] }
+  ],
+  "myTeams": [ { "id": 1, "name": "Tim Garuda Kode", "competition": "Gemastik 2026", "role": "Ketua", "status": "inprogress" } ]
+}

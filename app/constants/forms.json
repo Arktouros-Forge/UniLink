@@ -1,0 +1,70 @@
+{
+  "profile": [
+    { "name": "name", "label": "Nama lengkap", "type": "text", "required": true },
+    { "name": "major", "label": "Program studi", "type": "text", "required": true },
+    { "name": "cohort", "label": "Angkatan", "type": "year", "required": true },
+    { "name": "bio", "label": "Tentang kamu", "type": "textarea", "placeholder": "Satu dua kalimat singkat" }
+  ],
+  "contact": [
+    { "name": "phone", "label": "Nomor WhatsApp", "type": "tel", "placeholder": "+62 8xx xxxx xxxx", "required": true }
+  ],
+  "task": [
+    { "name": "title", "label": "Judul tugas", "type": "text", "required": true },
+    { "name": "course", "label": "Mata kuliah", "type": "text" },
+    { "name": "due", "label": "Tenggat", "type": "date", "required": true },
+    { "name": "priority", "label": "Prioritas", "type": "priority" }
+  ],
+  "event": [
+    { "name": "title", "label": "Nama kelas", "type": "text", "required": true },
+    { "name": "day", "label": "Hari", "type": "day", "required": true },
+    { "name": "start", "label": "Mulai", "type": "time", "required": true },
+    { "name": "end", "label": "Selesai", "type": "time", "required": true },
+    { "name": "room", "label": "Ruang", "type": "text" },
+    { "name": "lecturer", "label": "Dosen", "type": "lecturer" }
+  ],
+  "sign": [
+    { "name": "title", "label": "Judul Help Sign", "type": "text", "required": true },
+    { "name": "skill", "label": "Keahlian dibutuhkan", "type": "skill", "required": true },
+    { "name": "detail", "label": "Detail", "type": "textarea" }
+  ],
+  "request": [
+    { "name": "message", "label": "Pesan singkat", "type": "textarea", "required": true, "placeholder": "Apa yang ingin kamu pelajari bersama?" }
+  ],
+  "team": [
+    { "name": "name", "label": "Nama tim", "type": "text", "required": true },
+    { "name": "idea", "label": "Gagasan singkat", "type": "textarea" }
+  ],
+  "report": [
+    { "name": "result", "label": "Hasil", "type": "result", "required": true },
+    { "name": "note", "label": "Catatan", "type": "textarea" }
+  ],
+  "skill": [
+    { "name": "name", "label": "Nama keahlian", "type": "text", "required": true }
+  ],
+  "category": [
+    { "name": "name", "label": "Nama kategori", "type": "text", "required": true }
+  ],
+  "lecturer": [
+    { "name": "name", "label": "Nama", "type": "text", "required": true },
+    { "name": "email", "label": "Email", "type": "email", "required": true },
+    { "name": "phone", "label": "Nomor telepon", "type": "tel" },
+    { "name": "profile", "label": "Profil", "type": "textarea" }
+  ],
+  "competition": [
+    { "name": "title", "label": "Nama kompetisi", "type": "text", "required": true },
+    { "name": "host", "label": "Penyelenggara", "type": "text", "required": true },
+    { "name": "source", "label": "Tautan sumber", "type": "url" },
+    { "name": "image", "label": "URL gambar", "type": "url" },
+    { "name": "deadline", "label": "Batas pendaftaran", "type": "date" },
+    { "name": "categories", "label": "Kategori", "type": "category" }
+  ],
+  "user": [
+    { "name": "name", "label": "Nama", "type": "text", "required": true },
+    { "name": "email", "label": "Email", "type": "email", "required": true },
+    { "name": "cohort", "label": "Angkatan", "type": "year" }
+  ],
+  "results": [
+    { "value": "won", "label": "Juara" },
+    { "value": "participated", "label": "Berpartisipasi" }
+  ]
+}

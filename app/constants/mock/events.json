@@ -1,7 +1,0 @@
-[
-  { "id": "e1", "courseCode": "IF1234", "title": "Algoritma dan Pemrograman", "dayOfWeek": 1, "start": "08:00", "end": "10:30", "room": "Lab Komputer 3", "lecturerId": "l1", "color": "blue" },
-  { "id": "e2", "courseCode": "IF1235", "title": "Basis Data", "dayOfWeek": 3, "start": "13:00", "end": "15:30", "room": "Ruang 201", "lecturerId": "l2", "color": "red" },
-  { "id": "e3", "courseCode": "IF1236", "title": "Jaringan Komputer", "dayOfWeek": 2, "start": "10:00", "end": "12:00", "room": "Ruang 105", "lecturerId": "l3", "color": "yellow" },
-  { "id": "e4", "courseCode": "MA1201", "title": "Statistika", "dayOfWeek": 4, "start": "09:00", "end": "11:00", "room": "Ruang 302", "lecturerId": "l4", "color": "blue" },
-  { "id": "e5", "courseCode": "IF1237", "title": "Struktur Data", "dayOfWeek": 5, "start": "13:00", "end": "15:00", "room": "Lab Komputer 1", "lecturerId": "l1", "color": "red" }
-]

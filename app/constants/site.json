@@ -1,17 +1,29 @@
 {
   "siteName": "UniLink",
-  "tagline": "Saling terhubung. Saling bertumbuh.",
-  "slogan": "Dari kampus. Untuk sesama.",
   "event": "TecFest 2026",
   "university": "Universitas Udayana",
-  "city": "Bali",
-  "locale": "id-ID",
-  "timezone": "Asia/Makassar",
+  "universityCity": "Bali",
+  "universityTag": "Universitas Udayana · Bali",
+  "campusLabel": "Ruang mahasiswa Udayana",
+  "slogan": "Dari kampus. Untuk sesama.",
+  "copyright": "© 2026 UniLink",
   "timezoneLabel": "WITA",
   "whatsappBase": "https://wa.me/",
-  "greeting": "Halo, teman kampus!",
+  "whatsappGreeting": "Halo, aku menghubungi lewat UniLink.",
+  "legal": [
+    { "label": "Privasi", "to": "/privacy" },
+    { "label": "Ketentuan", "to": "/terms" }
+  ],
+  "roleLabels": { "student": "Mahasiswa", "admin": "Admin" },
+  "themeLabels": { "light": "Mode terang", "dark": "Mode gelap" },
   "authPanel": {
     "title": "Bangun koneksi, bukan sekadar daftar teman.",
-    "text": "Temukan teman belajar, bantu sesama, dan bentuk tim dari kampusmu sendiri."
+    "text": "Temukan teman belajar, bantu sesama, dan bentuk tim dari kampusmu sendiri.",
+    "meta": "UniLink · TecFest 2026"
+  },
+  "notFound": {
+    "title": "Halaman tidak ditemukan.",
+    "text": "Tautan yang kamu buka tidak tersedia atau sudah dipindahkan.",
+    "action": "Kembali ke beranda"
   }
 }

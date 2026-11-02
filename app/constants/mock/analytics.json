@@ -1,0 +1,19 @@
+{
+  "stats": [
+    { "label": "Pengguna", "value": "1.248", "delta": "+12%" },
+    { "label": "Permintaan terkirim", "value": "3.902", "delta": "+8%" },
+    { "label": "Help Sign aktif", "value": "214", "delta": "+5%" },
+    { "label": "Tim terbentuk", "value": "87", "delta": "+21%" }
+  ],
+  "weekly": [
+    { "label": "Sen", "value": 42 }, { "label": "Sel", "value": 58 }, { "label": "Rab", "value": 51 },
+    { "label": "Kam", "value": 73 }, { "label": "Jum", "value": 66 }, { "label": "Sab", "value": 34 }, { "label": "Min", "value": 29 }
+  ],
+  "topSkills": [
+    { "label": "Python", "value": 57 }, { "label": "Vue.js", "value": 48 }, { "label": "Node.js", "value": 41 },
+    { "label": "Basis Data", "value": 38 }, { "label": "UI Design", "value": 36 }
+  ],
+  "cohorts": [
+    { "label": "2021", "value": 210 }, { "label": "2022", "value": 340 }, { "label": "2023", "value": 395 }, { "label": "2024", "value": 303 }
+  ]
+}

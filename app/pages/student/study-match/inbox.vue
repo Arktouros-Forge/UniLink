@@ -1,40 +1,23 @@
 <script setup>
-import { useStudyMatchStore } from "@app/stores/studyMatch";
-import { useUiStore } from "@app/stores/ui";
+import { requests } from "@app/constants/mock/study.json";
+import { useMock } from "@app/composables/useMock";
 
-definePageMeta({ layout: "student" });
-
-const studyMatch = useStudyMatchStore();
-const ui = useUiStore();
-const tab = ref("incoming");
-
-const tabs = computed(() => [
-  { value: "incoming", label: "Masuk", count: studyMatch.incoming.length },
-  { value: "outgoing", label: "Terkirim", count: studyMatch.outgoing.length },
-]);
-const rows = computed(() => (tab.value === "incoming" ? studyMatch.incoming : studyMatch.outgoing));
-
-const respond = (id, status) => {
-  studyMatch.respond(id, status);
-  ui.notify(status === "accepted" ? "Permintaan diterima" : "Permintaan diperbarui");
-};
+definePageMeta({ layout: "student", middleware: "auth" });
+const items = ref(requests.map((item) => ({ ...item })));
+const { pending } = useMock("inbox", { requests });
+const setStatus = (item, status) => (items.value = items.value.map((entry) => (entry.id === item.id ? { ...entry, status } : entry)));
 </script>
 
 <template>
-  <div>
-    <PageHeading title="Kotak masuk" text="Permintaan Study Match yang menunggu.">
-      <AppButton to="/student/study-match/history" variant="ghost">Riwayat</AppButton>
-    </PageHeading>
-    <AppTabs v-model="tab" :items="tabs" class="mb-6" />
-    <div class="grid gap-4 md:grid-cols-2">
-      <RequestCard v-for="request in rows" :key="request.id" :request="request">
-        <template v-if="tab === 'incoming'">
-          <AppButton size="sm" @click="respond(request.id, 'accepted')">Terima</AppButton>
-          <AppButton variant="secondary" size="sm" @click="respond(request.id, 'declined')">Tolak</AppButton>
-        </template>
-        <AppButton v-else variant="ghost" size="sm" @click="respond(request.id, 'cancelled')">Batalkan</AppButton>
-      </RequestCard>
-    </div>
-    <AppEmpty v-if="!rows.length" title="Tidak ada permintaan" icon="i-keyline-inbox" />
+  <div class="flex flex-col gap-6">
+    <UiPageHead title="Kotak masuk" text="Permintaan belajar dari mahasiswa lain." meta="Study Match">
+      <NuxtLink to="/student/study-match/history" class="btn-secondary"><span class="i-keyline-icons-history" />Riwayat</NuxtLink>
+    </UiPageHead>
+    <AutoSkeleton :loading="pending" id="inbox-list">
+      <div class="flex flex-col gap-4 max-w-[720px]">
+        <RequestCard v-for="item in items" :key="item.id" :item="item" @accept="setStatus($event, 'accepted')" @decline="setStatus($event, 'declined')" />
+        <UiEmpty v-if="!items.length" title="Kotak masuk kosong" text="Permintaan baru akan muncul di sini." />
+      </div>
+    </AutoSkeleton>
   </div>
 </template>
