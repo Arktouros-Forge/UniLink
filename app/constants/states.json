@@ -1,0 +1,8 @@
+{
+  "errors": {
+    "404": { "code": "404", "title": "Halaman tidak ditemukan.", "text": "Tautan yang kamu buka tidak tersedia atau sudah dipindahkan." },
+    "403": { "code": "403", "title": "Kamu belum punya akses.", "text": "Halaman ini hanya untuk peran tertentu. Hubungi admin bila ini keliru." },
+    "500": { "code": "500", "title": "Terjadi kesalahan.", "text": "Kami sedang memperbaikinya. Coba muat ulang beberapa saat lagi." },
+    "default": { "code": "500", "title": "Terjadi kesalahan.", "text": "Kami sedang memperbaikinya. Coba muat ulang beberapa saat lagi." }
+  }
+}

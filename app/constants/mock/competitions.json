@@ -1,14 +1,12 @@
 {
   "competitions": [
-    { "id": 1, "title": "Gemastik 2026", "host": "Kemdikti", "categories": ["Teknologi"], "deadline": "30 Nov 2026", "source": "https://gemastik.kemdikbud.go.id", "image": null, "status": "open", "about": "Ajang nasional untuk karya TIK mahasiswa dari berbagai bidang.", "teams": 14 },
-    { "id": 2, "title": "Hackathon Bali Digital", "host": "Pemprov Bali", "categories": ["Teknologi", "Bisnis"], "deadline": "12 Des 2026", "source": "https://example.org/bali-hack", "image": null, "status": "open", "about": "Hackathon 48 jam untuk solusi digital pariwisata.", "teams": 9 },
-    { "id": 3, "title": "Lomba Desain Antarmuka", "host": "Design Guild", "categories": ["Desain"], "deadline": "5 Des 2026", "source": "https://example.org/ui-contest", "image": null, "status": "open", "about": "Rancang pengalaman aplikasi mobile untuk layanan kampus.", "teams": 6 },
-    { "id": 4, "title": "Olimpiade Sains Mahasiswa", "host": "Dikti", "categories": ["Sains"], "deadline": "20 Okt 2026", "source": "https://example.org/osn", "image": null, "status": "closed", "about": "Kompetisi sains tingkat nasional.", "teams": 11 }
+    { "id": 1, "title": "GEMASTIK 2026", "host": "Kemdikbud", "label": "Kemdikbud · 2026", "categories": ["Pemrograman", "Mahasiswa"], "deadline": "15 Nov 2026", "teams": 3, "tint": "blue", "source": "https://gemastik.kemdikbud.go.id", "about": "Ajang nasional untuk karya teknologi informasi dan komunikasi mahasiswa dari berbagai bidang.", "image": null },
+    { "id": 2, "title": "Hackathon Nasional", "host": "Dicoding", "label": "Dicoding · 2026", "categories": ["Inovasi digital", "Mahasiswa"], "deadline": "20 Nov 2026", "teams": 2, "tint": "yellow", "source": "https://example.org/hackathon", "about": "Hackathon dua hari untuk solusi digital yang berdampak.", "image": null }
   ],
   "teams": [
-    { "id": 1, "competition": 1, "name": "Tim Garuda Kode", "idea": "Platform pembelajaran adaptif berbasis AI.", "leader": "Alviro Malvin Brine", "members": ["Alviro Malvin Brine", "Ayu Pratiwi", "Komang Adi"], "max": 5, "status": "open", "requests": [ { "id": 1, "name": "Rama Wijaya", "skill": "Python" } ] },
-    { "id": 2, "competition": 1, "name": "Bali Bytes", "idea": "Aplikasi pelaporan sampah warga.", "leader": "Dewi Lestari", "members": ["Dewi Lestari", "Sinta Dewi"], "max": 4, "status": "open", "requests": [] },
-    { "id": 3, "competition": 2, "name": "Segara Dev", "idea": "Dasbor kepadatan wisata.", "leader": "Rama Wijaya", "members": ["Rama Wijaya"], "max": 4, "status": "open", "requests": [] }
+    { "id": 1, "name": "Tim Garuda", "competition": "GEMASTIK 2026", "track": "Pengembangan perangkat lunak", "title": "Solusi digital untuk kampus berkelanjutan", "description": "Kami membangun platform pemantauan sampah kampus berbasis data. Mencari rekan yang suka menyusun model dan mengubah data menjadi keputusan yang berguna.", "members": [ { "name": "Bima Aditya", "role": "Pemilik tim", "cohort": 2023, "skills": ["Algoritma", "Pengembangan web"], "initials": "BA" }, { "name": "Ayu Pramesti", "role": "Anggota", "cohort": 2024, "skills": ["Desain UI", "Python"], "initials": "AP", "you": true } ], "capacity": 3, "needs": ["Python", "Data mining", "Visualisasi data"], "deadline": "20 Nov 2026", "joinStatus": "accepted", "joinedAt": "01 Nov 2026", "owner": "Bima Aditya", "ownerPhone": "+62 813 9876 5432" }
   ],
-  "myTeams": [ { "id": 1, "name": "Tim Garuda Kode", "competition": "Gemastik 2026", "role": "Ketua", "status": "inprogress" } ]
+  "joinRequests": [
+    { "id": 1, "name": "Citra Lestari", "meta": "Informatika · Angkatan 2024", "skills": ["Python", "Visualisasi data"], "message": "Saya ingin membantu bagian visualisasi data." }
+  ]
 }

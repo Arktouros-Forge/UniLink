@@ -1,33 +1,30 @@
 <script setup>
-import { verify as copy } from "@app/constants/auth.json";
-import { useAuthStore } from "@app/stores/auth";
+import { verify as copy, demoEmail } from "@app/constants/auth.json";
 
 definePageMeta({ layout: "auth" });
-const auth = useAuthStore();
 const cooldown = ref(60);
 let timer;
 onMounted(() => {
   timer = setInterval(() => (cooldown.value = Math.max(0, cooldown.value - 1)), 1000);
 });
 onBeforeUnmount(() => clearInterval(timer));
-const resend = () => (cooldown.value = 60);
 </script>
 
 <template>
-  <div class="flex flex-col gap-6">
+  <AuthFrame>
     <div class="flex flex-col gap-2">
-      <h1 class="type-h1">{{ copy.title }}</h1>
-      <p class="type-body">{{ copy.text }}</p>
+      <h1 class="t-d2 text-ink m-0 !text-[36px] !leading-[44px] md:!text-[40px] md:!leading-[48px]">{{ copy.title }}</h1>
+      <p class="t-body-s text-ink-2 m-0">{{ copy.text }}</p>
     </div>
-    <div class="card flex flex-col gap-3">
-      <span class="i-keyline-icons-mail text-3xl text-brand-blue" />
-      <h2 class="type-h3">{{ copy.cardTitle }}</h2>
-      <p class="type-body">{{ copy.cardText }} <strong class="text-ink">{{ auth.user.email }}</strong>.</p>
+    <UiCard class="flex gap-4" padding="p-5">
+      <UiIcon name="mail" size="text-3xl" class="text-blue" />
+      <p class="t-body-s text-ink m-0">{{ copy.sentTo }} <strong>{{ demoEmail }}</strong>.</p>
+    </UiCard>
+    <UiCallout :title="copy.noticeTitle">{{ copy.noticeText }}</UiCallout>
+    <div class="flex flex-wrap gap-3">
+      <UiButton to="/onboarding/1" icon-end="arrowRight">{{ copy.continue }}</UiButton>
+      <UiButton variant="secondary" :disabled="cooldown > 0" @click="cooldown = 60">{{ copy.resend }}{{ cooldown ? ` (${cooldown})` : "" }}</UiButton>
     </div>
-    <div class="card bg-soft flex flex-col gap-1"><p class="type-label">{{ copy.noticeTitle }}</p><p class="type-small">{{ copy.noticeText }}</p></div>
-    <button class="btn-primary btn-lg" :disabled="cooldown > 0" @click="resend">{{ copy.resend }}{{ cooldown ? ` (${cooldown})` : "" }}</button>
-    <NuxtLink to="/onboarding/1" class="btn-secondary btn-lg">Lanjut ke profil</NuxtLink>
-    <NuxtLink to="/auth/register" class="btn-ghost self-start">{{ copy.back }}</NuxtLink>
-    <p class="type-small">{{ copy.footnote }}</p>
-  </div>
+    <UiButton to="/auth/register" variant="link" class="self-start">{{ copy.change }}</UiButton>
+  </AuthFrame>
 </template>

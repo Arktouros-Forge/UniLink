@@ -1,10 +1,17 @@
+<script setup>
+import { workspace } from "@app/constants/site.json";
+
+const route = useRoute();
+</script>
+
 <template>
-  <div class="min-h-dvh bg-paper md:grid md:grid-cols-[232px_1fr]">
-    <SideNav class="hidden md:flex" nav="studentNav" />
-    <div class="flex flex-col min-h-dvh pb-20 md:pb-0">
-      <AppTopbar />
-      <main class="flex-1 px-5 py-6 md:px-10 md:py-8 max-w-[1200px] w-full mx-auto"><slot /></main>
+  <div class="min-h-dvh bg-paper md:flex">
+    <SidebarNav class="hidden md:flex" />
+    <div class="flex-1 min-w-0 flex flex-col pb-20 md:pb-0">
+      <MobileHeader />
+      <WorkspaceHeader :root="workspace.student" :page="route.meta.title || ''" />
+      <main class="flex-1 px-5 py-6 md:px-12 md:py-8 flex flex-col gap-6"><slot /></main>
     </div>
-    <MobileTabs class="md:hidden" />
+    <BottomNav />
   </div>
 </template>

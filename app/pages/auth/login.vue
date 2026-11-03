@@ -1,42 +1,68 @@
 <script setup>
-import { login as copy } from "@app/constants/auth.json";
+import { login as copy, demoEmail } from "@app/constants/auth.json";
 import { useAuthStore } from "@app/stores/auth";
 
 definePageMeta({ layout: "auth" });
 const auth = useAuthStore();
-const form = reactive({ email: "", password: "", remember: true });
+const form = reactive({ email: demoEmail, password: "", remember: false });
 const show = ref(false);
 const submit = () => {
-  auth.login({ email: form.email || undefined });
-  navigateTo("/student/dashboard");
+    auth.login();
+    navigateTo("/student/dashboard");
 };
 </script>
 
 <template>
-  <div class="flex flex-col gap-6">
-    <div class="flex flex-col gap-2">
-      <p class="type-meta">{{ copy.meta }}</p>
-      <h1 class="type-h1">{{ copy.title }}</h1>
-      <p class="type-body">{{ copy.text }}</p>
-    </div>
-    <form class="flex flex-col gap-4" @submit.prevent="submit">
-      <FormField :label="copy.email"><input v-model="form.email" type="email" class="field" autocomplete="email" /></FormField>
-      <FormField :label="copy.password">
-        <div class="relative">
-          <input v-model="form.password" :type="show ? 'text' : 'password'" class="field pr-12" autocomplete="current-password" />
-          <button type="button" class="absolute right-1 top-1 size-10 inline-flex items-center justify-center bg-transparent border-0 text-mute cursor-pointer" @click="show = !show">
-            <span :class="show ? 'i-keyline-icons-eye-off' : 'i-keyline-icons-eye'" class="text-xl" />
-          </button>
+    <AuthFrame>
+        <div class="flex flex-col gap-2">
+            <h1
+                class="t-d2 text-ink m-0 !text-[36px] !leading-[44px] md:!text-[40px] md:!leading-[48px]"
+            >
+                {{ copy.title }}
+            </h1>
+            <p class="t-body-s text-ink-2 m-0">{{ copy.text }}</p>
         </div>
-      </FormField>
-      <div class="flex items-center justify-between">
-        <label class="flex items-center gap-2 type-small"><input v-model="form.remember" type="checkbox" class="accent-[var(--blue)]" />{{ copy.remember }}</label>
-        <NuxtLink to="/auth/forgot" class="type-small !text-brand-blue">{{ copy.forgot }}</NuxtLink>
-      </div>
-      <button type="submit" class="btn-primary btn-lg">{{ copy.submit }}</button>
-    </form>
-    <div class="flex items-center gap-3"><span class="h-px flex-1 bg-edge" /><span class="type-meta">{{ copy.divider }}</span><span class="h-px flex-1 bg-edge" /></div>
-    <button class="btn-secondary btn-lg !text-ink"><span class="i-keyline-icons-globe" />{{ copy.google }}</button>
-    <p class="type-small text-center">{{ copy.prompt }} <NuxtLink to="/auth/register" class="!text-brand-blue font-medium">{{ copy.switch }}</NuxtLink></p>
-  </div>
+        <div class="gap-4 flex flex-col">
+            <form class="flex flex-col gap-4 pb-0" @submit.prevent="submit">
+                <FormField :label="copy.email" v-slot="{ id }"
+                    ><FormInput
+                        :id="id"
+                        v-model="form.email"
+                        type="email"
+                        icon="mail"
+                /></FormField>
+                <FormField :label="copy.password" v-slot="{ id }"
+                    ><FormInput
+                        :id="id"
+                        v-model="form.password"
+                        :type="show ? 'text' : 'password'"
+                        :icon="show ? 'eye' : 'eyeOff'"
+                        @icon="show = !show"
+                /></FormField>
+                <div class="flex items-center justify-between">
+                    <UiCheckbox
+                        v-model="form.remember"
+                        :label="copy.remember"
+                    />
+                    <NuxtLink to="/auth/forgot" class="t-body-s text-blue">{{
+                        copy.forgot
+                    }}</NuxtLink>
+                </div>
+                <UiButton type="submit" icon="arrowRight" class="self-start">{{
+                    copy.submit
+                }}</UiButton>
+            </form>
+
+            <UiDivider />
+            <UiButton variant="secondary" class="self-start"
+                >G · {{ copy.google }}</UiButton
+            >
+            <p class="t-body-s text-ink-2 m-0">
+                {{ copy.prompt }}
+                <NuxtLink to="/auth/register" class="text-ink"
+                    >{{ copy.switch }} →</NuxtLink
+                >
+            </p>
+        </div>
+    </AuthFrame>
 </template>

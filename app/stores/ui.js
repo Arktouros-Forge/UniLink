@@ -4,20 +4,17 @@ export const useUiStore = defineStore("ui", () => {
   const theme = ref("light");
   const sidebarOpen = ref(false);
 
-  const applyTheme = () => {
+  const apply = () => {
     if (import.meta.client) document.documentElement.classList.toggle("dark", theme.value === "dark");
   };
-
-  const toggleTheme = () => {
-    theme.value = theme.value === "dark" ? "light" : "dark";
-    applyTheme();
+  const setTheme = (value) => {
+    theme.value = value;
+    apply();
   };
-
+  const toggleTheme = () => setTheme(theme.value === "dark" ? "light" : "dark");
   const initTheme = () => {
-    if (!import.meta.client) return;
-    theme.value = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-    applyTheme();
+    if (import.meta.client) setTheme(window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
   };
 
-  return { theme, sidebarOpen, toggleTheme, initTheme };
+  return { theme, sidebarOpen, setTheme, toggleTheme, initTheme };
 });

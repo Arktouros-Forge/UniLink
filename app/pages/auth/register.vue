@@ -1,36 +1,27 @@
 <script setup>
 import { register as copy } from "@app/constants/auth.json";
-import { useAuthStore } from "@app/stores/auth";
 
 definePageMeta({ layout: "auth" });
-const auth = useAuthStore();
-const form = reactive({ email: "", password: "", confirm: "", agree: false });
-const mismatch = computed(() => form.confirm && form.confirm !== form.password);
-const valid = computed(() => form.email && form.password.length >= 8 && !mismatch.value && form.agree);
-const submit = () => {
-  if (!valid.value) return;
-  auth.login({ email: form.email, name: form.email.split("@")[0] });
-  navigateTo("/auth/verify-email");
-};
+const form = reactive({ name: "", email: "", password: "", agree: false });
+const valid = computed(() => form.name && form.email && form.password.length >= 8 && form.agree);
+const submit = () => valid.value && navigateTo("/auth/verify-email");
 </script>
 
 <template>
-  <div class="flex flex-col gap-6">
+  <AuthFrame>
     <div class="flex flex-col gap-2">
-      <h1 class="type-h1">{{ copy.title }}</h1>
-      <p class="type-body">{{ copy.text }}</p>
+      <h1 class="t-d2 text-ink m-0 !text-[36px] !leading-[44px] md:!text-[40px] md:!leading-[48px]">{{ copy.title }}</h1>
+      <p class="t-body-s text-ink-2 m-0">{{ copy.text }}</p>
     </div>
     <form class="flex flex-col gap-4" @submit.prevent="submit">
-      <FormField :label="copy.email"><input v-model="form.email" type="email" class="field" autocomplete="email" /></FormField>
-      <FormField :label="copy.password" :hint="copy.passwordHint"><input v-model="form.password" type="password" class="field" autocomplete="new-password" /></FormField>
-      <FormField :label="copy.confirm" :error="mismatch ? copy.confirmError : ''"><input v-model="form.confirm" type="password" class="field" autocomplete="new-password" /></FormField>
-      <label class="flex items-start gap-2 type-small">
-        <input v-model="form.agree" type="checkbox" class="mt-1 accent-[var(--blue)]" />
-        <span>{{ copy.terms }} <NuxtLink to="/terms" class="!text-brand-blue">{{ copy.termsLink }}</NuxtLink> {{ copy.and }} <NuxtLink to="/privacy" class="!text-brand-blue">{{ copy.privacyLink }}</NuxtLink> {{ copy.termsSuffix }}</span>
-      </label>
-      <button type="submit" class="btn-primary btn-lg" :disabled="!valid">{{ copy.submit }}</button>
+      <FormField :label="copy.name" v-slot="{ id }"><FormInput :id="id" v-model="form.name" icon="user" /></FormField>
+      <FormField :label="copy.email" v-slot="{ id }"><FormInput :id="id" v-model="form.email" type="email" icon="mail" /></FormField>
+      <FormField :label="copy.password" :hint="copy.passwordHint" v-slot="{ id }"><FormInput :id="id" v-model="form.password" type="password" icon="lock" /></FormField>
+      <UiCheckbox v-model="form.agree" :label="copy.terms" />
+      <UiButton type="submit" icon="arrowRight" :disabled="!valid" class="self-start">{{ copy.submit }}</UiButton>
     </form>
-    <button class="btn-secondary btn-lg !text-ink"><span class="i-keyline-icons-globe" />{{ copy.google }}</button>
-    <p class="type-small text-center">{{ copy.prompt }} <NuxtLink to="/auth/login" class="!text-brand-blue font-medium">{{ copy.switch }}</NuxtLink></p>
-  </div>
+    <UiDivider />
+    <UiButton variant="secondary" class="self-start">G · {{ copy.google }}</UiButton>
+    <p class="t-body-s text-ink-2 m-0">{{ copy.prompt }} <NuxtLink to="/auth/login" class="text-ink">{{ copy.switch }} →</NuxtLink></p>
+  </AuthFrame>
 </template>

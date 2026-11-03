@@ -22,6 +22,8 @@
       "@database/*": ["./server/database/*"],
       "@app": ["./app"],
       "@app/*": ["./app/*"],
+      "@components": ["./app/components"],
+      "@components/*": ["./app/components/*"],
     },
   },
 }

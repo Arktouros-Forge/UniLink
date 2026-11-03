@@ -1,18 +1,19 @@
 {
-  "requests": [
-    { "id": 1, "from": "Ayu Pratiwi", "topic": "Vue.js", "message": "Bisa belajar komposisi komponen bareng minggu ini?", "status": "pending", "expires": "5 hari lagi" },
-    { "id": 2, "from": "Komang Adi", "topic": "Basis Data", "message": "Butuh teman diskusi normalisasi tabel.", "status": "pending", "expires": "3 hari lagi" },
-    { "id": 3, "from": "Rama Wijaya", "topic": "Python", "message": "Ayo latihan soal kompetisi data.", "status": "accepted", "expires": "Selesai", "phone": "+6281200000003" }
+  "incoming": [
+    { "id": 1, "name": "Bima Aditya", "meta": "Python · Ulasan kode rekursi · 02 Nov · 09.10", "message": "Boleh bantu cek base case fungsi saya? Saya ingin memahami letak kesalahannya.", "status": "pending" },
+    { "id": 2, "name": "Citra Lestari", "meta": "Desain UI · Hierarki tampilan · 01 Nov · 16.40", "message": "Ingin berdiskusi tentang alur onboarding untuk proyek mata kuliah.", "status": "pending" },
+    { "id": 3, "name": "Dewa Ngurah", "meta": "Basis data", "message": "Diterima 01 Nov 2026 · Kontak sekarang tersedia.", "status": "accepted", "phone": "+62 812 7788 9900" }
   ],
-  "signs": [
-    { "id": 1, "title": "Butuh teman belajar Kalkulus 2", "skill": "Kalkulus", "status": "active", "expires": "9 hari lagi", "responses": 3 },
-    { "id": 2, "title": "Cari mentor Pitching deck", "skill": "Pitching", "status": "active", "expires": "12 hari lagi", "responses": 1 },
-    { "id": 3, "title": "Review UI aplikasi lomba", "skill": "UI Design", "status": "expired", "expires": "Kedaluwarsa", "responses": 5 }
+  "outgoing": [
+    { "id": 4, "name": "Bima Aditya", "meta": "Python · Rekursi · 30 Okt · 10.00", "message": "Menunggu tanggapan dari Bima.", "status": "pending" }
   ],
   "history": [
-    { "id": 1, "with": "Rama Wijaya", "topic": "Python", "status": "accepted", "date": "12 Okt 2026" },
-    { "id": 2, "with": "Sinta Dewi", "topic": "Pitching", "status": "declined", "date": "3 Okt 2026" },
-    { "id": 3, "with": "Dewi Lestari", "topic": "Kalkulus", "status": "expired", "date": "21 Sep 2026" }
+    { "id": 5, "name": "Dewa Ngurah", "meta": "Basis data · 01 Nov 2026", "message": "Selesai. Terima kasih sudah membantu.", "status": "accepted" },
+    { "id": 6, "name": "Citra Lestari", "meta": "Desain UI · 22 Okt 2026", "message": "Permintaan ditolak.", "status": "declined" }
   ],
-  "stats": { "pending": 2, "activeSigns": 2, "matches": 4 }
+  "signs": [
+    { "id": 1, "title": "Butuh bantuan Python rekursi", "skill": "Python", "detail": "Saya kesulitan menentukan base case.", "owner": "Ayu Pramesti", "status": "open", "expires": "14 hari lagi", "responses": 3 },
+    { "id": 2, "title": "Mencari teman diskusi Desain UI", "skill": "Desain UI", "detail": "Ingin membahas hierarki tampilan.", "owner": "Ayu Pramesti", "status": "open", "expires": "9 hari lagi", "responses": 1 },
+    { "id": 3, "title": "Latihan soal Basis data", "skill": "Basis data", "detail": "Normalisasi sampai 3NF.", "owner": "Dewa Ngurah", "status": "open", "expires": "6 hari lagi", "responses": 0 }
+  ]
 }

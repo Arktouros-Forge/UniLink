@@ -1,18 +1,31 @@
 <script setup>
-import { lecturers } from "@app/constants/mock/people.json";
-import { lecturer as schema } from "@app/constants/forms.json";
-import { useMock } from "@app/composables/useMock";
+import { lecturers, totals } from "@app/constants/mock/admin.json";
+import { useAdminCrud } from "@app/composables/useAdminCrud";
 
-definePageMeta({ layout: "admin", middleware: "auth" });
-const { pending } = useMock("admin-lecturers", { rows: lecturers });
-const rows = ref(lecturers.map((item) => ({ ...item })));
-const columns = [{ key: "name", label: "Nama" }, { key: "email", label: "Email" }, { key: "phone", label: "Telepon" }];
-const save = (row) => {
-  rows.value = row.id ? rows.value.map((item) => (item.id === row.id ? row : item)) : [{ ...row, id: Date.now() }, ...rows.value];
-};
-const remove = (row) => (rows.value = rows.value.filter((item) => item.id !== row.id));
+definePageMeta({ layout: "admin", middleware: "auth", title: "Dosen" });
+const fields = [
+  { key: "name", label: "Nama", required: true },
+  { key: "email", label: "Email", type: "email", required: true },
+  { key: "phone", label: "Nomor telepon" },
+  { key: "profile", label: "Profil", multiline: true },
+];
+const columns = [
+  { key: "name", label: "Nama", width: "1.4fr" },
+  { key: "email", label: "Email", width: "1.4fr" },
+  { key: "phone", label: "Telepon" },
+  { key: "courses", label: "Mata kuliah" },
+];
+const crud = useAdminCrud("admin-lecturers", lecturers, fields);
 </script>
 
 <template>
-  <AdminCrud id="admin-lecturers-table" title="Dosen" :columns="columns" :rows="rows" :schema="schema" add-label="Tambah dosen" :loading="pending" @save="save" @remove="remove" />
+  <AdminList
+    id="admin-lecturers-table" v-model:search="crud.search.value" title="Dosen" text="Kontak dosen tertaut ke jadwal kuliah mahasiswa."
+    add-label="Tambah dosen" noun="dosen" :columns="columns" :rows="crud.shown.value" :total="totals.lecturers" :loading="crud.pending.value"
+    :failed="crud.status.value === 'error'" @add="crud.add" @edit="crud.edit" @remove="crud.removing.value = $event" @retry="crud.refresh"
+  >
+    <template #cell-phone="{ value }"><span class="t-mono-s">{{ value }}</span></template>
+  </AdminList>
+  <EntityModal :open="crud.modalOpen.value" :title="crud.editing.value?.id ? 'Ubah dosen' : 'Tambah dosen'" :fields="fields" :initial="crud.editing.value || {}" @close="crud.modalOpen.value = false" @save="crud.save" />
+  <ConfirmModal :open="!!crud.removing.value" title="Hapus dosen?" text="Jadwal yang tertaut akan kehilangan nama dosen." @close="crud.removing.value = null" @confirm="crud.confirmRemove" />
 </template>

@@ -1,42 +1,61 @@
 <script setup>
-import { events } from "@app/constants/mock/planner.json";
-import { event as eventSchema } from "@app/constants/forms.json";
-import { days } from "@app/constants/options.json";
-import { timezoneLabel } from "@app/constants/site.json";
+import { events, weekDays, weekRange, hours } from "@app/constants/mock/planner.json";
+import { eventTypes } from "@app/constants/options.json";
+import { semesterFull } from "@app/constants/site.json";
 import { useMock } from "@app/composables/useMock";
 
-definePageMeta({ layout: "student", middleware: "auth" });
+definePageMeta({ layout: "student", middleware: "auth", title: "Jadwal mingguan" });
 const { pending } = useMock("timetable", { events });
-const items = ref(events.map((item) => ({ ...item })));
-const day = ref((new Date().getDay() + 6) % 7);
-const open = ref(false);
-const forDay = (index) => items.value.filter((item) => item.day === index).sort((a, b) => a.start.localeCompare(b.start));
-const remove = (item) => (items.value = items.value.filter((entry) => entry.id !== item.id));
-const add = (values) => {
-  items.value = [...items.value, { id: Date.now(), color: "blue", ...values }];
-  open.value = false;
+const list = ref(events.map((item) => ({ ...item })));
+const addOpen = ref(false);
+const detail = ref(null);
+const form = reactive({ title: "", day: 0, start: "08:00", end: "09:40", room: "", type: "kuliah" });
+const toneOf = { blue: "blue", red: "red", yellow: "yellow", success: "success" };
+const add = () => {
+  const [sh, sm] = form.start.split(":").map(Number);
+  const [eh, em] = form.end.split(":").map(Number);
+  list.value = [...list.value, { id: Date.now(), title: form.title, day: Number(form.day), start: sh + sm / 60, end: eh + em / 60, label: `${form.start.replace(":", ".")}-${form.end.replace(":", ".")}`, type: form.type, code: "", room: form.room, lecturer: "" }];
+  addOpen.value = false;
 };
 </script>
 
 <template>
-  <div class="flex flex-col gap-6">
-    <UiPageHead title="Jadwal" :text="`Semua waktu dalam ${timezoneLabel}.`" meta="Perencana">
-      <button class="btn-primary" @click="open = true"><span class="i-keyline-icons-plus" />Tambah kelas</button>
-    </UiPageHead>
-    <div class="flex gap-2 overflow-x-auto md:hidden">
-      <button v-for="(label, index) in days" :key="label" class="chip shrink-0 cursor-pointer" :class="day === index ? 'bg-brand-blue text-onbrand border-brand-blue' : 'bg-card border-edge text-ink'" @click="day = index">{{ label }}</button>
+  <PageHeading title="Jadwal mingguan" :text="`${semesterFull} · ${weekRange}`">
+    <UiButton icon="plus" @click="addOpen = true">Tambah acara</UiButton>
+  </PageHeading>
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-2">
+      <UiButton variant="link" icon="chevronLeft">Pekan lalu</UiButton>
+      <UiButton variant="secondary" size="sm" icon="calendar">Hari ini</UiButton>
+      <UiButton variant="link" icon-end="chevronRight">Pekan depan</UiButton>
     </div>
-    <AutoSkeleton :loading="pending" id="timetable-grid">
-      <div class="grid gap-4 md:grid-cols-5 xl:grid-cols-7">
-        <section v-for="(label, index) in days" :key="label" class="flex-col gap-3" :class="day === index ? 'flex' : 'hidden md:flex'">
-          <h2 class="type-meta border-b border-rule pb-2">{{ label }}</h2>
-          <EventItem v-for="item in forDay(index)" :key="item.id" :item="item" @remove="remove" />
-          <p v-if="!forDay(index).length" class="type-small">Tidak ada kelas.</p>
-        </section>
-      </div>
-    </AutoSkeleton>
-    <UiModal :open="open" title="Tambah kelas" @close="open = false">
-      <FieldsForm :schema="eventSchema" submit-label="Simpan" cancel-label="Batal" @submit="add" @cancel="open = false" />
-    </UiModal>
+    <div class="flex items-center gap-4"><UiButton variant="link" icon="upload">Impor</UiButton><UiButton variant="link" icon="download">Ekspor</UiButton></div>
   </div>
+  <AutoSkeleton :loading="pending" id="timetable-grid">
+    <TimetableGrid :days="weekDays" :hours="hours" :events="list" @select="detail = $event" />
+  </AutoSkeleton>
+  <div class="flex flex-wrap gap-3"><UiChip v-for="type in eventTypes" :key="type.value" :tone="type.value === 'kuliah' ? 'neutral' : toneOf[type.tone]" size="md">{{ type.label }}</UiChip></div>
+  <UiModal :open="!!detail" :title="detail?.title || ''" @close="detail = null">
+    <p class="t-mono-s text-ink m-0">{{ detail?.label }} · {{ detail?.code }}</p>
+    <p class="t-body-s text-ink m-0">Ruang {{ detail?.room }}</p>
+    <p v-if="detail?.lecturer" class="t-body-s text-ink-2 m-0">{{ detail.lecturer }}</p>
+    <template #footer>
+      <UiButton variant="dangerLink" @click="list = list.filter((item) => item.id !== detail.id); detail = null">Hapus</UiButton>
+      <UiButton variant="secondary" @click="detail = null">Tutup</UiButton>
+    </template>
+  </UiModal>
+  <UiModal :open="addOpen" title="Tambah acara" @close="addOpen = false">
+    <FormField label="Nama acara" v-slot="{ id }"><FormInput :id="id" v-model="form.title" /></FormField>
+    <FormField label="Jenis" v-slot="{ id }"><FormSelect :id="id" v-model="form.type" :options="eventTypes" /></FormField>
+    <FormField label="Hari" v-slot="{ id }"><FormSelect :id="id" v-model="form.day" :options="weekDays.map((day, index) => ({ value: index, label: day.label }))" /></FormField>
+    <div class="grid grid-cols-2 gap-3">
+      <FormField label="Mulai" v-slot="{ id }"><FormInput :id="id" v-model="form.start" type="time" /></FormField>
+      <FormField label="Selesai" v-slot="{ id }"><FormInput :id="id" v-model="form.end" type="time" /></FormField>
+    </div>
+    <FormField label="Ruang" optional v-slot="{ id }"><FormInput :id="id" v-model="form.room" /></FormField>
+    <template #footer>
+      <UiButton :disabled="!form.title" @click="add">Simpan</UiButton>
+      <UiButton variant="link" @click="addOpen = false">Batal</UiButton>
+    </template>
+  </UiModal>
 </template>

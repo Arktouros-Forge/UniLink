@@ -1,41 +1,17 @@
 {
   "me": {
-    "id": 1, "name": "Alviro Malvin Brine", "email": "alviro@student.unud.ac.id", "phone": "+6281234567890",
-    "major": "Teknik Informatika", "cohort": 2023, "role": "student",
-    "bio": "Suka membangun produk web dan belajar bareng.", "skills": [1, 2, 5]
+    "id": 1, "name": "Ayu Pramesti", "email": "ayu@unud.ac.id", "role": "student",
+    "major": "Informatika", "cohort": 2024, "nim": "2408561001", "phone": "+62 812 3456 7890",
+    "website": "https://ayupramesti.dev", "skills": ["Python", "Algoritma", "Desain UI"],
+    "bio": "Senang membuat produk web dan belajar bersama."
   },
-  "skills": [
-    { "id": 1, "name": "Vue.js", "users": 48 }, { "id": 2, "name": "UI Design", "users": 36 },
-    { "id": 3, "name": "Node.js", "users": 41 }, { "id": 4, "name": "Data Science", "users": 29 },
-    { "id": 5, "name": "Public Speaking", "users": 22 }, { "id": 6, "name": "Python", "users": 57 },
-    { "id": 7, "name": "Kalkulus", "users": 33 }, { "id": 8, "name": "Basis Data", "users": 38 },
-    { "id": 9, "name": "Penulisan Ilmiah", "users": 19 }, { "id": 10, "name": "Pitching", "users": 17 }
-  ],
-  "categories": [
-    { "id": 1, "name": "Teknologi", "count": 12 }, { "id": 2, "name": "Bisnis", "count": 8 },
-    { "id": 3, "name": "Desain", "count": 6 }, { "id": 4, "name": "Sains", "count": 5 },
-    { "id": 5, "name": "Karya Tulis", "count": 4 }
-  ],
-  "lecturers": [
-    { "id": 1, "name": "Dr. Ni Made Sari, M.Kom", "email": "made.sari@unud.ac.id", "phone": "+62361000111", "profile": "Basis data dan sistem informasi." },
-    { "id": 2, "name": "Prof. I Gede Arta, Ph.D", "email": "gede.arta@unud.ac.id", "phone": "+62361000222", "profile": "Kecerdasan buatan." },
-    { "id": 3, "name": "Dr. Kadek Wirawan, M.T", "email": "kadek.wirawan@unud.ac.id", "phone": "+62361000333", "profile": "Jaringan komputer." },
-    { "id": 4, "name": "Ir. Putu Ayu Lestari, M.Sc", "email": "putu.lestari@unud.ac.id", "phone": "+62361000444", "profile": "Rekayasa perangkat lunak." }
-  ],
+  "admin": { "id": 99, "name": "Dewa Ngurah", "email": "admin@unud.ac.id", "role": "admin" },
   "helpers": [
-    { "id": 1, "name": "Ayu Pratiwi", "major": "Sistem Informasi", "cohort": 2022, "bio": "Senang mengajar dasar pemrograman web.", "skills": ["Vue.js", "UI Design"], "match": 92 },
-    { "id": 2, "name": "Komang Adi", "major": "Teknik Informatika", "cohort": 2021, "bio": "Fokus backend dan basis data.", "skills": ["Node.js", "Basis Data"], "match": 86 },
-    { "id": 3, "name": "Dewi Lestari", "major": "Statistika", "cohort": 2023, "bio": "Analisis data dan kalkulus.", "skills": ["Data Science", "Kalkulus"], "match": 81 },
-    { "id": 4, "name": "Rama Wijaya", "major": "Teknik Informatika", "cohort": 2022, "bio": "Python untuk riset dan lomba.", "skills": ["Python", "Data Science"], "match": 77 },
-    { "id": 5, "name": "Sinta Dewi", "major": "Manajemen", "cohort": 2024, "bio": "Pitching dan presentasi bisnis.", "skills": ["Pitching", "Public Speaking"], "match": 72 },
-    { "id": 6, "name": "Bayu Saputra", "major": "Sastra Inggris", "cohort": 2021, "bio": "Penulisan ilmiah dan editing.", "skills": ["Penulisan Ilmiah"], "match": 68 }
+    { "id": 1, "name": "Bima Aditya", "major": "Informatika", "cohort": 2023, "skills": ["Python", "Algoritma", "Git"], "matched": ["Python", "Algoritma"], "bio": "Bisa membantu memahami konsep, meninjau kode, dan menyusun langkah penyelesaian.", "phone": "+62 813 9876 5432" },
+    { "id": 2, "name": "Citra Lestari", "major": "Informatika", "cohort": 2024, "skills": ["Python", "Algoritma", "Git"], "matched": ["Python", "Algoritma"], "bio": "Bisa membantu memahami konsep, meninjau kode, dan menyusun langkah penyelesaian.", "phone": "+62 811 2233 4455" },
+    { "id": 3, "name": "Dewa Ngurah", "major": "Informatika", "cohort": 2022, "skills": ["Python", "Basis data"], "matched": [], "bio": "Berpengalaman dengan basis data dan SQL.", "phone": "+62 812 7788 9900" }
   ],
-  "adminUsers": [
-    { "id": 1, "name": "Alviro Malvin Brine", "email": "alviro@student.unud.ac.id", "cohort": 2023, "status": "active" },
-    { "id": 2, "name": "Ayu Pratiwi", "email": "ayu@student.unud.ac.id", "cohort": 2022, "status": "active" },
-    { "id": 3, "name": "Komang Adi", "email": "komang@student.unud.ac.id", "cohort": 2021, "status": "active" },
-    { "id": 4, "name": "Dewi Lestari", "email": "dewi@student.unud.ac.id", "cohort": 2023, "status": "blocked" },
-    { "id": 5, "name": "Rama Wijaya", "email": "rama@student.unud.ac.id", "cohort": 2022, "status": "active" },
-    { "id": 6, "name": "Sinta Dewi", "email": "sinta@student.unud.ac.id", "cohort": 2024, "status": "active" }
-  ]
+  "skillOptions": ["Python", "Algoritma", "Desain UI", "Basis data", "Git", "Data mining", "Visualisasi data", "Pengembangan web", "Presentasi", "Statistika"],
+  "categoryOptions": ["Pemrograman", "Desain", "Komunikasi", "Inovasi digital", "Mahasiswa"],
+  "lecturerOptions": ["Dr. I Made Sudarma, M.Kom.", "Ni Luh Putu Sari, M.T.", "Prof. I Gede Arta, Ph.D."]
 }

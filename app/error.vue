@@ -1,18 +1,21 @@
 <script setup>
-import { notFound } from "@app/constants/site.json";
+import { errors } from "@app/constants/states.json";
 
-defineProps({ error: { type: Object, default: () => ({}) } });
-const goHome = () => clearError({ redirect: "/" });
+const props = defineProps({ error: { type: Object, default: () => ({}) } });
+const state = computed(() => errors[props.error.statusCode] || errors.default);
+const home = () => clearError({ redirect: "/" });
 </script>
 
 <template>
-  <div class="min-h-dvh bg-paper flex items-center justify-center px-5">
-    <div class="max-w-[520px] text-center flex flex-col items-center gap-5">
-      <UiLogo />
-      <p class="type-numeral">{{ error.statusCode || 404 }}</p>
-      <h1 class="type-h1">{{ notFound.title }}</h1>
-      <p class="type-body">{{ notFound.text }}</p>
-      <button class="btn-primary btn-lg" @click="goHome">{{ notFound.action }}</button>
-    </div>
+  <div class="min-h-dvh bg-paper flex flex-col">
+    <header class="h-16 md:h-[72px] px-5 md:px-16 flex items-center"><UiLogo /></header>
+    <main class="flex-1 flex items-center justify-center px-5 py-10">
+      <div class="max-w-[520px] flex flex-col gap-6">
+        <p class="t-serif-display text-ink m-0 !text-[96px] !leading-[96px] md:!text-[160px] md:!leading-[160px]">{{ state.code }}</p>
+        <h1 class="t-d2 text-ink m-0">{{ state.title }}</h1>
+        <p class="t-body-m text-ink-2 m-0">{{ state.text }}</p>
+        <div class="flex gap-3"><UiButton icon="home" @click="home">Kembali ke beranda</UiButton><UiButton variant="secondary" icon="refresh" @click="reloadNuxtApp()">Muat ulang</UiButton></div>
+      </div>
+    </main>
   </div>
 </template>

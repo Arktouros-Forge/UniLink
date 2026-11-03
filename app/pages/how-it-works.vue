@@ -3,28 +3,24 @@ import { steps, guide } from "@app/constants/landing.json";
 </script>
 
 <template>
-  <div class="wrap py-12 md:py-20 flex flex-col gap-10">
-    <div class="flex flex-col gap-3 max-w-[640px]">
-      <p class="type-meta">{{ guide.meta }}</p>
-      <h1 class="type-h1">{{ guide.title }}</h1>
-      <p class="type-lead">{{ guide.text }}</p>
+  <div class="container-app !max-w-[1440px] md:!px-20 py-12 md:py-20 flex flex-col gap-12">
+    <div class="flex flex-col gap-3 max-w-[720px]">
+      <h1 class="t-d2 text-ink m-0">{{ guide.title }}</h1>
+      <p class="t-body-l text-ink-2 m-0">{{ guide.text }}</p>
     </div>
-    <ol class="grid gap-4 md:grid-cols-2">
-      <li v-for="(step, index) in steps" :key="step.title" class="card !p-6 flex gap-5">
-        <span class="type-numeral !text-[48px]">{{ index + 1 }}</span>
-        <div class="flex flex-col gap-2">
-          <p class="type-meta">{{ guide.stepMeta[index] }}</p>
-          <h2 class="type-h3">{{ step.title }}</h2>
-          <p class="type-body">{{ step.text }}</p>
-        </div>
+    <ol class="grid gap-6 m-0 p-0 list-none md:grid-cols-2">
+      <li v-for="(step, index) in steps" :key="step.title">
+        <UiCard class="flex gap-6 h-full" hover>
+          <span class="t-serif-step text-ink">{{ String(index + 1).padStart(2, "0") }}</span>
+          <div class="flex flex-col gap-2">
+            <p class="t-mono-s text-ink-2 m-0">{{ step.meta }}</p>
+            <h2 class="t-d4 text-ink m-0">{{ step.title }}</h2>
+            <p class="t-body-m text-ink-2 m-0">{{ step.text }}</p>
+          </div>
+        </UiCard>
       </li>
     </ol>
-    <div class="card !p-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-brand-blue">
-      <div class="flex flex-col gap-1.5">
-        <h2 class="type-h3">{{ guide.consentTitle }}</h2>
-        <p class="type-body">{{ guide.consentText }}</p>
-      </div>
-      <NuxtLink to="/auth/register" class="btn-primary btn-lg">{{ guide.consentButton }}</NuxtLink>
-    </div>
+    <UiCallout :title="guide.consentTitle" tone="info">{{ guide.consentText }}</UiCallout>
+    <UiButton to="/auth/register" size="lg" icon-end="arrowRight" class="self-start">Daftar gratis</UiButton>
   </div>
 </template>

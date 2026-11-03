@@ -1,45 +1,177 @@
 <script setup>
-import { profile as profileSchema, contact as contactSchema } from "@app/constants/forms.json";
+import { years } from "@app/constants/options.json";
 import { useAuthStore } from "@app/stores/auth";
 import { useUiStore } from "@app/stores/ui";
-import { themeLabels } from "@app/constants/site.json";
 import { useMock } from "@app/composables/useMock";
 
-definePageMeta({ layout: "student", middleware: "auth" });
+definePageMeta({
+    layout: "student",
+    middleware: "auth",
+    title: "Pengaturan profil",
+});
 const auth = useAuthStore();
 const ui = useUiStore();
 const { pending } = useMock("settings", { user: auth.user }, 500);
-const picked = ref([...auth.user.skills]);
-const saved = ref(false);
-const save = (values) => {
-  auth.updateProfile({ ...values, skills: picked.value });
-  saved.value = true;
-  setTimeout(() => (saved.value = false), 2500);
-};
-const logout = () => {
-  auth.logout();
-  navigateTo("/auth/login");
+const tab = ref("profile");
+const form = reactive({
+    name: auth.user.name,
+    cohort: auth.user.cohort,
+    phone: auth.user.phone,
+    website: auth.user.website,
+    skills: [...auth.user.skills],
+});
+const dirty = ref(true);
+const save = () => {
+    auth.update({ ...form });
+    dirty.value = false;
 };
 </script>
 
 <template>
-  <div class="flex flex-col gap-6 max-w-[720px]">
-    <UiPageHead title="Pengaturan" text="Profil, keahlian, kontak, dan tampilan." meta="Akun" />
-    <div v-if="saved" class="card border-good flex gap-3"><span class="i-keyline-icons-circle-check text-2xl text-good" /><p class="type-label">Perubahan disimpan.</p></div>
-    <AutoSkeleton :loading="pending" id="settings-forms">
-      <section class="card flex flex-col gap-4">
-        <h2 class="type-h3">Profil</h2>
-        <FieldsForm :schema="[...profileSchema, ...contactSchema]" :initial="auth.user" submit-label="Simpan profil" @submit="save" />
-      </section>
-      <section class="card flex flex-col gap-4 mt-4">
-        <h2 class="type-h3">Keahlian</h2>
-        <SkillPicker v-model="picked" />
-      </section>
+    <PageHeading
+        :title="tab === 'profile' ? 'Pengaturan profil' : 'Pengaturan akun'"
+        text="Jaga profilmu tetap relevan untuk teman dan tim kampus."
+    />
+    <UiTabs
+        v-model="tab"
+        :items="[
+            { value: 'profile', label: 'Profil' },
+            { value: 'account', label: 'Akun dan tampilan' },
+        ]"
+    />
+    <AutoSkeleton :loading="pending" id="settings-body">
+        <div
+            v-if="tab === 'profile'"
+            class="grid gap-6 md:grid-cols-[1fr_256px] md:items-start"
+        >
+            <UiCard class="flex flex-col gap-5">
+                <div class="flex items-center gap-4">
+                    <UiAvatar :name="form.name" :size="56" />
+                    <div class="flex-1">
+                        <p class="t-label text-ink m-0">Foto profil</p>
+                        <p class="t-body-xs text-ink-2 m-0">
+                            JPG/PNG · Maks. 2 MB · Inisial
+                            {{
+                                auth.user.name
+                                    .split(" ")
+                                    .map((part) => part[0])
+                                    .join("")
+                            }}
+                            tanpa foto.
+                        </p>
+                    </div>
+                    <UiButton
+                        variant="secondary"
+                        icon="upload"
+                        class="hidden md:inline-flex"
+                        >Unggah foto</UiButton
+                    >
+                </div>
+                <div class="grid gap-4 md:grid-cols-2">
+                    <FormField label="Nama lengkap" v-slot="{ id }"
+                        ><FormInput
+                            :id="id"
+                            v-model="form.name"
+                            @input="dirty = true"
+                    /></FormField>
+                    <FormField label="Angkatan" v-slot="{ id }"
+                        ><FormSelect
+                            :id="id"
+                            v-model="form.cohort"
+                            :options="years"
+                    /></FormField>
+                    <FormField label="NIM · tidak tampil publik" v-slot="{ id }"
+                        ><FormInput
+                            :id="id"
+                            :model-value="auth.user.nim"
+                            icon="lock"
+                            locked
+                    /></FormField>
+                    <FormField label="Nomor WhatsApp" v-slot="{ id }"
+                        ><FormInput :id="id" v-model="form.phone" icon="phone"
+                    /></FormField>
+                </div>
+                <FormField label="Keahlian" v-slot="{ id }"
+                    ><SkillTags v-model="form.skills" :id="id"
+                /></FormField>
+                <FormField label="Website / portofolio" v-slot="{ id }"
+                    ><FormInput :id="id" v-model="form.website" icon="external"
+                /></FormField>
+                <div class="flex items-center justify-between gap-4">
+                    <p class="t-body-s text-ink-2 m-0">
+                        {{
+                            dirty
+                                ? "Perubahan belum disimpan."
+                                : "Semua perubahan tersimpan."
+                        }}
+                    </p>
+                    <UiButton @click="save">Simpan perubahan</UiButton>
+                </div>
+            </UiCard>
+            <div class="flex flex-col gap-4">
+                <UiCallout title="Profil publik kampus"
+                    >Nama, foto, angkatan, keahlian, dan website dapat dilihat
+                    mahasiswa Universitas Udayana.</UiCallout
+                >
+                <UiCard padding="p-5" class="flex flex-col gap-3">
+                    <h2 class="t-d4 text-ink m-0">Identitas tetap privat</h2>
+                    <p class="t-body-s text-ink-2 m-0">
+                        NIM tidak ditampilkan di profil teman belajar. Hubungi
+                        administrator untuk koreksi NIM.
+                    </p>
+                    <p class="t-body-s text-ink-2 m-0">
+                        Nomor WhatsApp hanya dibuka setelah permintaan diterima.
+                    </p>
+                    <UiButton
+                        variant="secondary"
+                        size="sm"
+                        to="/student/study-match/helpers/1"
+                        class="self-start"
+                        >Lihat profil saya</UiButton
+                    >
+                </UiCard>
+            </div>
+        </div>
+        <div v-else class="grid gap-6 md:grid-cols-[1fr_256px] md:items-start">
+            <UiCard class="flex flex-col gap-5">
+                <FormField label="Email" v-slot="{ id }"
+                    ><FormInput
+                        :id="id"
+                        :model-value="auth.user.email"
+                        icon="mail"
+                        locked
+                /></FormField>
+                <UiDivider />
+                <div class="flex items-center justify-between gap-4">
+                    <div>
+                        <p class="t-label text-ink m-0">Mode gelap</p>
+                        <p class="t-body-s text-ink-2 m-0">
+                            Ikuti tema perangkat atau pilih sendiri.
+                        </p>
+                    </div>
+                    <UiToggle
+                        :model-value="ui.theme === 'dark'"
+                        @update:model-value="
+                            ui.setTheme($event ? 'dark' : 'light')
+                        "
+                    />
+                </div>
+                <UiDivider />
+                <div class="flex items-center justify-between gap-4">
+                    <div>
+                        <p class="t-label text-ink m-0">Ubah kata sandi</p>
+                        <p class="t-body-s text-ink-2 m-0">
+                            Kami kirim tautan ke emailmu.
+                        </p>
+                    </div>
+                    <UiButton variant="secondary" to="/auth/forgot"
+                        >Kirim tautan</UiButton
+                    >
+                </div>
+            </UiCard>
+            <UiCallout title="Keluar dari semua perangkat" tone="info"
+                >Kamu bisa keluar dari sesi lain kapan saja.</UiCallout
+            >
+        </div>
     </AutoSkeleton>
-    <section class="card flex items-center justify-between gap-4">
-      <h2 class="type-h3">{{ ui.theme === "dark" ? themeLabels.dark : themeLabels.light }}</h2>
-      <UiThemeToggle />
-    </section>
-    <button class="btn-secondary self-start !text-brand-red" @click="logout"><span class="i-keyline-icons-log-out" />Keluar</button>
-  </div>
 </template>

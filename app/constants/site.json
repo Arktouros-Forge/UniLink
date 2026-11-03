@@ -1,29 +1,18 @@
 {
   "siteName": "UniLink",
-  "event": "TecFest 2026",
   "university": "Universitas Udayana",
-  "universityCity": "Bali",
-  "universityTag": "Universitas Udayana · Bali",
-  "campusLabel": "Ruang mahasiswa Udayana",
-  "slogan": "Dari kampus. Untuk sesama.",
+  "semester": "Semester ganjil",
+  "semesterFull": "Semester ganjil 2026/2027",
   "copyright": "© 2026 UniLink",
-  "timezoneLabel": "WITA",
+  "dataNote": "Data contoh",
+  "locale": "id-ID",
   "whatsappBase": "https://wa.me/",
-  "whatsappGreeting": "Halo, aku menghubungi lewat UniLink.",
-  "legal": [
+  "workspace": { "student": "Ruang mahasiswa", "admin": "Administrasi" },
+  "footerLinks": [
     { "label": "Privasi", "to": "/privacy" },
-    { "label": "Ketentuan", "to": "/terms" }
+    { "label": "Ketentuan", "to": "/terms" },
+    { "label": "Bantuan", "to": "/help" }
   ],
-  "roleLabels": { "student": "Mahasiswa", "admin": "Admin" },
-  "themeLabels": { "light": "Mode terang", "dark": "Mode gelap" },
-  "authPanel": {
-    "title": "Bangun koneksi, bukan sekadar daftar teman.",
-    "text": "Temukan teman belajar, bantu sesama, dan bentuk tim dari kampusmu sendiri.",
-    "meta": "UniLink · TecFest 2026"
-  },
-  "notFound": {
-    "title": "Halaman tidak ditemukan.",
-    "text": "Tautan yang kamu buka tidak tersedia atau sudah dipindahkan.",
-    "action": "Kembali ke beranda"
-  }
+  "roles": { "student": "Universitas Udayana", "admin": "Administrator" },
+  "logout": "Keluar"
 }

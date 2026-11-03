@@ -1,26 +1,22 @@
 <script setup>
-import { forgot as copy } from "@app/constants/auth.json";
+import { forgot as copy, demoEmail } from "@app/constants/auth.json";
 
 definePageMeta({ layout: "auth" });
-const email = ref("");
+const email = ref(demoEmail);
 const sent = ref(false);
 </script>
 
 <template>
-  <div class="flex flex-col gap-6">
+  <AuthFrame>
     <div class="flex flex-col gap-2">
-      <h1 class="type-h1">{{ copy.title }}</h1>
-      <p class="type-body">{{ copy.text }}</p>
+      <h1 class="t-d2 text-ink m-0 !text-[36px] !leading-[44px] md:!text-[40px] md:!leading-[48px]">{{ copy.title }}</h1>
+      <p class="t-body-s text-ink-2 m-0">{{ copy.text }}</p>
     </div>
-    <div v-if="sent" class="card border-good flex gap-3">
-      <span class="i-keyline-icons-circle-check text-2xl text-good" />
-      <div class="flex flex-col gap-1"><p class="type-label">{{ copy.noticeTitle }}</p><p class="type-small">{{ copy.noticeText }}</p></div>
-    </div>
+    <UiCallout v-if="sent" :title="copy.sentTitle" tone="info">{{ copy.sentText }}</UiCallout>
     <form class="flex flex-col gap-4" @submit.prevent="sent = true">
-      <FormField :label="copy.email"><input v-model="email" type="email" class="field" /></FormField>
-      <button type="submit" class="btn-primary btn-lg">{{ copy.submit }}</button>
+      <FormField :label="copy.email" v-slot="{ id }"><FormInput :id="id" v-model="email" type="email" icon="mail" /></FormField>
+      <UiButton type="submit" icon="arrowRight" class="self-start">{{ copy.submit }}</UiButton>
     </form>
-    <NuxtLink to="/auth/login" class="btn-ghost self-start"><span class="i-keyline-icons-arrow-left" />{{ copy.back }}</NuxtLink>
-    <p class="type-small">{{ copy.prompt }}</p>
-  </div>
+    <UiButton to="/auth/login" variant="link" icon="arrowLeft" class="self-start">{{ copy.back }}</UiButton>
+  </AuthFrame>
 </template>

@@ -1,15 +1,17 @@
 <script setup>
-import { initials } from "@app/utils/tone";
+import { initialsOf } from "@app/utils/format";
 
 defineProps({
   name: { type: String, required: true },
-  size: { type: String, default: "size-10" },
+  size: { type: Number, default: 40 },
+  tone: { type: String, default: "blue" },
 });
 </script>
 
 <template>
   <span
-    class="inline-flex items-center justify-center shrink-0 rounded-full bg-brand-yellow text-[#16151a] font-display font-bold text-sm border border-rule"
-    :class="size"
-  >{{ initials(name) }}</span>
+    class="inline-flex items-center justify-center shrink-0 rounded-full font-sans font-semibold"
+    :class="tone === 'neutral' ? 'bg-hairline text-blue' : 'bg-blue-soft text-blue'"
+    :style="{ width: `${size}px`, height: `${size}px`, fontSize: `${Math.max(11, Math.round(size * 0.3))}px` }"
+  >{{ initialsOf(name) }}</span>
 </template>

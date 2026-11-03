@@ -1,4 +1,3 @@
-import { fontEmitPlugin } from "./font-processor";
 import { fileURLToPath } from "node:url";
 
 export default defineNuxtConfig({
@@ -7,14 +6,14 @@ export default defineNuxtConfig({
     "@unocss/nuxt",
     "@pinia/nuxt",
     "nuxt-zod",
-    // "nuxt-charts",
+    "nuxt-charts",
     "auto-skeleton-vue/nuxt",
   ],
 
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
 
-  css: ["~/assets/styles/tokens.css", "~/assets/styles/base.css"],
+  css: ["~/assets/css/tokens.css", "~/assets/css/base.css"],
 
   components: [{ path: "~/components", pathPrefix: false }],
 
@@ -32,13 +31,6 @@ export default defineNuxtConfig({
     },
   },
 
-  hooks: {
-    "vite:extendConfig"(config, { isClient }) {
-      if (isClient) {
-        config.plugins?.push(fontEmitPlugin);
-      }
-    },
-  },
   nuxtZod: {
     zodVersion: "v4",
   },
@@ -50,5 +42,13 @@ export default defineNuxtConfig({
 
   autoSkeleton: {
     persist: true,
+  },
+
+  webpack: {
+    loaders: {
+      vue: {
+        hotReload: true,
+      },
+    },
   },
 });
