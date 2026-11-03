@@ -1,0 +1,19 @@
+{
+  "events": [
+    { "id": 1, "title": "Algoritma dan Pemrograman", "day": 0, "start": 8, "end": 9.67, "label": "08.00-09.40", "type": "kuliah", "code": "IF1234", "room": "A-204", "lecturer": "Dr. I Made Sudarma, M.Kom." },
+    { "id": 2, "title": "Basis data", "day": 2, "start": 10, "end": 11.67, "label": "10.00-11.40", "type": "praktikum", "code": "IF1250", "room": "Lab 2", "lecturer": "Ni Luh Putu Sari, M.T." },
+    { "id": 3, "title": "Statistika", "day": 4, "start": 12, "end": 13.67, "label": "12.00-11.40", "type": "diskusi", "code": "ST1100", "room": "B-101", "lecturer": "Prof. I Gede Arta, Ph.D." },
+    { "id": 4, "title": "Diskusi tim", "day": 1, "start": 14, "end": 15.67, "label": "14.00-11.40", "type": "pribadi", "code": "", "room": "Perpustakaan", "lecturer": "" }
+  ],
+  "tasks": [
+    { "id": 1, "title": "Latihan rekursi", "course": "IF1234 · Algoritma dan Pemrograman", "time": "23.59", "urgent": true, "group": "Besok · 03 Nov", "done": false },
+    { "id": 2, "title": "Ringkasan normalisasi", "course": "IF1250 · Basis data", "time": "23.59", "urgent": true, "group": "Besok · 03 Nov", "done": false },
+    { "id": 3, "title": "Prototipe alur onboarding", "course": "IF1270 · Interaksi manusia komputer", "time": "18.00", "urgent": false, "group": "Minggu ini · 06 Nov", "done": false },
+    { "id": 4, "title": "Laporan praktikum Python", "course": "IF1234 · Algoritma dan Pemrograman", "time": "18.00", "urgent": false, "group": "Minggu ini · 06 Nov", "done": false },
+    { "id": 5, "title": "Latihan sorting", "course": "IF1234 · Algoritma dan Pemrograman", "time": "Selesai", "urgent": false, "group": "Selesai minggu ini", "done": true }
+  ],
+  "courses": ["IF1234 · Algoritma", "IF1250 · Basis data", "IF1270 · Interaksi manusia komputer"],
+  "weekDays": [ { "label": "Sen 02", "today": true }, { "label": "Sel 03" }, { "label": "Rab 04" }, { "label": "Kam 05" }, { "label": "Jum 06" }, { "label": "Sab 07" }, { "label": "Min 08" } ],
+  "weekRange": "2–8 November 2026",
+  "hours": [8, 10, 12, 14]
+}

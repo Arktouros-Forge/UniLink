@@ -1,0 +1,18 @@
+{
+  "siteName": "UniLink",
+  "university": "Universitas Udayana",
+  "semester": "Semester ganjil",
+  "semesterFull": "Semester ganjil 2026/2027",
+  "copyright": "© 2026 UniLink",
+  "dataNote": "Data contoh",
+  "locale": "id-ID",
+  "whatsappBase": "https://wa.me/",
+  "workspace": { "student": "Ruang mahasiswa", "admin": "Administrasi" },
+  "footerLinks": [
+    { "label": "Privasi", "to": "/privacy" },
+    { "label": "Ketentuan", "to": "/terms" },
+    { "label": "Bantuan", "to": "/help" }
+  ],
+  "roles": { "student": "Universitas Udayana", "admin": "Administrator" },
+  "logout": "Keluar"
+}

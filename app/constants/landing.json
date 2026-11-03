@@ -1,0 +1,49 @@
+{
+  "hero": {
+    "tag": "Untuk mahasiswa Universitas Udayana",
+    "title": "Beda keahlian. Satu tujuan.",
+    "text": "Temukan teman belajar, bangun tim kompetisi, dan rapikan minggu kuliahmu. Kolaborasi dimulai dari hal yang bisa kamu bantu.",
+    "primary": "Mulai berkolaborasi",
+    "secondary": "Lihat cara kerja",
+    "note": "Gratis untuk mulai. Percakapan dilanjutkan di WhatsApp setelah permintaan diterima.",
+    "caption": "Ruang untuk saling melengkapi.",
+    "numeral": "01"
+  },
+  "sections": [
+    {
+      "numeral": "01",
+      "title": "Keahlianmu bisa jadi jawaban.",
+      "text": "Tandai apa yang kamu kuasai. Teman yang butuh bantuan menemukanmu lewat Study Match, atau kamu memasang tanda bantuan saat butuh tangan lain.",
+      "points": ["Cari teman berdasarkan keahlian dan angkatan", "Pasang tanda bantuan untuk topik yang sulit", "Nomor WhatsApp terbuka setelah permintaan diterima"],
+      "tone": "blue"
+    },
+    {
+      "numeral": "02",
+      "title": "Tim kompetisi, tanpa rebutan peran.",
+      "text": "Temukan kompetisi dari admin dan mahasiswa, bentuk tim, lalu undang anggota dengan keahlian yang masih dibutuhkan.",
+      "points": ["Informasi kompetisi lengkap dengan tautan resmi", "Tim tanpa hierarki peran, cukup kebutuhan keahlian", "Laporkan hasil setelah pengumuman"],
+      "tone": "red"
+    },
+    {
+      "numeral": "03",
+      "title": "Minggu kuliah yang tertata.",
+      "text": "Jadwal mingguan, dosen, dan tugas dalam satu tempat. Hanya kamu yang melihat tugasmu.",
+      "points": ["Jadwal mingguan dengan dosen tertaut", "Tugas dengan tenggat dan mata kuliah", "Impor dan ekspor jadwal"],
+      "tone": "yellow"
+    }
+  ],
+  "stepsTitle": "Cara kerja",
+  "steps": [
+    { "title": "Daftar dan lengkapi profil", "text": "Empat langkah singkat: identitas, keahlian, profil, tinjau.", "meta": "2 menit" },
+    { "title": "Cari atau pasang tanda", "text": "Dua arah: kamu mencari bantuan, atau teman menemukan tandamu.", "meta": "Study Match" },
+    { "title": "Lanjut di WhatsApp", "text": "Setelah diterima, nomor terbuka dan kalian lanjut ngobrol.", "meta": "Tanpa chat di aplikasi" },
+    { "title": "Bentuk tim, ikut kompetisi", "text": "Buat tim, terima anggota, dan laporkan hasilnya.", "meta": "Competition Match" }
+  ],
+  "cta": { "title": "Mulai dari satu langkah kecil.", "text": "Daftar gratis dengan email kampus dan temukan teman yang tepat.", "button": "Daftar gratis" },
+  "guide": {
+    "title": "Empat langkah, tanpa ribet.",
+    "text": "UniLink fokus mempertemukan orang yang tepat. Obrolan berlanjut di WhatsApp.",
+    "consentTitle": "Persetujuan dulu.",
+    "consentText": "Nomor telepon hanya dibagikan setelah kamu menerima permintaan."
+  }
+}

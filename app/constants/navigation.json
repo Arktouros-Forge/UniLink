@@ -1,0 +1,56 @@
+{
+  "publicNav": [
+    { "label": "Cara kerja", "to": "/how-it-works" },
+    { "label": "Kompetisi", "to": "/auth/login" }
+  ],
+  "publicActions": { "login": "Masuk", "register": "Daftar gratis" },
+  "studentNav": [
+    {
+      "label": "Utama",
+      "items": [
+        { "label": "Dasbor", "to": "/student/dashboard", "icon": "home" },
+        { "label": "Study Match", "to": "/student/study-match", "icon": "search" },
+        { "label": "Permintaan belajar", "to": "/student/study-match/requests", "icon": "book" }
+      ]
+    },
+    {
+      "label": "Komunitas",
+      "items": [
+        { "label": "Papan bantuan", "to": "/student/help-board", "icon": "flag" },
+        { "label": "Kompetisi", "to": "/student/competitions", "icon": "trophy" },
+        { "label": "Tim saya", "to": "/student/teams", "icon": "users" },
+        { "label": "Jadwal mingguan", "to": "/student/timetable", "icon": "calendar" },
+        { "label": "Tugas", "to": "/student/tasks", "icon": "checkCircle" }
+      ]
+    },
+    {
+      "label": "Akun",
+      "items": [{ "label": "Pengaturan", "to": "/student/settings", "icon": "settings" }]
+    }
+  ],
+  "adminNav": [
+    {
+      "label": "Utama",
+      "items": [
+        { "label": "Dasbor admin", "to": "/admin", "icon": "home" },
+        { "label": "Keahlian", "to": "/admin/skills", "icon": "tag" },
+        { "label": "Kategori", "to": "/admin/categories", "icon": "grid" }
+      ]
+    },
+    {
+      "label": "Komunitas",
+      "items": [
+        { "label": "Dosen", "to": "/admin/lecturers", "icon": "graduation" },
+        { "label": "Kompetisi", "to": "/admin/competitions", "icon": "trophy" },
+        { "label": "Pengguna", "to": "/admin/users", "icon": "users" }
+      ]
+    }
+  ],
+  "studentTabs": [
+    { "label": "Dasbor", "to": "/student/dashboard", "icon": "home" },
+    { "label": "Cari", "to": "/student/study-match", "icon": "search" },
+    { "label": "Kompetisi", "to": "/student/competitions", "icon": "trophy" },
+    { "label": "Jadwal", "to": "/student/timetable", "icon": "calendar" },
+    { "label": "Akun", "to": "/student/settings", "icon": "settings" }
+  ]
+}

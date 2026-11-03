@@ -1,0 +1,41 @@
+{
+  "stats": [
+    { "label": "Mahasiswa aktif", "value": "128", "trend": "+12 dari pekan lalu", "note": "Data contoh · bukan adopsi terverifikasi" },
+    { "label": "Permintaan diterima", "value": "42", "trend": "+8 dari pekan lalu", "note": "Data contoh · 26 Okt–1 Nov" },
+    { "label": "Kompetisi terbuka", "value": "08", "trend": "+2 dari pekan lalu", "note": "Data contoh · 02 Nov 2026" }
+  ],
+  "weekly": [ { "label": "Sen", "value": 38 }, { "label": "Sel", "value": 62 }, { "label": "Rab", "value": 46 }, { "label": "Kam", "value": 88 }, { "label": "Jum", "value": 64 }, { "label": "Sab", "value": 76 }, { "label": "Min", "value": 56 } ],
+  "accepted": [ { "label": "Sen", "value": 0 }, { "label": "Sel", "value": 8 }, { "label": "Rab", "value": 6 }, { "label": "Kam", "value": 18 }, { "label": "Jum", "value": 17 }, { "label": "Sab", "value": 28 }, { "label": "Min", "value": 34 } ],
+  "review": { "title": "Perlu ditinjau", "text": "2 kompetisi mahasiswa belum memiliki tautan resmi. 1 kontak dosen perlu diperbarui.", "action": "Tinjau kompetisi" },
+  "skills": [
+    { "id": 1, "name": "Python", "category": "Pemrograman", "usage": "84 profil", "created": "12 Okt 2026" },
+    { "id": 2, "name": "Algoritma", "category": "Pemrograman", "usage": "67 profil", "created": "12 Okt 2026" },
+    { "id": 3, "name": "Desain UI", "category": "Desain", "usage": "52 profil", "created": "13 Okt 2026" },
+    { "id": 4, "name": "Basis data", "category": "Pemrograman", "usage": "46 profil", "created": "13 Okt 2026" },
+    { "id": 5, "name": "Presentasi", "category": "Komunikasi", "usage": "29 profil", "created": "15 Okt 2026" }
+  ],
+  "categories": [
+    { "id": 1, "name": "Pemrograman", "skills": 14, "competitions": 6, "created": "10 Okt 2026" },
+    { "id": 2, "name": "Desain", "skills": 6, "competitions": 3, "created": "10 Okt 2026" },
+    { "id": 3, "name": "Komunikasi", "skills": 5, "competitions": 2, "created": "11 Okt 2026" },
+    { "id": 4, "name": "Inovasi digital", "skills": 4, "competitions": 4, "created": "12 Okt 2026" }
+  ],
+  "lecturers": [
+    { "id": 1, "name": "Dr. I Made Sudarma, M.Kom.", "email": "made.sudarma@unud.ac.id", "phone": "+62 361 701 001", "courses": 3 },
+    { "id": 2, "name": "Ni Luh Putu Sari, M.T.", "email": "putu.sari@unud.ac.id", "phone": "+62 361 701 002", "courses": 2 },
+    { "id": 3, "name": "Prof. I Gede Arta, Ph.D.", "email": "gede.arta@unud.ac.id", "phone": "+62 361 701 003", "courses": 4 }
+  ],
+  "competitions": [
+    { "id": 1, "title": "GEMASTIK 2026", "host": "Kemdikbud", "category": "Pemrograman", "deadline": "15 Nov 2026", "status": "Terbuka" },
+    { "id": 2, "title": "Hackathon Nasional", "host": "Dicoding", "category": "Inovasi digital", "deadline": "20 Nov 2026", "status": "Terbuka" },
+    { "id": 3, "title": "Lomba Desain Antarmuka", "host": "Design Guild", "category": "Desain", "deadline": "05 Des 2026", "status": "Tinjau" }
+  ],
+  "users": [
+    { "id": 1, "name": "Ayu Pramesti", "email": "ayu@unud.ac.id", "cohort": 2024, "status": "Aktif", "joined": "10 Okt 2026" },
+    { "id": 2, "name": "Bima Aditya", "email": "bima@unud.ac.id", "cohort": 2023, "status": "Aktif", "joined": "11 Okt 2026" },
+    { "id": 3, "name": "Citra Lestari", "email": "citra@unud.ac.id", "cohort": 2024, "status": "Aktif", "joined": "12 Okt 2026" },
+    { "id": 4, "name": "Rama Wijaya", "email": "rama@unud.ac.id", "cohort": 2022, "status": "Diblokir", "joined": "14 Okt 2026" }
+  ],
+  "pageSize": 5,
+  "totals": { "skills": 24, "categories": 8, "lecturers": 12, "competitions": 16, "users": 128 }
+}
