@@ -21,7 +21,7 @@ const signOut = () => {
     >
         <NuxtLink
             :to="admin ? '/admin' : '/student/dashboard'"
-            class="px-5 pt-8 pb-7 focus-ring"
+            class="px-5 pt-8 pb-7"
             ><UiLogo
         /></NuxtLink>
         <nav class="flex-1 overflow-y-auto flex flex-col pb-4">
@@ -37,7 +37,7 @@ const signOut = () => {
                     v-for="item in section.items"
                     :key="item.to"
                     :to="item.to"
-                    class="relative mx-5 mb-2 h-11 pl-3 pr-3 flex items-center gap-3 t-label transition-colors focus-ring"
+                    class="relative mx-5 mb-2 h-11 pl-3 pr-3 flex items-center gap-3 t-label transition-colors"
                     :class="
                         isActive(item.to)
                             ? 'bg-blue text-onblue'

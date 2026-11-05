@@ -1,10 +1,11 @@
-import { and, asc, count, eq, ilike, inArray, or } from "drizzle-orm";
+import { and, asc, count, eq, ilike, inArray, or, sql } from "drizzle-orm";
 
 import { db } from "@database/index";
-import { competitions, competitionCategories } from "@database/schema/index";
-import { categories } from "@database/schema/index";
-
-import { sql } from "drizzle-orm";
+import {
+  categories,
+  competitions,
+  competitionCategories,
+} from "@database/schema/index";
 
 export async function getCompetitions({ userId, q, categoryId, page, limit }) {
   const conditions = [
@@ -26,7 +27,9 @@ export async function getCompetitions({ userId, q, categoryId, page, limit }) {
 
   if (categoryId) {
     const matchingIds = db
-      .select({ competitionId: competitionCategories.competitionId })
+      .select({
+        competitionId: competitionCategories.competitionId,
+      })
       .from(competitionCategories)
       .where(eq(competitionCategories.categoryId, categoryId));
 
@@ -42,11 +45,16 @@ export async function getCompetitions({ userId, q, categoryId, page, limit }) {
         id: competitions.id,
         title: competitions.title,
         description: competitions.description,
+        deadline: competitions.deadline,
         maxTeamSize: competitions.maxTeamSize,
+        host: competitions.host,
         sourceUrl: competitions.sourceUrl,
         imageUrl: competitions.imageUrl,
         status: competitions.status,
+        createdBy: competitions.createdBy,
+        createdByRole: competitions.createdByRole,
         createdAt: competitions.createdAt,
+        updatedAt: competitions.updatedAt,
       })
       .from(competitions)
       .where(where)
