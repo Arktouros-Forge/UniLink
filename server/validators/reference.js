@@ -1,0 +1,56 @@
+import { z } from "zod";
+
+import {
+  nullableText,
+  optionalUrl,
+  pagination,
+  phone,
+  normalizePhone,
+  searchText,
+  trimmed,
+} from "./common.js";
+
+const partialOf = (schema) =>
+  schema
+    .partial()
+    .refine(
+      (d) => Object.keys(d).length > 0,
+      "Provide at least one field to update",
+    );
+
+export const referenceQuery = pagination(15, 100).extend({ q: searchText });
+
+export const forceQuery = z.object({
+  force: z
+    .enum(["true", "false"])
+    .default("false")
+    .transform((v) => v === "true"),
+});
+
+export const skillBody = z.object({
+  name: trimmed(2, 60),
+  description: nullableText(300),
+});
+export const skillPatch = partialOf(skillBody);
+
+export const categoryBody = z.object({
+  name: trimmed(2, 60),
+  description: nullableText(300),
+  color: z.string().regex(/^#[0-9a-fA-F]{6}$/, "Use a hex color like #1E3FA6"),
+});
+export const categoryPatch = partialOf(categoryBody);
+
+export const lecturerBody = z.object({
+  name: trimmed(3, 120),
+  email: z.email().max(200),
+  phone: phone.transform(normalizePhone).nullable().optional(),
+  nidn: z
+    .string()
+    .trim()
+    .regex(/^\d{8,12}$/, "NIDN must be 8-12 digits")
+    .nullable()
+    .optional(),
+  bio: nullableText(500),
+  profilePhotoUrl: optionalUrl,
+});
+export const lecturerPatch = partialOf(lecturerBody);
