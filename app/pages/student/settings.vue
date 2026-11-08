@@ -2,7 +2,6 @@
 import { years } from "@app/constants/options.json";
 import { useAuthStore } from "@app/stores/auth";
 import { useUiStore } from "@app/stores/ui";
-import { useMock } from "@app/composables/useMock";
 
 definePageMeta({
     layout: "student",
@@ -11,20 +10,43 @@ definePageMeta({
 });
 const auth = useAuthStore();
 const ui = useUiStore();
-const { pending } = useMock("settings", { user: auth.user }, 500);
+const api = useApi();
 const tab = ref("profile");
 const form = reactive({
     name: auth.user.name,
-    cohort: auth.user.cohort,
-    phone: auth.user.phone,
-    website: auth.user.website,
-    skills: [...auth.user.skills],
+    cohort: Number(auth.user.cohort),
+    phone: auth.user.phone ?? "",
+    website: auth.user.website ?? "",
+    skills: [...auth.user.skillIds],
 });
-const dirty = ref(true);
-const save = () => {
-    auth.update({ ...form });
-    dirty.value = false;
-};
+const dirty = ref(false);
+watch(form, () => (dirty.value = true));
+const pending = ref(false);
+
+const profile = useAction(
+    async () => {
+        await api.patch("/me", {
+            fullName: form.name,
+            year: String(form.cohort),
+            phone: form.phone,
+            personalWebsite: form.website || null,
+            skills: form.skills,
+        });
+        await auth.fetchMe({ force: true });
+        dirty.value = false;
+    },
+    { success: "Profil disimpan." },
+);
+
+const passwordForm = reactive({ currentPassword: "", newPassword: "" });
+const password = useAction(
+    async () => {
+        await api.patch("/me/password", { ...passwordForm });
+        passwordForm.currentPassword = "";
+        passwordForm.newPassword = "";
+    },
+    { success: "Kata sandi diperbarui." },
+);
 </script>
 
 <template>
@@ -68,11 +90,10 @@ const save = () => {
                     >
                 </div>
                 <div class="grid gap-4 md:grid-cols-2">
-                    <FormField label="Nama lengkap" v-slot="{ id }"
+                    <FormField label="Nama lengkap" :error="profile.fieldErrors.value.fullName" v-slot="{ id }"
                         ><FormInput
                             :id="id"
                             v-model="form.name"
-                            @input="dirty = true"
                     /></FormField>
                     <FormField label="Angkatan" v-slot="{ id }"
                         ><FormSelect
@@ -105,7 +126,7 @@ const save = () => {
                                 : "Semua perubahan tersimpan."
                         }}
                     </p>
-                    <UiButton @click="save">Simpan perubahan</UiButton>
+                    <UiButton :loading="profile.pending.value" :disabled="!dirty" @click="profile.run()">Simpan perubahan</UiButton>
                 </div>
             </UiCard>
             <div class="flex flex-col gap-4">
@@ -125,7 +146,7 @@ const save = () => {
                     <UiButton
                         variant="secondary"
                         size="sm"
-                        to="/student/study-match/helpers/1"
+                        :to="`/student/study-match/helpers/${auth.user.id}`"
                         class="self-start"
                         >Lihat profil saya</UiButton
                     >

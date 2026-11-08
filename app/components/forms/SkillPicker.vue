@@ -1,16 +1,15 @@
 <script setup>
-import { skillOptions } from "@app/constants/mock/people.json";
-
 const model = defineModel({ type: Array, default: () => [] });
-const toggle = (item) => {
-  model.value = model.value.includes(item) ? model.value.filter((entry) => entry !== item) : [...model.value, item];
+const { data: options } = await useSkillOptions();
+const toggle = (id) => {
+  model.value = model.value.includes(id) ? model.value.filter((entry) => entry !== id) : [...model.value, id];
 };
 </script>
 
 <template>
   <div class="flex flex-wrap gap-2">
-    <button v-for="item in skillOptions" :key="item" type="button" class="bg-transparent border-0 p-0 cursor-pointer" @click="toggle(item)">
-      <UiChip size="md" :outline="model.includes(item)" :icon="model.includes(item) ? 'check' : ''">{{ item }}</UiChip>
+    <button v-for="item in options" :key="item.id" type="button" class="bg-transparent border-0 p-0 cursor-pointer" @click="toggle(item.id)">
+      <UiChip size="md" :outline="model.includes(item.id)" :icon="model.includes(item.id) ? 'check' : ''">{{ item.name }}</UiChip>
     </button>
   </div>
 </template>

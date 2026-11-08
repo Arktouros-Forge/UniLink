@@ -9,9 +9,9 @@ const route = useRoute();
 const sections = computed(() => (props.admin ? adminNav : studentNav));
 const isActive = (to) =>
     route.path === to || (to !== "/admin" && route.path.startsWith(`${to}/`));
-const signOut = () => {
-    auth.logout();
-    navigateTo("/auth/login");
+const signOut = async () => {
+    await auth.logout();
+    await navigateTo("/auth/login");
 };
 </script>
 
@@ -55,10 +55,10 @@ const signOut = () => {
         </nav>
         <div class="px-5 pb-6 flex flex-col gap-4">
             <div class="flex items-center gap-3">
-                <UiAvatar :name="auth.user.name" :size="32" />
+                <UiAvatar :name="auth.user?.name ?? ''" :size="32" />
                 <div class="min-w-0">
                     <p class="t-body-s text-ink m-0 truncate">
-                        {{ auth.user.name }}
+                        {{ auth.user?.name }}
                     </p>
                     <p class="t-body-s text-ink-2 m-0 truncate">
                         {{ admin ? roles.admin : university }}

@@ -1,30 +1,41 @@
 <script setup>
-import { incoming, outgoing } from "@app/constants/mock/study.json";
-import { useMock } from "@app/composables/useMock";
+import { requests as copy, studyMatch } from "@app/constants/student.json";
 
 definePageMeta({ layout: "student", middleware: "auth", title: "Permintaan belajar" });
-const { pending } = useMock("requests", { incoming });
-const tab = ref("in");
-const rows = ref(incoming.map((item) => ({ ...item })));
+const api = useApi();
+const tab = ref("incoming");
+const { data, pending, refresh } = await useApiData("study-requests", "/student/study-match/requests", {
+    query: () => ({ box: tab.value, limit: 50 }),
+    default: () => ({ requests: [], counts: {} }),
+    watch: [tab],
+});
 const tabs = computed(() => [
-  { value: "in", label: "Masuk", count: rows.value.filter((item) => item.status === "pending").length },
-  { value: "out", label: "Keluar", count: outgoing.length },
+    { value: "incoming", label: copy.incoming, count: data.value.counts.pendingIncoming },
+    { value: "outgoing", label: copy.outgoing, count: data.value.counts.pendingOutgoing },
+    { value: "history", label: copy.history },
 ]);
-const setStatus = (item, status) => (rows.value = rows.value.map((row) => (row.id === item.id ? { ...row, status } : row)));
+watch(tab, (value) => value === "history" && navigateTo("/student/study-match/history"));
+
+const respond = (action, message) =>
+    useAction(async (item) => {
+        await api.patch(`/student/study-match/requests/${item.id}`, { action });
+        await refresh();
+    }, { success: message });
+const accept = respond("accept", studyMatch.accepted);
+const decline = respond("decline", studyMatch.declined);
+const cancel = respond("cancel", studyMatch.cancelled);
 </script>
 
 <template>
-  <PageHeading title="Permintaan belajar" text="Tanggapi dengan jelas. Belajar yang baik dimulai dari persetujuan.">
-    <UiButton variant="secondary" to="/student/study-match/history">Lihat riwayat</UiButton>
+  <PageHeading :title="copy.title" :text="copy.text">
+    <UiButton variant="secondary" to="/student/study-match/history">{{ copy.viewHistory }}</UiButton>
   </PageHeading>
-  <UiTabs v-model="tab" :items="[...tabs, { value: 'history', label: 'Riwayat' }]" @update:model-value="tab === 'history' && navigateTo('/student/study-match/history')" />
+  <UiTabs v-model="tab" :items="tabs" />
   <AutoSkeleton :loading="pending" id="requests-list">
     <div class="flex flex-col gap-4">
-      <template v-if="tab === 'in'">
-        <RequestRow v-for="item in rows" :key="item.id" :item="item" actions @accept="setStatus($event, 'accepted')" @decline="setStatus($event, 'declined')" />
-      </template>
-      <RequestRow v-for="item in tab === 'out' ? outgoing : []" :key="item.id" :item="item" />
+      <RequestRow v-for="item in data.requests" :key="item.id" :item="item" actions @accept="accept.run($event)" @decline="decline.run($event)" @cancel="cancel.run($event)" />
+      <UiEmpty v-if="!data.requests.length" :title="copy.emptyTitle" icon="inbox" />
     </div>
   </AutoSkeleton>
-  <UiCallout title="Tidak ada chat di UniLink.">Setelah diterima, diskusikan kebutuhan dan waktu belajar melalui WhatsApp. Nomor tidak dibuka untuk permintaan yang ditolak.</UiCallout>
+  <UiCallout :title="copy.noteTitle">{{ copy.noteText }}</UiCallout>
 </template>

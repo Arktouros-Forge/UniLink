@@ -1,54 +1,35 @@
 <script setup>
-import { signs } from "@app/constants/mock/study.json";
-import { skillOptions } from "@app/constants/mock/people.json";
-import { useMock } from "@app/composables/useMock";
+import { helpBoard as copy } from "@app/constants/student.json";
 
-definePageMeta({
-    layout: "student",
-    middleware: "auth",
-    title: "Papan bantuan",
-});
-const { pending } = useMock("help-board", { signs });
+definePageMeta({ layout: "student", middleware: "auth", title: "Papan bantuan" });
+const { data: skillOptions } = await useSkillOptions();
 const query = ref("");
+const debounced = useDebounced(query);
 const skill = ref("all");
-const skillFilter = [
-    { value: "all", label: "Semua keahlian" },
-    ...skillOptions.map((item) => ({ value: item, label: item })),
-];
-const list = computed(() =>
-    signs.filter(
-        (item) =>
-            item.title.toLowerCase().includes(query.value.toLowerCase()) &&
-            (skill.value === "all" || item.skill === skill.value),
-    ),
-);
+const page = ref(1);
+const skillFilter = computed(() => [{ value: "all", label: copy.allSkills }, ...skillOptions.value.map((item) => ({ value: item.id, label: item.name }))]);
+const { data, pending } = await useApiData("help-board", "/student/study-match/help-signs", {
+    query: () => ({ scope: "board", q: debounced.value || undefined, skillId: skill.value === "all" ? undefined : skill.value, page: page.value, limit: 8 }),
+    default: () => ({ signs: [], pagination: { totalPages: 1 } }),
+    watch: [debounced, skill, page],
+});
+watch([debounced, skill], () => (page.value = 1));
 </script>
 
 <template>
-    <PageHeading
-        title="Papan bantuan"
-        text="Tanda bantuan dari teman kampus. Tanggapi yang bisa kamu bantu."
-    >
-        <UiButton variant="secondary" to="/student/help-board/mine"
-            >Tanda saya</UiButton
-        >
-        <UiButton icon="plus" to="/student/help-board/new"
-            >Pasang tanda</UiButton
-        >
+    <PageHeading :title="copy.title" :text="copy.text">
+        <UiButton variant="secondary" to="/student/help-board/mine">{{ copy.mine }}</UiButton>
+        <UiButton icon="plus" to="/student/help-board/new">{{ copy.post }}</UiButton>
     </PageHeading>
     <div class="flex flex-col gap-3 md:flex-row md:items-center">
-        <SearchBar v-model="query" placeholder="Cari tanda bantuan..." />
+        <SearchBar v-model="query" :placeholder="copy.search" />
         <FilterSelect v-model="skill" :options="skillFilter" icon="filter" />
     </div>
     <AutoSkeleton :loading="pending" id="help-board-list">
         <div class="grid gap-6 md:grid-cols-2">
-            <HelpSignCard v-for="item in list" :key="item.id" :item="item" />
+            <HelpSignCard v-for="item in data.signs" :key="item.id" :item="item" />
         </div>
-        <UiEmpty
-            v-if="!list.length"
-            title="Belum ada tanda bantuan"
-            text="Pasang tandamu sendiri agar teman bisa menemukanmu."
-            icon="flag"
-        />
+        <UiEmpty v-if="!data.signs.length" :title="copy.emptyTitle" :text="copy.emptyText" icon="flag" />
     </AutoSkeleton>
+    <UiPagination v-if="data.pagination.totalPages > 1" v-model="page" :pages="data.pagination.totalPages" />
 </template>

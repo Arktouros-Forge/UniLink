@@ -1,62 +1,116 @@
 <script setup>
-import { teams } from "@app/constants/mock/competitions.json";
-import { whatsappBase } from "@app/constants/site.json";
-import { whatsappUrl } from "@app/utils/format";
-import { useMock } from "@app/composables/useMock";
+import { team as extras } from "@app/constants/mock/detail.json";
+import { teamDetail as copy, teams as teamCopy } from "@app/constants/student.json";
+import { useAuthStore } from "@app/stores/auth";
+import { formatDate } from "@app/utils/format";
 
-definePageMeta({ layout: "student", middleware: "auth", title: "Tim Garuda" });
+definePageMeta({ layout: "student", middleware: "auth", title: "Detail tim" });
+
 const route = useRoute();
-const team = computed(() => teams.find((entry) => entry.id === Number(route.params.id)) || teams[0]);
-const { pending } = useMock(`team-${route.params.id}`, { team: team.value });
+const api = useApi();
+const auth = useAuthStore();
+const { data: team, pending, refresh } = await useApiData(`team-${route.params.id}`, `/student/teams/${route.params.id}`, {
+  default: () => ({ name: "", members: [], maxMembers: 1 }),
+});
+
+const isOwner = computed(() => team.value.creatorId === auth.user.id);
 const reportOpen = ref(false);
-const result = ref("");
+const editOpen = ref(false);
+const leaveOpen = ref(false);
+const deleteOpen = ref(false);
+
+const accepted = computed(() => team.value.members.filter((member) => member.status === "accepted"));
+const capacity = computed(() => team.value.maxMembers ?? accepted.value.length);
+const slotsLeft = computed(() => capacity.value - accepted.value.length);
+const members = computed(() =>
+  accepted.value.map((member) => ({ ...member, id: member.userId, role: member.isCreator ? teamCopy.owner : teamCopy.memberRole, you: member.userId === auth.user.id })),
+);
+const owner = computed(() => members.value.find((member) => member.isCreator));
+const timeline = computed(() => extras.timeline);
+
+const saveResult = useAction(
+  async (value) => {
+    await api.patch(`/student/teams/${route.params.id}/result`, { result: value });
+    reportOpen.value = false;
+    await refresh();
+  },
+  { success: copy.resultSaved },
+);
+const saveTeam = useAction(
+  async (payload) => {
+    await api.patch(`/student/teams/${route.params.id}`, payload);
+    editOpen.value = false;
+    await refresh();
+  },
+  { success: copy.updated },
+);
+const leave = useAction(
+  async () => {
+    await api.del(`/student/teams/${route.params.id}/leave`);
+    leaveOpen.value = false;
+    await navigateTo("/student/teams");
+  },
+  { success: copy.left },
+);
+const remove = useAction(
+  async () => {
+    await api.del(`/student/teams/${route.params.id}`);
+    deleteOpen.value = false;
+    await navigateTo("/student/teams");
+  },
+  { success: copy.deleted },
+);
 </script>
 
 <template>
-  <PageHeading :title="team.name" :text="`${team.competition} / ${team.track}`">
-    <UiChip size="md">Kamu adalah anggota</UiChip>
+  <PageBack to="/student/teams">{{ copy.back }}</PageBack>
+  <PageHeading :title="team.name" :text="team.competitionTitle">
+    <UiChip size="md" tone="success">{{ isOwner ? copy.youOwner : copy.youMember }}</UiChip>
+    <UiButton v-if="isOwner" variant="secondary" icon="edit" @click="editOpen = true">{{ copy.edit }}</UiButton>
   </PageHeading>
   <AutoSkeleton :loading="pending" id="team-detail">
-    <div class="grid gap-6 md:grid-cols-[1fr_320px] md:items-start">
-      <div class="flex flex-col gap-6">
-        <UiCard class="flex flex-col gap-4">
-          <h2 class="t-d4 text-ink m-0">{{ team.title }}</h2>
-          <p class="t-body-m text-ink m-0">{{ team.description }}</p>
-          <div class="flex gap-2"><UiChip tone="yellow" filled>{{ team.members.length }} dari {{ team.capacity }} anggota</UiChip><UiChip>Menerima permintaan</UiChip></div>
-          <h3 class="t-d4 text-ink m-0">Keahlian yang masih dibutuhkan</h3>
-          <div class="flex flex-wrap gap-2"><UiChip v-for="need in team.needs" :key="need">{{ need }}</UiChip></div>
-          <UiDivider />
-          <h3 class="t-d4 text-ink m-0">Anggota tim</h3>
-          <MemberRow v-for="member in team.members" :key="member.name" :item="member" />
+    <DetailLayout>
+      <UiCard class="flex flex-col gap-4">
+        <p class="t-body-m text-ink m-0">{{ team.description }}</p>
+        <UiProgress :value="accepted.length" :max="capacity" :label="slotsLeft ? `${slotsLeft} ${copy.slots}` : copy.full" :tone="slotsLeft ? 'blue' : 'success'" />
+        <UiDivider />
+        <div class="flex items-center justify-between"><h3 class="t-d4 text-ink m-0">{{ copy.membersTitle }}</h3><RosterSlots :members="members" :capacity="capacity" :size="28" /></div>
+        <MemberRow v-for="member in members" :key="member.id" :item="member" />
+      </UiCard>
+
+      <UiCard class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div class="flex flex-col gap-2">
+          <h2 class="t-d4 text-ink m-0">{{ copy.resultTitle }}</h2>
+          <p class="t-body-s text-ink-2 m-0">{{ team.result === "unknown" ? extras.resultNote : copy.resultLabels[team.result] }}</p>
+        </div>
+        <UiButton variant="secondary" icon="flag" @click="reportOpen = true">{{ copy.report }}</UiButton>
+      </UiCard>
+
+      <UiCard v-if="isOwner" class="flex flex-col gap-3">
+        <h2 class="t-d4 text-ink m-0">{{ copy.zone }}</h2>
+        <p class="t-body-s text-ink-2 m-0">{{ copy.zoneText }}</p>
+        <UiButton variant="dangerLink" icon="trash" class="self-start" @click="deleteOpen = true">{{ copy.delete }}</UiButton>
+      </UiCard>
+
+      <template #aside>
+        <ContactCard v-if="owner" :name="owner.fullName" :url="owner.contact?.whatsappUrl" :locked-text="copy.lockedText" />
+        <UiCard v-if="isOwner" class="flex flex-col gap-3">
+          <h2 class="t-d4 text-ink m-0">{{ copy.requestsTitle }}</h2>
+          <p class="t-body-s text-ink-2 m-0">{{ copy.requestsText }}</p>
+          <UiButton variant="secondary" icon-end="arrowRight" :to="`/student/teams/${team.id}/requests`" class="self-start">{{ copy.open }}{{ team.pendingCount ? ` (${team.pendingCount})` : "" }}</UiButton>
         </UiCard>
-        <UiCard class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div class="flex flex-col gap-2"><h2 class="t-d4 text-ink m-0">Hasil kompetisi</h2><p class="t-body-s text-ink-2 m-0">Belum dilaporkan. Catat pencapaian tim setelah pengumuman.</p></div>
-          <UiButton variant="secondary" icon="flag" @click="reportOpen = true">Laporkan hasil</UiButton>
-        </UiCard>
-      </div>
-      <div class="flex flex-col gap-4">
+        <UiCard class="flex flex-col gap-2"><h2 class="t-d4 text-ink m-0">{{ copy.journey }}</h2><UiTimeline :items="timeline" /></UiCard>
         <UiCard class="flex flex-col gap-3">
-          <h2 class="t-d4 text-ink m-0">Permintaan bergabungmu</h2>
-          <UiChip class="self-start">Diterima · {{ team.joinedAt }}</UiChip>
-          <p class="t-body-s text-ink m-0">Bima menerima permintaanmu. Kamu sekarang anggota {{ team.name }}.</p>
-          <UiButton icon="external" :href="whatsappUrl(whatsappBase, team.ownerPhone)" class="self-start">WhatsApp Bima</UiButton>
-          <p class="t-mono-s text-ink m-0">{{ team.ownerPhone }}</p>
-          <p class="t-body-s text-ink-2 m-0">WhatsApp hanya terbuka bagi anggota yang diterima.</p>
+          <p class="t-mono-s text-ink m-0">{{ copy.deadline }} · {{ formatDate(team.competitionDeadline) }}</p>
+          <UiButton variant="link" icon="trophy" :to="`/student/competitions/${team.competitionId}`" class="self-start">{{ copy.viewCompetition }}</UiButton>
+          <UiButton v-if="!isOwner" variant="dangerLink" icon="logout" class="self-start" @click="leaveOpen = true">{{ copy.leave }}</UiButton>
         </UiCard>
-        <UiCallout title="Koordinasi di WhatsApp">UniLink tidak menyediakan chat tim. Sepakati pembagian peran langsung bersama anggota.</UiCallout>
-        <UiCard class="flex flex-col gap-3">
-          <p class="t-mono-s text-ink m-0">Tenggat · {{ team.deadline }}</p>
-          <UiButton variant="link" to="/student/competitions/1" class="self-start">Lihat kompetisi</UiButton>
-          <UiButton variant="link" to="/student/teams/1/requests" class="self-start">Permintaan bergabung</UiButton>
-        </UiCard>
-      </div>
-    </div>
+        <UiCallout :title="copy.whatsappTitle">{{ copy.whatsappText }}</UiCallout>
+      </template>
+    </DetailLayout>
   </AutoSkeleton>
-  <UiModal :open="reportOpen" title="Laporkan hasil" @close="reportOpen = false">
-    <FormField label="Hasil" v-slot="{ id }"><FormSelect :id="id" v-model="result" :options="['Juara', 'Berpartisipasi']" placeholder="Pilih hasil" /></FormField>
-    <template #footer>
-      <UiButton icon="check" :disabled="!result" @click="reportOpen = false">Kirim laporan</UiButton>
-      <UiButton variant="link" @click="reportOpen = false">Batal</UiButton>
-    </template>
-  </UiModal>
+  <ResultReportModal :open="reportOpen" :pending="saveResult.pending.value" @close="reportOpen = false" @save="saveResult.run($event)" />
+  <TeamFormModal :open="editOpen" :title="copy.edit" :initial="{ name: team.name, description: team.description, capacity: team.maxMembers }" :max-size="team.competitionMaxTeamSize ?? 50" :min-size="accepted.length" :pending="saveTeam.pending.value" :errors="saveTeam.fieldErrors.value" @close="editOpen = false" @save="saveTeam.run($event)" />
+  <ConfirmModal :open="leaveOpen" :title="copy.leaveTitle" :text="copy.leaveText" :action="copy.leave" @close="leaveOpen = false" @confirm="leave.run()" />
+  <ConfirmModal :open="deleteOpen" :title="copy.deleteTitle" :text="copy.deleteText" :action="copy.delete" @close="deleteOpen = false" @confirm="remove.run()" />
 </template>

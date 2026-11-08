@@ -21,6 +21,7 @@
     "auto-skeleton-vue": "1.0.1",
     "dotenv": "^18.0.9",
     "drizzle-orm": "^0.45.4",
+    "jose": "^6.2.15",
     "nuxt": "^4.6.3",
     "nuxt-charts": "^3.1.0",
     "nuxt-zod": "1.6.2",

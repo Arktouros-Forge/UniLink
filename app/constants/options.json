@@ -1,21 +1,130 @@
 {
-  "years": [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030],
-  "dayLabels": ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"],
+  "years": [
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026,
+    2027,
+    2028,
+    2029,
+    2030
+  ],
+  "dayLabels": [
+    "Sen",
+    "Sel",
+    "Rab",
+    "Kam",
+    "Jum",
+    "Sab",
+    "Min"
+  ],
   "eventTypes": [
-    { "value": "kuliah", "label": "Kuliah", "tone": "blue" },
-    { "value": "praktikum", "label": "Praktikum", "tone": "red" },
-    { "value": "diskusi", "label": "Diskusi", "tone": "yellow" },
-    { "value": "pribadi", "label": "Pribadi", "tone": "success" }
+    {
+      "value": "kuliah",
+      "label": "Kuliah",
+      "tone": "blue"
+    },
+    {
+      "value": "praktikum",
+      "label": "Praktikum",
+      "tone": "red"
+    },
+    {
+      "value": "diskusi",
+      "label": "Diskusi",
+      "tone": "yellow"
+    },
+    {
+      "value": "pribadi",
+      "label": "Pribadi",
+      "tone": "success"
+    }
   ],
   "sortOptions": [
-    { "value": "newest", "label": "Terbaru" },
-    { "value": "oldest", "label": "Terlama" }
+    {
+      "value": "newest",
+      "label": "Terbaru"
+    },
+    {
+      "value": "oldest",
+      "label": "Terlama"
+    }
   ],
   "onboarding": [
-    { "title": "Identitas", "text": "Kenalkan dirimu dengan nama dan angkatan." },
-    { "title": "Keahlian", "text": "Pilih keahlian yang bisa kamu bantu atau ingin dipelajari." },
-    { "title": "Profil", "text": "Tulis profil singkat dan nomor WhatsApp." },
-    { "title": "Tinjau profil", "text": "Periksa sebelum mulai. Kamu bisa mengubahnya kapan saja." }
+    {
+      "title": "Identitas",
+      "text": "Kenalkan dirimu dengan nama dan angkatan."
+    },
+    {
+      "title": "Keahlian",
+      "text": "Pilih keahlian yang bisa kamu bantu atau ingin dipelajari."
+    },
+    {
+      "title": "Profil",
+      "text": "Tulis profil singkat dan nomor WhatsApp."
+    },
+    {
+      "title": "Tinjau profil",
+      "text": "Periksa sebelum mulai. Kamu bisa mengubahnya kapan saja."
+    }
   ],
-  "limits": { "pending": 5, "perDay": 20, "activeSigns": 3, "signsPerWeek": 3, "signDays": 14, "requestDays": 7 }
+  "limits": {
+    "pending": 5,
+    "perDay": 20,
+    "activeSigns": 3,
+    "signsPerWeek": 3,
+    "signDays": 14,
+    "requestDays": 7
+  },
+  "teamResults": [
+    {
+      "value": "won",
+      "label": "Juara / menang"
+    },
+    {
+      "value": "lost",
+      "label": "Belum berhasil"
+    },
+    {
+      "value": "unknown",
+      "label": "Belum diumumkan"
+    }
+  ],
+  "competitionSort": [
+    {
+      "value": "deadline",
+      "label": "Tenggat terdekat"
+    },
+    {
+      "value": "newest",
+      "label": "Terbaru"
+    },
+    {
+      "value": "popular",
+      "label": "Paling diminati"
+    }
+  ],
+  "timetableHours": [
+    7,
+    9,
+    11,
+    13,
+    15,
+    17,
+    19
+  ],
+  "dayShort": [
+    "Sen",
+    "Sel",
+    "Rab",
+    "Kam",
+    "Jum",
+    "Sab",
+    "Min"
+  ]
 }

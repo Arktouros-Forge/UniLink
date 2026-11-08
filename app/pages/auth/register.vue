@@ -1,12 +1,21 @@
 <script setup>
 import { register as copy } from "@app/constants/auth.json";
+import { useAuthStore } from "@app/stores/auth";
 
-definePageMeta({ layout: "auth" });
+definePageMeta({ layout: "auth", middleware: "guest" });
+const auth = useAuthStore();
 const form = reactive({ name: "", email: "", password: "", agree: false });
 const valid = computed(
     () => form.name && form.email && form.password.length >= 8 && form.agree,
 );
-const submit = () => valid.value && navigateTo("/auth/verify-email");
+const { run, pending, fieldErrors, error } = useAction(
+    async () => {
+        await auth.register({ name: form.name, email: form.email, password: form.password });
+        await navigateTo("/auth/verify-email");
+    },
+    { success: copy.created, silent: true },
+);
+const submit = () => valid.value && run();
 </script>
 
 <template>
@@ -20,10 +29,10 @@ const submit = () => valid.value && navigateTo("/auth/verify-email");
             <p class="t-body-s text-ink-2 m-0">{{ copy.text }}</p>
         </div>
         <form class="flex flex-col gap-4" @submit.prevent="submit">
-            <FormField :label="copy.name" v-slot="{ id }"
+            <FormField :label="copy.name" :error="fieldErrors.name" v-slot="{ id }"
                 ><FormInput :id="id" v-model="form.name" icon="user"
             /></FormField>
-            <FormField :label="copy.email" v-slot="{ id }"
+            <FormField :label="copy.email" :error="fieldErrors.email" v-slot="{ id }"
                 ><FormInput
                     :id="id"
                     v-model="form.email"
@@ -33,6 +42,7 @@ const submit = () => valid.value && navigateTo("/auth/verify-email");
             <FormField
                 :label="copy.password"
                 :hint="copy.passwordHint"
+                :error="fieldErrors.password"
                 v-slot="{ id }"
                 ><FormInput
                     :id="id"
@@ -41,10 +51,12 @@ const submit = () => valid.value && navigateTo("/auth/verify-email");
                     icon="lock"
             /></FormField>
             <UiCheckbox v-model="form.agree" :label="copy.terms" />
+            <UiCallout v-if="error && !Object.keys(fieldErrors).length" tone="danger">{{ error.message }}</UiCallout>
             <UiButton
                 type="submit"
                 icon="arrowRight"
                 :disabled="!valid"
+                :loading="pending"
                 class="self-start"
                 >{{ copy.submit }}</UiButton
             >

@@ -1,13 +1,25 @@
 <script setup>
-import { stats, weekly, accepted, review } from "@app/constants/mock/admin.json";
-import { useMock } from "@app/composables/useMock";
+import { admin } from "@app/constants/student.json";
 
+const copy = admin.dash;
 definePageMeta({ layout: "admin", middleware: "auth", title: "Dasbor admin" });
-const { pending } = useMock("admin-dashboard", { stats }, 800);
+const { data, pending } = await useApiData("admin-dashboard", "/admin/dashboard", {
+  default: () => ({ totals: {}, signups: [], requestStatus: [] }),
+});
+
+const pad = (value) => String(value ?? 0).padStart(2, "0");
+const stats = computed(() => [
+  { label: copy.students, value: pad(data.value.totals.students), trend: `${data.value.totals.activeWeek ?? 0} ${copy.activeWeek}` },
+  { label: copy.competitions, value: pad(data.value.totals.openCompetitions), trend: `${data.value.totals.competitions ?? 0} total` },
+  { label: copy.requests, value: pad(data.value.totals.requests), trend: `${data.value.totals.teams ?? 0} ${copy.teams}` },
+]);
+const monthLabel = (month) => new Intl.DateTimeFormat("id-ID", { month: "short" }).format(new Date(`${month}-01`));
+const signups = computed(() => data.value.signups.map((row) => ({ label: monthLabel(row.month), value: row.count })));
+const statuses = computed(() => data.value.requestStatus.map((row) => ({ label: copy.statusLabels[row.status] ?? row.status, value: row.count })));
 </script>
 
 <template>
-  <PageHeading title="Dasbor admin" text="Ringkasan operasional · seluruh angka merupakan data contoh." />
+  <PageHeading :title="copy.title" :text="copy.text" />
   <AutoSkeleton :loading="pending" id="admin-stats">
     <div class="grid gap-4 md:grid-cols-3 md:gap-6">
       <StatCard v-for="item in stats" :key="item.label" v-bind="item" />
@@ -16,18 +28,18 @@ const { pending } = useMock("admin-dashboard", { stats }, 800);
   <AutoSkeleton :loading="pending" id="admin-charts">
     <div class="grid gap-6 md:grid-cols-2">
       <UiCard class="flex flex-col gap-6">
-        <div class="flex items-center justify-between"><h2 class="t-d4 text-ink m-0">Aktivitas mingguan</h2><UiChip>Data ilustratif</UiChip></div>
-        <ChartBars :rows="weekly" />
+        <h2 class="t-d4 text-ink m-0">{{ copy.signups }}</h2>
+        <ChartBars v-if="signups.length" :rows="signups" />
       </UiCard>
       <UiCard class="flex flex-col gap-6">
-        <div class="flex items-center justify-between"><h2 class="t-d4 text-ink m-0">Permintaan diterima</h2><UiChip>Data ilustratif</UiChip></div>
-        <ChartStep :rows="accepted" />
+        <h2 class="t-d4 text-ink m-0">{{ copy.status }}</h2>
+        <ChartBars v-if="statuses.length" :rows="statuses" />
       </UiCard>
     </div>
   </AutoSkeleton>
   <UiCard class="flex flex-col gap-4">
-    <h2 class="t-d4 text-ink m-0">{{ review.title }}</h2>
-    <p class="t-body-s text-ink m-0">{{ review.text }}</p>
-    <UiButton variant="link" icon-end="arrowRight" to="/admin/competitions" class="self-start">{{ review.action }}</UiButton>
+    <h2 class="t-d4 text-ink m-0">{{ copy.reviewTitle }}</h2>
+    <p class="t-body-s text-ink m-0">{{ copy.reviewText }}</p>
+    <UiButton variant="link" icon-end="arrowRight" to="/admin/competitions" class="self-start">{{ copy.reviewAction }}</UiButton>
   </UiCard>
 </template>

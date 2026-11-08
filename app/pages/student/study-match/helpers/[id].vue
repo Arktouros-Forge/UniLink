@@ -1,33 +1,64 @@
 <script setup>
-import { helpers } from "@app/constants/mock/people.json";
+import { helper as extras } from "@app/constants/mock/detail.json";
 import { university } from "@app/constants/site.json";
-import { useMock } from "@app/composables/useMock";
+import { helperDetail as copy } from "@app/constants/student.json";
 
 definePageMeta({ layout: "student", middleware: "auth", title: "Profil teman belajar" });
+
 const route = useRoute();
-const helper = computed(() => helpers.find((item) => item.id === Number(route.params.id)) || helpers[0]);
-const { pending } = useMock(`helper-${route.params.id}`, { helper: helper.value });
+const api = useApi();
+const { data: helper, pending, refresh } = await useApiData(`helper-${route.params.id}`, `/student/users/${route.params.id}`, {
+  default: () => ({ fullName: "", skills: [], stats: {}, relation: null, contact: null }),
+});
+
+const stats = computed(() => [
+  { label: copy.stats.helped, value: String(helper.value.stats.helped ?? 0) },
+  { label: copy.stats.teams, value: String(helper.value.stats.teams ?? 0) },
+  { label: copy.stats.skills, value: String(helper.value.skills.length) },
+  { label: copy.stats.year, value: String(helper.value.year ?? "") },
+]);
+const status = computed(() => helper.value.relation?.status ?? "none");
 const open = ref(false);
+
+const sent = async () => {
+  open.value = false;
+  await refresh();
+};
+const { run: cancel } = useAction(
+  async () => {
+    await api.patch(`/student/study-match/requests/${helper.value.relation.id}`, { action: "cancel" });
+    await refresh();
+  },
+  { success: copy.cancelled },
+);
 </script>
 
 <template>
-  <UiButton to="/student/study-match" variant="link" icon="arrowLeft" class="self-start">Study Match</UiButton>
+  <PageBack to="/student/study-match">Study Match</PageBack>
   <AutoSkeleton :loading="pending" id="helper-profile">
-    <div class="grid gap-6 md:grid-cols-[1fr_320px] md:items-start">
+    <DetailLayout>
       <UiCard class="flex flex-col gap-5">
-        <div class="flex items-center gap-4">
-          <UiAvatar :name="helper.name" :size="72" />
-          <div>
-            <h1 class="t-d3 text-ink m-0">{{ helper.name }}</h1>
-            <p class="t-body-s text-ink-2 m-0">{{ helper.major }} · Angkatan {{ helper.cohort }} · {{ university }}</p>
-          </div>
-        </div>
+        <ProfileHeader :name="helper.fullName" :meta="`${helper.major ?? ''} · Angkatan ${helper.year} · ${university}`">
+          <UiChip tone="success" icon="clock">{{ extras.available }}</UiChip>
+          <template #actions>
+            <UiButton v-if="!['pending', 'accepted'].includes(status)" icon="userPlus" @click="open = true">Minta bantuan</UiButton>
+            <template v-else-if="status === 'pending'"><UiChip tone="yellow" size="md">Menunggu jawaban</UiChip><UiButton variant="dangerLink" @click="cancel()">Batalkan</UiButton></template>
+          </template>
+        </ProfileHeader>
         <p class="t-body-m text-ink m-0">{{ helper.bio }}</p>
-        <div class="flex flex-wrap gap-2"><UiChip v-for="skill in helper.skills" :key="skill" size="md">{{ skill }}</UiChip></div>
-        <UiButton icon="userPlus" class="self-start" @click="open = true">Minta bantuan</UiButton>
+        <StatStrip :items="stats" />
+        <div class="flex flex-col gap-2">
+          <h2 class="t-d4 text-ink m-0">Keahlian</h2>
+          <div class="flex flex-wrap gap-2"><UiChip v-for="skill in helper.skills" :key="skill.id" size="md">{{ skill.name }}</UiChip></div>
+                  </div>
       </UiCard>
-      <UiCallout title="Nomor tetap privat" tone="info">Nomor WhatsApp hanya terbuka setelah permintaanmu diterima.</UiCallout>
-    </div>
+
+      
+      <template #aside>
+        <ContactCard :name="helper.fullName" :url="helper.contact?.whatsappUrl" />
+        <UiCallout title="Etika meminta bantuan" tone="info"><ul class="m-0 pl-4 flex flex-col gap-1"><li v-for="rule in extras.guidelines" :key="rule">{{ rule }}</li></ul></UiCallout>
+      </template>
+    </DetailLayout>
   </AutoSkeleton>
-  <RequestHelpModal :open="open" :helper="helper" @close="open = false" @sent="open = false" />
+  <RequestHelpModal :open="open" :helper="helper" @close="open = false" @sent="sent" />
 </template>

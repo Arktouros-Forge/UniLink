@@ -1,19 +1,21 @@
 <script setup>
-import { history } from "@app/constants/mock/study.json";
-import { useMock } from "@app/composables/useMock";
+import { history as copy } from "@app/constants/student.json";
 
 definePageMeta({ layout: "student", middleware: "auth", title: "Riwayat belajar" });
-const { pending } = useMock("history", { history });
+const { data, pending } = await useApiData("study-history", "/student/study-match/history", {
+  query: { limit: 50 },
+  default: () => ({ history: [] }),
+});
 </script>
 
 <template>
-  <PageHeading title="Riwayat belajar" text="Semua permintaan yang pernah kamu kirim atau terima.">
-    <UiButton variant="secondary" to="/student/study-match/requests">Kembali ke permintaan</UiButton>
+  <PageHeading :title="copy.title" :text="copy.text">
+    <UiButton variant="secondary" to="/student/study-match/requests">{{ copy.back }}</UiButton>
   </PageHeading>
   <AutoSkeleton :loading="pending" id="history-list">
     <div class="flex flex-col gap-4">
-      <RequestRow v-for="item in history" :key="item.id" :item="item" />
-      <UiEmpty v-if="!history.length" title="Belum ada riwayat" icon="clock" />
+      <RequestRow v-for="item in data.history" :key="item.id" :item="item" />
+      <UiEmpty v-if="!data.history.length" :title="copy.emptyTitle" icon="clock" />
     </div>
   </AutoSkeleton>
 </template>

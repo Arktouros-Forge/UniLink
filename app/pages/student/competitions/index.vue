@@ -1,34 +1,37 @@
 <script setup>
-import { competitions } from "@app/constants/mock/competitions.json";
-import { categoryOptions } from "@app/constants/mock/people.json";
-import { sortOptions } from "@app/constants/options.json";
-import { useMock } from "@app/composables/useMock";
+import { competitionSort } from "@app/constants/options.json";
+import { competitions as copy } from "@app/constants/student.json";
 
 definePageMeta({ layout: "student", middleware: "auth", title: "Kompetisi" });
-const { pending } = useMock("competitions", { competitions });
+const { data: categories } = await useCategoryOptions();
 const query = ref("");
+const debounced = useDebounced(query);
 const category = ref("all");
-const sort = ref("newest");
-const categoryFilter = [{ value: "all", label: "Semua kategori" }, ...categoryOptions.map((item) => ({ value: item, label: item }))];
-const list = computed(() => {
-  const found = competitions.filter((item) => (item.title + item.host).toLowerCase().includes(query.value.toLowerCase()) && (category.value === "all" || item.categories.includes(category.value)));
-  return sort.value === "newest" ? found : [...found].reverse();
+const sort = ref("deadline");
+const page = ref(1);
+const categoryFilter = computed(() => [{ value: "all", label: copy.allCategories }, ...categories.value.map((item) => ({ value: item.id, label: item.name }))]);
+const { data, pending } = await useApiData("competitions", "/student/competitions", {
+  query: () => ({ q: debounced.value || undefined, categoryId: category.value === "all" ? undefined : category.value, sort: sort.value, state: "open", page: page.value, limit: 6 }),
+  default: () => ({ competitions: [], pagination: { totalPages: 1 } }),
+  watch: [debounced, category, sort, page],
 });
+watch([debounced, category, sort], () => (page.value = 1));
 </script>
 
 <template>
-  <PageHeading title="Kompetisi" text="Informasi kompetisi dari admin dan mahasiswa. Periksa selalu tautan resmi.">
-    <UiButton icon="plus" to="/student/competitions/new">Buat kompetisi</UiButton>
+  <PageHeading :title="copy.title" :text="copy.text">
+    <UiButton icon="plus" to="/student/competitions/new">{{ copy.create }}</UiButton>
   </PageHeading>
   <div class="flex flex-col gap-3 md:flex-row md:items-center">
-    <SearchBar v-model="query" placeholder="Cari kompetisi atau penyelenggara..." />
+    <SearchBar v-model="query" :placeholder="copy.search" />
     <FilterSelect v-model="category" :options="categoryFilter" icon="filter" />
-    <FilterSelect v-model="sort" :options="sortOptions" variant="text" />
+    <FilterSelect v-model="sort" :options="competitionSort" variant="text" />
   </div>
   <AutoSkeleton :loading="pending" id="competition-list">
     <div class="grid gap-6 md:grid-cols-2">
-      <CompetitionCard v-for="item in list" :key="item.id" :item="item" />
+      <CompetitionCard v-for="item in data.competitions" :key="item.id" :item="item" />
     </div>
-    <UiEmpty v-if="!list.length" title="Belum ada kompetisi" text="Coba kategori lain." icon="trophy" />
+    <UiEmpty v-if="!data.competitions.length" :title="copy.emptyTitle" :text="copy.emptyText" icon="trophy" />
   </AutoSkeleton>
+  <UiPagination v-if="data.pagination.totalPages > 1" v-model="page" :pages="data.pagination.totalPages" />
 </template>

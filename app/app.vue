@@ -9,4 +9,5 @@ onMounted(ui.initTheme);
     <NuxtLayout>
         <NuxtPage />
     </NuxtLayout>
+    <UiToaster />
 </template>

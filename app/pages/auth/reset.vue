@@ -1,10 +1,21 @@
 <script setup>
 import { reset as copy } from "@app/constants/auth.json";
 
-definePageMeta({ layout: "auth" });
+definePageMeta({ layout: "auth", middleware: "guest" });
+const route = useRoute();
+const api = useApi();
+const token = computed(() => String(route.query.token ?? ""));
 const form = reactive({ password: "", confirm: "" });
 const show = ref(false);
 const mismatch = computed(() => form.confirm && form.confirm !== form.password);
+const { run, pending, error, fieldErrors } = useAction(
+    async () => {
+        await api.post("/auth/reset", { token: token.value, password: form.password });
+        await navigateTo("/auth/login");
+    },
+    { success: copy.done, silent: true },
+);
+const submit = () => !mismatch.value && run();
 </script>
 
 <template>
@@ -19,11 +30,12 @@ const mismatch = computed(() => form.confirm && form.confirm !== form.password);
         </div>
         <form
             class="flex flex-col gap-4"
-            @submit.prevent="navigateTo('/auth/login')"
+            @submit.prevent="submit"
         >
             <FormField
                 :label="copy.password"
                 :hint="copy.strength"
+                :error="fieldErrors.password"
                 v-slot="{ id }"
                 ><FormInput
                     :id="id"
@@ -42,7 +54,8 @@ const mismatch = computed(() => form.confirm && form.confirm !== form.password);
                     :type="show ? 'text' : 'password'"
                     :invalid="invalid"
             /></FormField>
-            <UiButton type="submit" icon="check" class="self-start">{{
+            <UiCallout v-if="error && !fieldErrors.password" tone="danger" :title="copy.invalidTitle">{{ error.message }} <NuxtLink to="/auth/forgot" class="text-ink">{{ copy.requestNew }} →</NuxtLink></UiCallout>
+            <UiButton type="submit" icon="check" class="self-start" :loading="pending" :disabled="!token">{{
                 copy.submit
             }}</UiButton>
         </form>

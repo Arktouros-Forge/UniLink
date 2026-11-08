@@ -1,15 +1,30 @@
 <script setup>
-import { login as copy, demoEmail } from "@app/constants/auth.json";
+import { login as copy } from "@app/constants/auth.json";
 import { useAuthStore } from "@app/stores/auth";
 
-definePageMeta({ layout: "auth" });
+definePageMeta({ layout: "auth", middleware: "guest" });
 const auth = useAuthStore();
-const form = reactive({ email: demoEmail, password: "", remember: false });
+const route = useRoute();
+const form = reactive({ email: "", password: "", remember: false });
 const show = ref(false);
-const submit = () => {
-    auth.login();
-    navigateTo("/student/dashboard");
-};
+const { run, pending, error } = useAction(
+    async () => {
+        try {
+            await auth.login({ ...form });
+        } catch (failure) {
+            if (failure.statusCode === 403 && /blocked/i.test(failure.message)) {
+                auth.setBlocked(failure.errors?.[0]?.message);
+                await navigateTo("/auth/blocked");
+                return;
+            }
+            throw failure;
+        }
+        const target = String(route.query.redirect ?? "");
+        await navigateTo(target.startsWith("/") && !target.startsWith("//") ? target : auth.home);
+    },
+    { silent: true },
+);
+const submit = () => run();
 </script>
 
 <template>
@@ -48,7 +63,8 @@ const submit = () => {
                         copy.forgot
                     }}</NuxtLink>
                 </div>
-                <UiButton type="submit" icon="arrowRight" class="self-start">{{
+                <UiCallout v-if="error" tone="danger">{{ error.message }}</UiCallout>
+                <UiButton type="submit" icon="arrowRight" class="self-start" :loading="pending">{{
                     copy.submit
                 }}</UiButton>
             </form>

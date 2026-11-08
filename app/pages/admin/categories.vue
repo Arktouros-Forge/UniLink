@@ -1,26 +1,32 @@
 <script setup>
-import { categories, totals } from "@app/constants/mock/admin.json";
-import { useAdminCrud } from "@app/composables/useAdminCrud";
+import { formatDate } from "@app/utils/format";
 
 definePageMeta({ layout: "admin", middleware: "auth", title: "Kategori" });
-const fields = [{ key: "name", label: "Nama kategori", required: true }];
+const fields = [
+  { key: "name", label: "Nama kategori", required: true },
+  { key: "description", label: "Deskripsi", multiline: true },
+  { key: "color", label: "Warna (hex)", required: true },
+];
 const columns = [
   { key: "name", label: "Nama kategori", width: "1.4fr" },
-  { key: "skills", label: "Keahlian" },
-  { key: "competitions", label: "Kompetisi" },
-  { key: "created", label: "Tanggal dibuat" },
+  { key: "color", label: "Warna" },
+  { key: "usage", label: "Kompetisi" },
+  { key: "createdAt", label: "Tanggal dibuat" },
 ];
-const crud = useAdminCrud("admin-categories", categories, fields);
+const crud = useAdminCrud("admin-categories", "/admin/categories", { toPayload: ({ name, description, color }) => ({ name, description: description || null, color }) });
+await crud.request;
 </script>
 
 <template>
   <AdminList
-    id="admin-categories-table" v-model:search="crud.search.value" title="Kategori" text="Kelompokkan keahlian dan kompetisi agar mudah ditemukan."
-    add-label="Tambah kategori" noun="kategori" :columns="columns" :rows="crud.shown.value" :total="totals.categories" :loading="crud.pending.value"
+    id="admin-categories-table" title="Kategori" text="Kelompokkan kompetisi agar mudah ditemukan."
+    add-label="Tambah kategori" noun="kategori" :columns="columns"
+    v-model:search="crud.search.value" v-model:page="crud.page.value" :total="crud.total.value" :rows="crud.rows.value" :loading="crud.pending.value"
     :failed="crud.status.value === 'error'" @add="crud.add" @edit="crud.edit" @remove="crud.removing.value = $event" @retry="crud.refresh"
   >
-    <template #cell-created="{ value }"><span class="t-mono-s">{{ value }}</span></template>
+    <template #cell-color="{ value }"><span class="inline-flex items-center gap-2 t-mono-s"><span class="size-3 border border-outline" :style="{ background: value }" />{{ value }}</span></template>
+    <template #cell-createdAt="{ value }"><span class="t-mono-s">{{ formatDate(value) }}</span></template>
   </AdminList>
-  <EntityModal :open="crud.modalOpen.value" :title="crud.editing.value?.id ? 'Ubah kategori' : 'Tambah kategori'" :fields="fields" :initial="crud.editing.value || {}" @close="crud.modalOpen.value = false" @save="crud.save" />
-  <ConfirmModal :open="!!crud.removing.value" title="Hapus kategori?" text="Kompetisi dan keahlian pada kategori ini akan kehilangan kategorinya." @close="crud.removing.value = null" @confirm="crud.confirmRemove" />
+  <EntityModal :open="crud.modalOpen.value" :title="crud.editing.value?.id ? 'Ubah kategori' : 'Tambah kategori'" :fields="fields" :initial="crud.editing.value || {}" :pending="crud.saving.value" :errors="crud.errors.value" @close="crud.modalOpen.value = false" @save="crud.save" />
+  <ConfirmModal :open="!!crud.removing.value" title="Hapus kategori?" text="Kategori yang masih dipakai kompetisi tidak dapat dihapus." @close="crud.removing.value = null" @confirm="crud.confirmRemove()" />
 </template>

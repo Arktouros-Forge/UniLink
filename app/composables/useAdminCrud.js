@@ -1,14 +1,25 @@
-import { useMock } from "@app/composables/useMock";
+import { admin } from "@app/constants/student.json";
 
-export const useAdminCrud = (key, source, fields) => {
-  const { pending, status, refresh } = useMock(key, source, 800);
-  const rows = ref(source.map((item) => ({ ...item })));
+export const useAdminCrud = (key, endpoint, { listKey = "items", toPayload = (values) => values, toRow = (row) => row } = {}) => {
+  const api = useApi();
   const search = ref("");
+  const debounced = useDebounced(search);
+  const page = ref(1);
   const editing = ref(null);
   const modalOpen = ref(false);
   const removing = ref(null);
 
-  const shown = computed(() => rows.value.filter((row) => JSON.stringify(row).toLowerCase().includes(search.value.toLowerCase())));
+  const request = useApiData(key, endpoint, {
+    query: () => ({ q: debounced.value || undefined, page: page.value, limit: admin.pageSize }),
+    default: () => ({ [listKey]: [], pagination: { total: 0 } }),
+    watch: [debounced, page],
+  });
+  const { data, pending, status, refresh } = request;
+  watch(debounced, () => (page.value = 1));
+
+  const rows = computed(() => (data.value[listKey] ?? []).map(toRow));
+  const total = computed(() => data.value.pagination?.total ?? 0);
+
   const add = () => {
     editing.value = {};
     modalOpen.value = true;
@@ -17,14 +28,44 @@ export const useAdminCrud = (key, source, fields) => {
     editing.value = row;
     modalOpen.value = true;
   };
-  const save = (values) => {
-    rows.value = values.id ? rows.value.map((row) => (row.id === values.id ? values : row)) : [{ ...values, id: Date.now(), created: "02 Nov 2026" }, ...rows.value];
-    modalOpen.value = false;
-  };
-  const confirmRemove = () => {
-    rows.value = rows.value.filter((row) => row.id !== removing.value.id);
-    removing.value = null;
-  };
 
-  return { pending, status, refresh, rows, shown, search, editing, modalOpen, removing, fields, add, edit, save, confirmRemove };
+  const saveAction = useAction(
+    async (values) => {
+      const payload = toPayload(values);
+      if (values.id) await api.patch(`${endpoint}/${values.id}`, payload);
+      else await api.post(endpoint, payload);
+      modalOpen.value = false;
+      await refresh();
+    },
+    { success: admin.saved },
+  );
+  const removeAction = useAction(
+    async () => {
+      await api.del(`${endpoint}/${removing.value.id}`);
+      removing.value = null;
+      await refresh();
+    },
+    { success: admin.removed },
+  );
+
+  return {
+    request,
+    pending,
+    status,
+    refresh,
+    rows,
+    total,
+    page,
+    search,
+    editing,
+    modalOpen,
+    removing,
+    add,
+    edit,
+    save: saveAction.run,
+    saving: saveAction.pending,
+    errors: saveAction.fieldErrors,
+    confirmRemove: removeAction.run,
+    removingPending: removeAction.pending,
+  };
 };

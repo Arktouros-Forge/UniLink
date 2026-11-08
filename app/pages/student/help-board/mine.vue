@@ -1,21 +1,23 @@
 <script setup>
-import { signs } from "@app/constants/mock/study.json";
 import { limits } from "@app/constants/options.json";
-import { useMock } from "@app/composables/useMock";
+import { helpBoard as board, mySigns as copy } from "@app/constants/student.json";
 
 definePageMeta({ layout: "student", middleware: "auth", title: "Tanda saya" });
-const { pending } = useMock("my-signs", { signs });
-const mine = signs.filter((item) => item.owner === "Ayu Pramesti");
+const { data, pending } = await useApiData("my-signs", "/student/study-match/help-signs", {
+  query: { scope: "mine", limit: 50 },
+  default: () => ({ signs: [] }),
+});
+const active = computed(() => data.value.signs.filter((item) => item.status === "open").length);
 </script>
 
 <template>
-  <PageHeading title="Tanda saya" :text="`${mine.length} dari ${limits.activeSigns} tanda aktif.`">
-    <UiButton icon="plus" to="/student/help-board/new">Pasang tanda</UiButton>
+  <PageHeading :title="copy.title" :text="`${active} dari ${limits.activeSigns} tanda aktif.`">
+    <UiButton icon="plus" to="/student/help-board/new">{{ board.post }}</UiButton>
   </PageHeading>
   <AutoSkeleton :loading="pending" id="my-signs-list">
     <div class="grid gap-6 md:grid-cols-2">
-      <HelpSignCard v-for="item in mine" :key="item.id" :item="item" mine />
+      <HelpSignCard v-for="item in data.signs" :key="item.id" :item="item" mine />
     </div>
-    <UiEmpty v-if="!mine.length" title="Belum ada tanda" icon="flag"><UiButton to="/student/help-board/new" icon="plus">Pasang tanda</UiButton></UiEmpty>
+    <UiEmpty v-if="!data.signs.length" :title="copy.emptyTitle" icon="flag"><UiButton to="/student/help-board/new" icon="plus">{{ board.post }}</UiButton></UiEmpty>
   </AutoSkeleton>
 </template>
