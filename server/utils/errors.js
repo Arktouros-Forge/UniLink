@@ -67,6 +67,8 @@ export const ERRORS = {
   CANNOT_MODIFY_SELF: [409, "You cannot do this to your own account"],
   CANNOT_MODIFY_ADMIN: [409, "Admin accounts cannot be modified here"],
   IN_USE: [409, "This item is still in use and cannot be deleted"],
+  FIREBASE_NOT_CONFIGURED: [503, "Firebase sign-in is not configured"],
+  FIREBASE_TOKEN_INVALID: [401, "Firebase sign-in could not be verified"],
   INVALID_CREDENTIALS: [401, "Email or password is incorrect"],
   EMAIL_NOT_VERIFIED: [403, "Please verify your email first"],
   ALREADY_VERIFIED: [409, "Your email is already verified"],

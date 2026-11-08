@@ -56,15 +56,11 @@ const submit = () => valid.value && run();
                 type="submit"
                 icon="arrowRight"
                 :disabled="!valid"
-                :loading="pending"
-                class="self-start"
+                :loading="pending" block
                 >{{ copy.submit }}</UiButton
             >
         </form>
-        <UiDivider />
-        <UiButton variant="secondary" class="self-start"
-            >G · {{ copy.google }}</UiButton
-        >
+        <GoogleButton />
         <p class="t-body-s text-ink-2 m-0">
             {{ copy.prompt }}
             <NuxtLink to="/auth/login" class="text-ink"

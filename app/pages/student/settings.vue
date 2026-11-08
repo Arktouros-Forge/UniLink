@@ -64,7 +64,7 @@ const password = useAction(
     <AutoSkeleton :loading="pending" id="settings-body">
         <div
             v-if="tab === 'profile'"
-            class="grid gap-6 md:grid-cols-[1fr_256px] md:items-start"
+            class="grid gap-6 md:grid-cols-[minmax(0,1fr)_256px] md:items-start"
         >
             <UiCard class="flex flex-col gap-5">
                 <div class="flex items-center gap-4">
@@ -153,7 +153,7 @@ const password = useAction(
                 </UiCard>
             </div>
         </div>
-        <div v-else class="grid gap-6 md:grid-cols-[1fr_256px] md:items-start">
+        <div v-else class="grid gap-6 md:grid-cols-[minmax(0,1fr)_256px] md:items-start">
             <UiCard class="flex flex-col gap-5">
                 <FormField label="Email" v-slot="{ id }"
                     ><FormInput

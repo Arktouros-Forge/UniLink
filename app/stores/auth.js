@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { useOnboardingStore } from "@app/stores/onboarding";
 
 const HOME = { student: "/student/dashboard", admin: "/admin" };
 
@@ -9,6 +10,7 @@ export const useAuthStore = defineStore("auth", () => {
   const loaded = ref(false);
   const blocked = ref(null);
   const api = useApi();
+  const firebase = useFirebaseAuth();
 
   const isAuthed = computed(() => Boolean(user.value));
   const isAdmin = computed(() => user.value?.role === "admin");
@@ -29,21 +31,47 @@ export const useAuthStore = defineStore("auth", () => {
     return user.value;
   };
 
+  const exchange = async (firebaseUser, extra = {}) => {
+    await api.post("/auth/firebase", { idToken: await firebaseUser.getIdToken(), ...extra });
+    return fetchMe({ force: true });
+  };
+
   const login = async (payload) => {
+    if (firebase.enabled) {
+      try {
+        const firebaseUser = await firebase.signInWithPassword(payload.email, payload.password);
+        return await exchange(firebaseUser, { remember: payload.remember });
+      } catch (error) {
+        if (!firebase.canFallback(error.cause ?? error)) throw error;
+      }
+    }
     await api.post("/auth/login", payload);
     return fetchMe({ force: true });
   };
 
+  const loginWithGoogle = async () => exchange(await firebase.signInWithGoogle());
+
   const register = async (payload) => {
+    if (firebase.enabled) return exchange(await firebase.signUp(payload), { name: payload.name });
     await api.post("/auth/register", payload);
     return fetchMe({ force: true });
   };
 
+  const syncVerification = async () => {
+    const token = await firebase.freshToken();
+    if (!token) return false;
+    await api.post("/auth/firebase", { idToken: token });
+    await fetchMe({ force: true });
+    return isVerified.value;
+  };
+
   const logout = async () => {
     await api.post("/auth/logout").catch(() => {});
+    await firebase.signOut();
     user.value = null;
     blocked.value = null;
     loaded.value = true;
+    useOnboardingStore().reset();
   };
 
   const setBlocked = (reason) => {
@@ -54,5 +82,5 @@ export const useAuthStore = defineStore("auth", () => {
     user.value = shape({ ...user.value, ...payload });
   };
 
-  return { user, loaded, blocked, isAuthed, isAdmin, isVerified, isOnboarded, home, fetchMe, setBlocked, login, register, logout, update };
+  return { user, loaded, blocked, isAuthed, isAdmin, isVerified, isOnboarded, home, fetchMe, setBlocked, login, loginWithGoogle, register, syncVerification, logout, update };
 });

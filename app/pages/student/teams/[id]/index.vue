@@ -1,5 +1,5 @@
 <script setup>
-import { team as extras } from "@app/constants/mock/detail.json";
+import { team as extras } from "@app/constants/guidance.json";
 import { teamDetail as copy, teams as teamCopy } from "@app/constants/student.json";
 import { useAuthStore } from "@app/stores/auth";
 import { formatDate } from "@app/utils/format";
@@ -15,6 +15,7 @@ const { data: team, pending, refresh } = await useApiData(`team-${route.params.i
 
 const isOwner = computed(() => team.value.creatorId === auth.user.id);
 const reportOpen = ref(false);
+const finished = computed(() => Boolean(team.value) && Boolean(team.value.competitionDeadline) && new Date(team.value.competitionDeadline) <= new Date());
 const editOpen = ref(false);
 const leaveOpen = ref(false);
 const deleteOpen = ref(false);
@@ -83,7 +84,7 @@ const remove = useAction(
           <h2 class="t-d4 text-ink m-0">{{ copy.resultTitle }}</h2>
           <p class="t-body-s text-ink-2 m-0">{{ team.result === "unknown" ? extras.resultNote : copy.resultLabels[team.result] }}</p>
         </div>
-        <UiButton variant="secondary" icon="flag" @click="reportOpen = true">{{ copy.report }}</UiButton>
+        <UiButton variant="secondary" icon="flag" :disabled="!finished" @click="reportOpen = true">{{ copy.report }}</UiButton>
       </UiCard>
 
       <UiCard v-if="isOwner" class="flex flex-col gap-3">
@@ -93,7 +94,7 @@ const remove = useAction(
       </UiCard>
 
       <template #aside>
-        <ContactCard v-if="owner" :name="owner.fullName" :url="owner.contact?.whatsappUrl" :locked-text="copy.lockedText" />
+        <ContactCard v-if="owner" :name="owner.fullName" :url="owner.contact?.whatsappUrl" :phone="owner.contact?.phone" :locked-text="copy.lockedText" />
         <UiCard v-if="isOwner" class="flex flex-col gap-3">
           <h2 class="t-d4 text-ink m-0">{{ copy.requestsTitle }}</h2>
           <p class="t-body-s text-ink-2 m-0">{{ copy.requestsText }}</p>

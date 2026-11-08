@@ -6,9 +6,15 @@ export default defineNuxtConfig({
     "@unocss/nuxt",
     "@pinia/nuxt",
     "nuxt-zod",
-    // "nuxt-charts",
+    "@vueuse/nuxt",
     "auto-skeleton-vue/nuxt",
   ],
+
+  runtimeConfig: {
+    public: {
+      firebase: { apiKey: "", authDomain: "", projectId: "", appId: "" },
+    },
+  },
 
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },

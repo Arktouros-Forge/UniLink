@@ -93,7 +93,7 @@ export async function getTeam(viewerId, teamId) {
       isCreator: member.userId === team.creatorId,
       contact:
         isAccepted && member.status === "accepted" && member.userId !== viewerId
-          ? { whatsappUrl: whatsappUrl(phone) }
+          ? { phone, whatsappUrl: whatsappUrl(phone) }
           : null,
     }));
 

@@ -8,8 +8,8 @@ const toggle = (id) => {
 
 <template>
   <div class="flex flex-wrap gap-2">
-    <button v-for="item in options" :key="item.id" type="button" class="bg-transparent border-0 p-0 cursor-pointer" @click="toggle(item.id)">
-      <UiChip size="md" :outline="model.includes(item.id)" :icon="model.includes(item.id) ? 'check' : ''">{{ item.name }}</UiChip>
+    <button v-for="item in options" :key="item.id" type="button" class="bg-transparent border-0 p-0 cursor-pointer focus-ring rounded-sm" :aria-pressed="model.includes(item.id)" @click="toggle(item.id)">
+      <UiChip size="md" :tone="model.includes(item.id) ? 'blue' : 'neutral'" :filled="model.includes(item.id)" :icon="model.includes(item.id) ? 'check' : ''">{{ item.name }}</UiChip>
     </button>
   </div>
 </template>

@@ -141,7 +141,7 @@ export async function getSign(viewerId, id) {
         helper.major,
         helper.profilePhotoUrl,
       ),
-      contact: sql`case when ${studyRequests.status} = 'accepted' and ${isOwner} then json_build_object('whatsappUrl', 'https://wa.me/' || regexp_replace(${helper.phone}, '\\D', '', 'g')) else null end`,
+      contact: sql`case when ${studyRequests.status} = 'accepted' and ${isOwner} then json_build_object('phone', ${helper.phone}, 'whatsappUrl', 'https://wa.me/' || regexp_replace(${helper.phone}, '\\D', '', 'g')) else null end`,
     })
     .from(studyRequests)
     .innerJoin(helper, eq(helper.id, studyRequests.helperId))
@@ -318,7 +318,7 @@ function requestSelect(viewerId) {
         other.profilePhotoUrl,
       ),
       counterpartSkills: sql`coalesce((select json_agg(s.name order by s.name) from user_skills us join skills s on s.id = us.skill_id where us.user_id = ${other.id}), '[]'::json)`,
-      contact: sql`case when ${studyRequests.status} = 'accepted' then json_build_object('whatsappUrl', 'https://wa.me/' || regexp_replace(${other.phone}, '\\D', '', 'g')) else null end`,
+      contact: sql`case when ${studyRequests.status} = 'accepted' then json_build_object('phone', ${other.phone}, 'whatsappUrl', 'https://wa.me/' || regexp_replace(${other.phone}, '\\D', '', 'g')) else null end`,
     },
     join: sql`${other.id} = case when ${isRequester} then ${studyRequests.helperId} else ${studyRequests.requesterId} end`,
     initiatedByMe,

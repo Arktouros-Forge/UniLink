@@ -38,14 +38,15 @@ export const dateString = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/, "Use YYYY-MM-DD");
 
+export const normalizePhone = (value) => {
+  const digits = value.replace(/\D/g, "");
+  if (digits.startsWith("62")) return `+62${digits.slice(2).replace(/^0+/, "")}`;
+  return `+62${digits.replace(/^0+/, "")}`;
+};
+
 export const phone = z
   .string()
   .trim()
-  .regex(/^\+?[0-9]{9,15}$/, "Invalid phone number");
-
-export const normalizePhone = (value) => {
-  const digits = value.replace(/\D/g, "");
-  if (digits.startsWith("62")) return `+${digits}`;
-  if (digits.startsWith("0")) return `+62${digits.slice(1)}`;
-  return `+62${digits}`;
-};
+  .regex(/^\+?[0-9\s().-]{9,22}$/, "Invalid phone number")
+  .transform(normalizePhone)
+  .refine((value) => /^\+62[0-9]{8,13}$/.test(value), "Use an Indonesian number, for example 0812 3456 7890");

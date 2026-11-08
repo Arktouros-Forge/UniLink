@@ -1,5 +1,5 @@
 <script setup>
-import { sign as extras } from "@app/constants/mock/detail.json";
+import { sign as extras } from "@app/constants/guidance.json";
 import { signDetail as copy, helpBoard } from "@app/constants/student.json";
 import { formatDeadline } from "@app/utils/format";
 

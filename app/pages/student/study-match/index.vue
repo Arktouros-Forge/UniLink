@@ -5,11 +5,9 @@ import { years } from "@app/constants/options.json";
 definePageMeta({ layout: "student", middleware: "auth", title: "Study Match" });
 const { data: skillOptions } = await useSkillOptions();
 
-const query = ref("");
-const debounced = useDebounced(query);
 const year = ref("all");
 const skillId = ref("all");
-const page = ref(1);
+const { query, debounced, page } = useSearchPage([year, skillId]);
 const target = ref(null);
 const sent = ref(false);
 
@@ -27,7 +25,6 @@ const { data, pending } = await useApiData("study-match-search", "/student/study
     default: () => ({ items: [], pagination: { total: 0, totalPages: 1 } }),
     watch: [debounced, year, skillId, page],
 });
-watch([debounced, year, skillId], () => (page.value = 1));
 
 const onSent = () => {
     target.value = null;

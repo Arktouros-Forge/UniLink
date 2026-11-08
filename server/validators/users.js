@@ -3,7 +3,6 @@ import { z } from "zod";
 import {
   csvIds,
   nullableText,
-  normalizePhone,
   optionalUrl,
   pagination,
   phone,
@@ -29,7 +28,7 @@ export const YEARS = [
 
 const profileFields = {
   fullName: trimmed(2, 100),
-  phone: phone.transform(normalizePhone),
+  phone,
   major: nullableText(100),
   bio: nullableText(500),
   personalWebsite: optionalUrl,

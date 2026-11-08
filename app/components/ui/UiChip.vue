@@ -31,14 +31,14 @@ const solid = {
 
 <template>
   <span
-    class="inline-flex items-center gap-1 rounded-sm font-sans font-medium whitespace-nowrap"
+    class="inline-flex max-w-full items-center gap-1 rounded-sm font-sans font-medium whitespace-nowrap"
     :class="[
       outline ? 'border border-blue text-blue bg-card' : filled ? solid[tone] : soft[tone],
       size === 'md' ? 'px-2.5 py-1 text-[13px] leading-5' : 'px-2 py-1 text-xs leading-5',
     ]"
   >
     <UiIcon v-if="icon" :name="icon" size="text-sm" />
-    <slot />
+    <span class="truncate"><slot /></span>
     <button v-if="removable" type="button" class="inline-flex bg-transparent border-0 p-0 cursor-pointer text-current" aria-label="Hapus" @click="$emit('remove')">
       <UiIcon name="close" size="text-sm" />
     </button>

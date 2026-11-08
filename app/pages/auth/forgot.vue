@@ -3,10 +3,12 @@ import { forgot as copy } from "@app/constants/auth.json";
 
 definePageMeta({ layout: "auth", middleware: "guest" });
 const api = useApi();
+const firebase = useFirebaseAuth();
 const email = ref("");
 const sent = ref(false);
 const { run, pending, fieldErrors } = useAction(async () => {
     await api.post("/auth/forgot", { email: email.value });
+    if (firebase.enabled) await firebase.resetPassword(email.value).catch(() => {});
     sent.value = true;
 });
 </script>
@@ -20,7 +22,7 @@ const { run, pending, fieldErrors } = useAction(async () => {
     <UiCallout v-if="sent" :title="copy.sentTitle" tone="info">{{ copy.sentText }}</UiCallout>
     <form class="flex flex-col gap-4" @submit.prevent="run()">
       <FormField :label="copy.email" :error="fieldErrors.email" v-slot="{ id }"><FormInput :id="id" v-model="email" type="email" icon="mail" /></FormField>
-      <UiButton type="submit" icon="arrowRight" class="self-start" :loading="pending">{{ copy.submit }}</UiButton>
+      <UiButton type="submit" icon="arrowRight" block :loading="pending">{{ copy.submit }}</UiButton>
     </form>
     <UiButton to="/auth/login" variant="link" icon="arrowLeft" class="self-start">{{ copy.back }}</UiButton>
   </AuthFrame>

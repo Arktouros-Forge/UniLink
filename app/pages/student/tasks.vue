@@ -75,7 +75,7 @@ const save = useAction(
   <PageHeading :title="copy.title" :text="copy.text">
     <UiButton icon="plus" @click="edit(blank())">{{ copy.add }}</UiButton>
   </PageHeading>
-  <div class="grid gap-6 md:grid-cols-[1fr_320px] md:items-start">
+  <div class="grid gap-6 md:grid-cols-[minmax(0,1fr)_320px] md:items-start">
     <div class="flex flex-col gap-4">
       <div class="flex flex-wrap items-center gap-3">
         <FilterSelect v-model="status" :options="copy.statuses" icon="chevronDown" />
@@ -83,7 +83,7 @@ const save = useAction(
       </div>
       <AutoSkeleton :loading="pending" id="task-groups">
         <section v-for="group in groups" :key="group.name" class="flex flex-col gap-3 mb-4">
-          <p class="t-mono-s text-ink m-0">{{ group.name }}</p>
+          <p class="t-mono-s text-ink m-0 truncate">{{ group.name }}</p>
           <TaskRow v-for="item in group.items" :key="item.id" :item="item" @toggle="toggle.run($event)" @edit="edit($event)" @remove="remove.run($event)" />
         </section>
         <UiEmpty v-if="!groups.length" :title="copy.emptyTitle" :text="copy.emptyText" icon="checkCircle" />

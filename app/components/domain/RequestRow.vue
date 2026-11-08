@@ -1,4 +1,5 @@
 <script setup>
+import { formatPhone } from "@app/utils/format";
 defineProps({
   item: { type: Object, required: true },
   actions: { type: Boolean, default: false },
@@ -11,7 +12,7 @@ defineEmits(["accept", "decline", "cancel"]);
     <div class="flex gap-4 min-w-0">
       <UiAvatar :name="item.counterpart.fullName" :size="40" />
       <div class="flex flex-col gap-1 min-w-0">
-        <p class="t-label text-ink m-0">{{ item.counterpart.fullName }}</p>
+        <p class="t-label text-ink m-0 truncate">{{ item.counterpart.fullName }}</p>
         <p class="t-body-s text-ink-2 m-0">{{ item.direction === "incoming" ? "Masuk" : "Keluar" }} · {{ item.subject }} · Angkatan {{ item.counterpart.year }}</p>
         <p class="t-body-s text-ink m-0">{{ item.description }}</p>
       </div>
@@ -26,7 +27,7 @@ defineEmits(["accept", "decline", "cancel"]);
         <UiButton @click="$emit('accept', item)">Terima</UiButton>
       </div>
       <UiButton v-else-if="item.status === 'pending' && actions" variant="secondary" @click="$emit('cancel', item)">Batalkan</UiButton>
-      <UiButton v-else-if="item.status === 'accepted' && item.contact?.whatsappUrl" variant="secondary" icon="external" :href="item.contact.whatsappUrl">Lanjut ke WhatsApp</UiButton>
+      <div v-else-if="item.status === 'accepted' && item.contact?.whatsappUrl" class="flex flex-col items-end gap-2"><span class="t-mono-s text-ink">{{ formatPhone(item.contact.phone) }}</span><UiButton variant="secondary" icon="external" :href="item.contact.whatsappUrl">Lanjut ke WhatsApp</UiButton></div>
     </div>
   </UiCard>
 </template>

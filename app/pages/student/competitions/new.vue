@@ -27,7 +27,7 @@ const { run, pending, fieldErrors } = useAction(
 
 <template>
   <PageHeading :title="copy.title" :text="copy.text" />
-  <div class="grid gap-6 md:grid-cols-[1fr_320px] md:items-start">
+  <div class="grid gap-6 md:grid-cols-[minmax(0,1fr)_320px] md:items-start">
     <UiCard class="flex flex-col gap-5">
       <FormField :label="copy.name" :error="fieldErrors.title" v-slot="{ id }"><FormInput :id="id" v-model="form.title" /></FormField>
       <FormField :label="copy.host" :error="fieldErrors.host" v-slot="{ id }"><FormInput :id="id" v-model="form.host" /></FormField>

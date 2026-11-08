@@ -1,5 +1,5 @@
 <script setup>
-import { competition as extras } from "@app/constants/mock/detail.json";
+import { competition as extras } from "@app/constants/guidance.json";
 import { competitionDetail as copy } from "@app/constants/student.json";
 import { formatDate } from "@app/utils/format";
 

@@ -8,9 +8,11 @@ import { allowedEmailDomains } from "../../utils/config.js";
 import { fail } from "../../utils/errors.js";
 import { forgetSession } from "../../utils/auth.js";
 import { sendMailSafely } from "../../utils/mailer.js";
+import { verifyFirebaseToken } from "../../utils/firebase.js";
 import { hashPassword, verifyPassword } from "../../utils/password.js";
 import { rateLimit, resetRateLimit } from "../../utils/rate-limit.js";
 import { hashToken, newToken } from "../../utils/tokens.js";
+import { randomBytes } from "node:crypto";
 
 const TOKEN_TTL = { verify_email: 24 * 60 * 60_000, reset_password: 30 * 60_000 };
 
@@ -135,4 +137,40 @@ export async function resetPassword(token, password) {
 export async function notifyWelcome(userId) {
   const [user] = await db.select({ email: users.email, fullName: users.fullName }).from(users).where(eq(users.id, userId)).limit(1);
   if (user) sendMailSafely(composeMail("welcome", user.email, { name: user.fullName }));
+}
+
+export async function firebaseLogin({ idToken, name }, ip) {
+  rateLimit("firebase", ip, { max: 30, windowMs: 15 * 60_000 });
+  const identity = await verifyFirebaseToken(idToken);
+  assertAllowedDomain(identity.email);
+
+  const columns = { ...sessionUser, status: users.status, blockedReason: users.blockedReason, firebaseUid: users.firebaseUid, verified: users.emailVerifiedAt };
+  const [byUid] = await db.select(columns).from(users).where(eq(users.firebaseUid, identity.uid)).limit(1);
+  const [byEmail] = byUid ? [byUid] : await db.select(columns).from(users).where(sql`lower(${users.email}) = ${identity.email}`).limit(1);
+  let user = byUid ?? byEmail;
+
+  if (user?.status === "blocked") fail("BLOCKED", user.blockedReason ? [{ field: "reason", message: user.blockedReason }] : null);
+
+  if (!user) {
+    const fullName = (name ?? identity.name ?? identity.email.split("@")[0]).slice(0, 100).padEnd(2, " ");
+    [user] = await db
+      .insert(users)
+      .values({
+        email: identity.email,
+        fullName: fullName.trim() || identity.email,
+        password: await hashPassword(randomBytes(24).toString("base64url")),
+        username: await usernameFor(identity.email, fullName),
+        firebaseUid: identity.uid,
+        emailVerifiedAt: identity.emailVerified ? new Date() : null,
+      })
+      .returning({ ...sessionUser, status: users.status, blockedReason: users.blockedReason, firebaseUid: users.firebaseUid, verified: users.emailVerifiedAt });
+  } else {
+    const patch = { lastLoginAt: new Date() };
+    if (!user.firebaseUid) patch.firebaseUid = identity.uid;
+    if (!user.verified && identity.emailVerified) patch.emailVerifiedAt = new Date();
+    await db.update(users).set(patch).where(eq(users.id, user.id));
+    if (patch.emailVerifiedAt) forgetSession(user.id);
+  }
+
+  return { id: user.id, role: user.role, sessionVersion: user.sessionVersion };
 }

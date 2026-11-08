@@ -5,7 +5,6 @@ import {
   optionalUrl,
   pagination,
   phone,
-  normalizePhone,
   searchText,
   trimmed,
 } from "./common.js";
@@ -43,7 +42,7 @@ export const categoryPatch = partialOf(categoryBody);
 export const lecturerBody = z.object({
   name: trimmed(3, 120),
   email: z.email().max(200),
-  phone: phone.transform(normalizePhone).nullable().optional(),
+  phone: phone.nullable().optional(),
   nidn: z
     .string()
     .trim()

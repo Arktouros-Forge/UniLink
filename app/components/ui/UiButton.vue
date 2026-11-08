@@ -33,9 +33,9 @@ const variants = {
         "border-transparent bg-transparent text-danger !px-1 hover:underline",
 };
 const sizes = {
-    sm: "h-8 px-3 text-sm",
-    md: "h-11 px-5 md:h-10",
-    lg: "h-12 px-6",
+    sm: "h-9 px-4 text-sm",
+    md: "h-11 px-6",
+    lg: "h-12 px-7",
 };
 </script>
 
@@ -50,8 +50,8 @@ const sizes = {
             v-if="loading"
             class="size-4 rounded-full border-2 border-current border-t-transparent animate-spin"
         />
-        <UiIcon v-else-if="icon" :name="icon" size="text-xl" />
+        <UiIcon v-else-if="icon" :name="icon" :size="size === 'sm' ? 'text-lg' : 'text-xl'" />
         <slot />
-        <UiIcon v-if="iconEnd" :name="iconEnd" size="text-xl" />
+        <UiIcon v-if="iconEnd" :name="iconEnd" :size="size === 'sm' ? 'text-lg' : 'text-xl'" />
     </component>
 </template>

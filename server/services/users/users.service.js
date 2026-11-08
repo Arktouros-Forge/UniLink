@@ -27,13 +27,7 @@ import { sendVerification } from "../auth/auth.service.js";
 import { hashPassword, verifyPassword } from "../../utils/password.js";
 import { forgetSession } from "../../utils/auth.js";
 import { likePattern } from "../../utils/pagination.js";
-import {
-  finishPage,
-  ref,
-  totalOver,
-  userSkillsJson,
-  whatsappUrl,
-} from "../_sql.js";
+import { finishPage, ref, totalOver, userSkillsJson, whatsappUrl } from "../_sql.js";
 
 const publicFields = {
   id: users.id,
@@ -165,20 +159,10 @@ export async function changePassword(userId, currentPassword, newPassword) {
       sessionVersion: sql`${users.sessionVersion} + 1`,
     })
     .where(eq(users.id, userId))
-    .returning({
-      id: users.id,
-      role: users.role,
-      sessionVersion: users.sessionVersion,
-      email: users.email,
-      fullName: users.fullName,
-    })
+    .returning({ id: users.id, role: users.role, sessionVersion: users.sessionVersion, email: users.email, fullName: users.fullName })
     .then(([row]) => row);
   forgetSession(userId);
-  sendMailSafely(
-    composeMail("passwordChanged", updatedUser.email, {
-      name: updatedUser.fullName,
-    }),
-  );
+  sendMailSafely(composeMail("passwordChanged", updatedUser.email, { name: updatedUser.fullName }));
   return updatedUser;
 }
 

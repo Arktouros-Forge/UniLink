@@ -22,7 +22,7 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
           <UiIconButton icon="close" label="Tutup" @click="emit('close')" />
         </header>
         <div class="px-6 py-3 overflow-y-auto flex flex-col gap-4"><slot /></div>
-        <footer v-if="$slots.footer" class="flex items-center gap-4 px-6 py-4 border-t border-hairline"><slot name="footer" /></footer>
+        <footer v-if="$slots.footer" class="flex flex-col gap-3 px-6 py-4 border-t border-hairline sm:flex-row-reverse sm:items-center sm:justify-start [&>*]:w-full sm:[&>*]:w-auto"><slot name="footer" /></footer>
       </div>
     </div>
   </Teleport>

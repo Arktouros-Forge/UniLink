@@ -24,3 +24,10 @@ export const formatDeadline = (iso) => {
   if (days === 0) return "Hari ini";
   return `${days} hari lagi`;
 };
+
+export const formatPhone = (value) => {
+  const digits = String(value ?? "").replace(/\D/g, "");
+  if (!digits.startsWith("62")) return value ?? "";
+  const local = digits.slice(2);
+  return `+62 ${local.slice(0, 3)} ${local.slice(3, 7)} ${local.slice(7)}`.trim();
+};

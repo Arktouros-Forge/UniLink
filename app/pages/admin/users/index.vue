@@ -18,9 +18,7 @@ const columns = [
   { key: "status", label: "Status" },
   { key: "createdAt", label: "Bergabung" },
 ];
-const search = ref("");
-const debounced = useDebounced(search);
-const page = ref(1);
+const { query: search, debounced, page } = useSearchPage([status]);
 const request = useApiData("admin-users", "/admin/users", {
   query: () => ({ q: debounced.value || undefined, status: status.value === "all" ? undefined : status.value, role: "student", page: page.value, limit: admin.pageSize }),
   default: () => ({ users: [], pagination: { total: 0 } }),
@@ -28,7 +26,6 @@ const request = useApiData("admin-users", "/admin/users", {
 });
 const { data, pending, status: fetchStatus, refresh } = request;
 await request;
-watch([debounced, status], () => (page.value = 1));
 
 const target = ref(null);
 const blockTarget = ref(null);

@@ -18,3 +18,8 @@ export const allowedEmailDomains = () =>
     .filter(Boolean);
 
 export const isSecureCookie = () => !import.meta.dev;
+
+export const firebaseProjectId = () => process.env.FIREBASE_PROJECT_ID ?? process.env.NUXT_PUBLIC_FIREBASE_PROJECT_ID ?? "";
+
+export const firebaseJwksUrl = () =>
+  process.env.FIREBASE_JWKS_URL ?? "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com";

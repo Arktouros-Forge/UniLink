@@ -1,11 +1,12 @@
 <script setup>
-import { verify as copy } from "@app/constants/auth.json";
+import { verify as copy, firebase as fb } from "@app/constants/auth.json";
 import { useAuthStore } from "@app/stores/auth";
 
 definePageMeta({ layout: "auth", middleware: "auth", allowIncomplete: true });
 const auth = useAuthStore();
 const route = useRoute();
 const api = useApi();
+const firebase = useFirebaseAuth();
 const cooldown = ref(60);
 const state = ref(route.query.token ? "checking" : "idle");
 let timer;
@@ -22,10 +23,22 @@ const confirm = async () => {
 
 const { run: resend, pending: resending } = useAction(
     async () => {
+        if (firebase.enabled && (await firebase.resendVerification())) {
+            cooldown.value = 60;
+            return;
+        }
         await api.post("/auth/resend-verification");
         cooldown.value = 60;
     },
     { success: copy.resent },
+);
+
+const recheck = useAction(
+    async () => {
+        if (!(await auth.syncVerification())) throw new Error(fb.stillPending);
+        state.value = "done";
+    },
+    { silent: true },
 );
 
 const signOut = async () => {
@@ -49,7 +62,7 @@ onBeforeUnmount(() => clearInterval(timer));
       <p class="t-body-s text-ink-2 m-0">{{ state === "done" ? copy.successText : state === "failed" ? copy.failedText : copy.text }}</p>
     </div>
     <template v-if="state === 'done' || auth.isVerified">
-      <UiButton :to="auth.isOnboarded ? auth.home : '/onboarding/1'" icon-end="arrowRight" class="self-start">{{ copy.continue }}</UiButton>
+      <UiButton :to="auth.isOnboarded ? auth.home : '/onboarding/1'" icon-end="arrowRight" block>{{ copy.continue }}</UiButton>
     </template>
     <template v-else-if="state !== 'checking'">
       <UiCard class="flex gap-4" padding="p-5">
@@ -57,9 +70,11 @@ onBeforeUnmount(() => clearInterval(timer));
         <p class="t-body-s text-ink m-0">{{ copy.sentTo }} <strong>{{ auth.user?.email }}</strong>.</p>
       </UiCard>
       <UiCallout :title="copy.noticeTitle">{{ copy.noticeText }}</UiCallout>
-      <div class="flex flex-wrap gap-3">
-        <UiButton variant="secondary" :disabled="cooldown > 0" :loading="resending" @click="resend()">{{ copy.resend }}{{ cooldown ? ` (${cooldown})` : "" }}</UiButton>
-        <UiButton variant="link" @click="signOut">{{ copy.logout }}</UiButton>
+      <div class="flex flex-col gap-2">
+        <UiCallout v-if="recheck.error.value" tone="danger">{{ recheck.error.value.message }}</UiCallout>
+        <UiButton v-if="firebase.enabled" block :loading="recheck.pending.value" @click="recheck.run()">{{ fb.verifiedCheck }}</UiButton>
+        <UiButton variant="secondary" block :disabled="cooldown > 0" :loading="resending" @click="resend()">{{ copy.resend }}{{ cooldown ? ` (${cooldown})` : "" }}</UiButton>
+        <UiButton variant="link" class="self-center" @click="signOut">{{ copy.logout }}</UiButton>
       </div>
     </template>
   </AuthFrame>

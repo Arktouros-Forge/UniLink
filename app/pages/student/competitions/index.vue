@@ -4,18 +4,15 @@ import { competitions as copy } from "@app/constants/student.json";
 
 definePageMeta({ layout: "student", middleware: "auth", title: "Kompetisi" });
 const { data: categories } = await useCategoryOptions();
-const query = ref("");
-const debounced = useDebounced(query);
 const category = ref("all");
 const sort = ref("deadline");
-const page = ref(1);
+const { query, debounced, page } = useSearchPage([category, sort]);
 const categoryFilter = computed(() => [{ value: "all", label: copy.allCategories }, ...categories.value.map((item) => ({ value: item.id, label: item.name }))]);
 const { data, pending } = await useApiData("competitions", "/student/competitions", {
   query: () => ({ q: debounced.value || undefined, categoryId: category.value === "all" ? undefined : category.value, sort: sort.value, state: "open", page: page.value, limit: 6 }),
   default: () => ({ competitions: [], pagination: { totalPages: 1 } }),
   watch: [debounced, category, sort, page],
 });
-watch([debounced, category, sort], () => (page.value = 1));
 </script>
 
 <template>

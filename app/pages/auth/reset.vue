@@ -55,7 +55,7 @@ const submit = () => !mismatch.value && run();
                     :invalid="invalid"
             /></FormField>
             <UiCallout v-if="error && !fieldErrors.password" tone="danger" :title="copy.invalidTitle">{{ error.message }} <NuxtLink to="/auth/forgot" class="text-ink">{{ copy.requestNew }} →</NuxtLink></UiCallout>
-            <UiButton type="submit" icon="check" class="self-start" :loading="pending" :disabled="!token">{{
+            <UiButton type="submit" icon="check" block :loading="pending" :disabled="!token">{{
                 copy.submit
             }}</UiButton>
         </form>

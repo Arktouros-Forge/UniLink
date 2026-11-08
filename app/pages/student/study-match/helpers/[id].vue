@@ -1,5 +1,5 @@
 <script setup>
-import { helper as extras } from "@app/constants/mock/detail.json";
+import { helper as extras } from "@app/constants/guidance.json";
 import { university } from "@app/constants/site.json";
 import { helperDetail as copy } from "@app/constants/student.json";
 
@@ -39,7 +39,6 @@ const { run: cancel } = useAction(
     <DetailLayout>
       <UiCard class="flex flex-col gap-5">
         <ProfileHeader :name="helper.fullName" :meta="`${helper.major ?? ''} · Angkatan ${helper.year} · ${university}`">
-          <UiChip tone="success" icon="clock">{{ extras.available }}</UiChip>
           <template #actions>
             <UiButton v-if="!['pending', 'accepted'].includes(status)" icon="userPlus" @click="open = true">Minta bantuan</UiButton>
             <template v-else-if="status === 'pending'"><UiChip tone="yellow" size="md">Menunggu jawaban</UiChip><UiButton variant="dangerLink" @click="cancel()">Batalkan</UiButton></template>
@@ -55,7 +54,7 @@ const { run: cancel } = useAction(
 
       
       <template #aside>
-        <ContactCard :name="helper.fullName" :url="helper.contact?.whatsappUrl" />
+        <ContactCard :name="helper.fullName" :url="helper.contact?.whatsappUrl" :phone="helper.contact?.phone" />
         <UiCallout title="Etika meminta bantuan" tone="info"><ul class="m-0 pl-4 flex flex-col gap-1"><li v-for="rule in extras.guidelines" :key="rule">{{ rule }}</li></ul></UiCallout>
       </template>
     </DetailLayout>

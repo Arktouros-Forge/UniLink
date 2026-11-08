@@ -64,15 +64,11 @@ const submit = () => run();
                     }}</NuxtLink>
                 </div>
                 <UiCallout v-if="error" tone="danger">{{ error.message }}</UiCallout>
-                <UiButton type="submit" icon="arrowRight" class="self-start" :loading="pending">{{
+                <UiButton type="submit" icon="arrowRight" block :loading="pending">{{
                     copy.submit
                 }}</UiButton>
             </form>
-
-            <UiDivider />
-            <UiButton variant="secondary" class="self-start"
-                >G · {{ copy.google }}</UiButton
-            >
+            <GoogleButton />
             <p class="t-body-s text-ink-2 m-0">
                 {{ copy.prompt }}
                 <NuxtLink to="/auth/register" class="text-ink"

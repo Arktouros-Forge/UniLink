@@ -1,0 +1,71 @@
+{
+  "competition": {
+    "timeline": [
+      {
+        "title": "Pendaftaran dibuka",
+        "text": "Pantau pengumuman di situs resmi penyelenggara.",
+        "state": "done"
+      },
+      {
+        "title": "Bentuk tim di UniLink",
+        "text": "Cari rekan dengan keahlian yang melengkapi.",
+        "state": "current"
+      },
+      {
+        "title": "Tenggat pendaftaran",
+        "text": "{deadline}",
+        "state": "todo"
+      },
+      {
+        "title": "Pengumuman finalis",
+        "text": "Dikabarkan oleh penyelenggara.",
+        "state": "todo"
+      }
+    ],
+    "tips": [
+      "Pastikan anggota tim berasal dari angkatan dan program studi yang diizinkan.",
+      "Baca panduan resmi sebelum menentukan pembagian peran.",
+      "Catat hasil di UniLink setelah pengumuman agar jejak lomba tim tetap rapi."
+    ]
+  },
+  "sign": {
+    "tips": [
+      "Terima penawaran yang jadwalnya paling cocok denganmu.",
+      "Tanda otomatis selesai setelah satu penawaran diterima.",
+      "Nomor WhatsApp terbuka setelah kamu menerima."
+    ]
+  },
+  "helper": {
+    "guidelines": [
+      "Fokus pada pemahaman, bukan meminta jawaban tugas.",
+      "Sebutkan apa yang sudah kamu coba.",
+      "Hormati jadwal dan balas dengan sopan."
+    ]
+  },
+  "team": {
+    "resultNote": "Belum dilaporkan. Catat pencapaian tim setelah pengumuman.",
+    "timeline": [
+      {
+        "title": "Tim dibentuk",
+        "text": "Pemilik tim membuat tim di UniLink.",
+        "state": "done",
+        "at": "20 Okt 2026"
+      },
+      {
+        "title": "Anggota lengkap",
+        "text": "Kuota tim terisi.",
+        "state": "current"
+      },
+      {
+        "title": "Pendaftaran lomba",
+        "text": "Daftarkan tim di situs resmi.",
+        "state": "todo"
+      },
+      {
+        "title": "Lapor hasil",
+        "text": "Setelah pengumuman.",
+        "state": "todo"
+      }
+    ]
+  }
+}

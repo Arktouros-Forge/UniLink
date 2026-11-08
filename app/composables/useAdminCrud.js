@@ -2,9 +2,7 @@ import { admin } from "@app/constants/student.json";
 
 export const useAdminCrud = (key, endpoint, { listKey = "items", toPayload = (values) => values, toRow = (row) => row } = {}) => {
   const api = useApi();
-  const search = ref("");
-  const debounced = useDebounced(search);
-  const page = ref(1);
+  const { query: search, debounced, page } = useSearchPage();
   const editing = ref(null);
   const modalOpen = ref(false);
   const removing = ref(null);
@@ -15,7 +13,6 @@ export const useAdminCrud = (key, endpoint, { listKey = "items", toPayload = (va
     watch: [debounced, page],
   });
   const { data, pending, status, refresh } = request;
-  watch(debounced, () => (page.value = 1));
 
   const rows = computed(() => (data.value[listKey] ?? []).map(toRow));
   const total = computed(() => data.value.pagination?.total ?? 0);

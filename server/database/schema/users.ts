@@ -54,6 +54,7 @@ export const users = pgTable(
 
     status: userStatusEnum("status").notNull().default("active"),
     blockedReason: text("blocked_reason"),
+    firebaseUid: text("firebase_uid").unique(),
     emailVerifiedAt: tz("email_verified_at"),
     sessionVersion: integer("session_version").notNull().default(0),
     onboardedAt: tz("onboarded_at"),

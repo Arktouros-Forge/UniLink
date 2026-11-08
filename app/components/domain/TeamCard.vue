@@ -14,7 +14,7 @@ defineProps({ team: { type: Object, required: true } });
       <UiChip v-if="team.isFull" tone="neutral">Penuh</UiChip>
     </div>
     <RosterSlots :members="team.members" :capacity="team.maxMembers ?? team.members.length" :size="32" />
-    <p v-if="team.description" class="t-body-xs text-ink-2 m-0">{{ team.description }}</p>
+    <p v-if="team.description" class="t-body-xs text-ink-2 m-0 line-clamp-3">{{ team.description }}</p>
     <div class="flex flex-wrap gap-2"><slot /></div>
   </UiCard>
 </template>

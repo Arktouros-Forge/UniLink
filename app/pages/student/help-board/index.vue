@@ -3,17 +3,14 @@ import { helpBoard as copy } from "@app/constants/student.json";
 
 definePageMeta({ layout: "student", middleware: "auth", title: "Papan bantuan" });
 const { data: skillOptions } = await useSkillOptions();
-const query = ref("");
-const debounced = useDebounced(query);
 const skill = ref("all");
-const page = ref(1);
+const { query, debounced, page } = useSearchPage([skill]);
 const skillFilter = computed(() => [{ value: "all", label: copy.allSkills }, ...skillOptions.value.map((item) => ({ value: item.id, label: item.name }))]);
 const { data, pending } = await useApiData("help-board", "/student/study-match/help-signs", {
     query: () => ({ scope: "board", q: debounced.value || undefined, skillId: skill.value === "all" ? undefined : skill.value, page: page.value, limit: 8 }),
     default: () => ({ signs: [], pagination: { totalPages: 1 } }),
     watch: [debounced, skill, page],
 });
-watch([debounced, skill], () => (page.value = 1));
 </script>
 
 <template>
