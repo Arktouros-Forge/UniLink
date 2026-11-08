@@ -1,14 +1,16 @@
+import { sql } from "drizzle-orm";
 import {
+  index,
   pgEnum,
   pgTable,
   text,
-  timestamp,
+  uniqueIndex,
   uuid,
-  index,
 } from "drizzle-orm/pg-core";
 
-import { users } from "./users";
+import { createdAt, tz } from "./_shared";
 import { skills } from "./skills";
+import { users } from "./users";
 
 export const helpSignStatusEnum = pgEnum("help_sign_status", [
   "open",
@@ -49,24 +51,14 @@ export const helpSigns = pgTable(
 
     status: helpSignStatusEnum("status").notNull().default("open"),
 
-    createdAt: timestamp("created_at", {
-      withTimezone: true,
-    })
-      .notNull()
-      .defaultNow(),
-
-    expiresAt: timestamp("expires_at", {
-      withTimezone: true,
-    }).notNull(),
-
-    closedAt: timestamp("closed_at", {
-      withTimezone: true,
-    }),
+    createdAt: createdAt(),
+    expiresAt: tz("expires_at").notNull(),
+    closedAt: tz("closed_at"),
   },
-  (table) => [
-    index("help_signs_skill_id_idx").on(table.skillId),
-    index("help_signs_user_id_idx").on(table.userId),
-    index("help_signs_status_idx").on(table.status),
+  (t) => [
+    index("help_signs_board_idx").on(t.status, t.expiresAt),
+    index("help_signs_skill_status_idx").on(t.skillId, t.status),
+    index("help_signs_user_id_idx").on(t.userId, t.createdAt),
   ],
 );
 
@@ -97,28 +89,21 @@ export const studyRequests = pgTable(
 
     status: studyRequestStatusEnum("status").notNull().default("pending"),
 
-    createdAt: timestamp("created_at", {
-      withTimezone: true,
-    })
-      .notNull()
-      .defaultNow(),
-
-    respondedAt: timestamp("responded_at", {
-      withTimezone: true,
-    }),
-
-    expiresAt: timestamp("expires_at", {
-      withTimezone: true,
-    }).notNull(),
-
-    deletedAt: timestamp("deleted_at", {
-      withTimezone: true,
-    }),
+    createdAt: createdAt(),
+    respondedAt: tz("responded_at"),
+    expiresAt: tz("expires_at").notNull(),
+    deletedAt: tz("deleted_at"),
   },
-  (table) => [
-    index("study_requests_requester_id_idx").on(table.requesterId),
-    index("study_requests_helper_id_idx").on(table.helperId),
-    index("study_requests_sign_id_idx").on(table.signId),
-    index("study_requests_status_idx").on(table.status),
+  (t) => [
+    index("study_requests_requester_idx").on(
+      t.requesterId,
+      t.status,
+      t.createdAt,
+    ),
+    index("study_requests_helper_idx").on(t.helperId, t.status, t.createdAt),
+    index("study_requests_sign_id_idx").on(t.signId),
+    uniqueIndex("study_requests_one_pending_per_pair")
+      .on(t.requesterId, t.helperId, sql`lower(btrim(${t.subject}))`)
+      .where(sql`${t.status} = 'pending' and ${t.deletedAt} is null`),
   ],
 );

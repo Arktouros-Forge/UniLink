@@ -1,4 +1,6 @@
-import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text, uuid } from "drizzle-orm/pg-core";
+
+import { createdAt, updatedAt } from "./_shared";
 
 export const categories = pgTable("categories", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -6,18 +8,8 @@ export const categories = pgTable("categories", {
   name: text("name").notNull().unique(),
   slug: text("slug").notNull().unique(),
   description: text("description"),
-
   color: text("color").notNull(),
 
-  createdAt: timestamp("created_at", {
-    withTimezone: true,
-  })
-    .notNull()
-    .defaultNow(),
-
-  updatedAt: timestamp("updated_at", {
-    withTimezone: true,
-  })
-    .notNull()
-    .defaultNow(),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
 });

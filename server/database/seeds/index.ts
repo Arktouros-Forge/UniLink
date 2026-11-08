@@ -1,27 +1,37 @@
 import { client } from "@database/client";
 
-import { seedUsers } from "./users.seed";
-import { seedSkills } from "./skills.seed";
-import { seedCategories } from "./categories.seed";
-import { seedLecturers } from "./lecturers.seed";
 import { seedCompetitions } from "./competitions.seed";
+import { createContext, SEED_CREDENTIALS } from "./lib/context";
+import { seedPlanner } from "./planner.seed";
+import { seedReference } from "./reference.seed";
+import { seedStudy } from "./study.seed";
+import { seedUsers } from "./users.seed";
 
 async function main() {
-  console.log("Starting UniLink database seeding...\n");
+  const started = performance.now();
+  console.log("Seeding UniLink...\n");
 
-  await seedUsers();
-  await seedSkills();
-  await seedCategories();
-  await seedLecturers();
-  await seedCompetitions();
+  const ctx = createContext();
 
-  console.log("\n✓ Database seeding completed");
+  await seedReference(ctx);
+  await seedUsers(ctx);
+  await seedCompetitions(ctx);
+  await seedStudy(ctx);
+  await seedPlanner(ctx);
+
+  console.log(`\n✓ Done in ${Math.round(performance.now() - started)} ms`);
+  console.log(
+    `  Student: ${SEED_CREDENTIALS.student.email} / ${SEED_CREDENTIALS.student.password}`,
+  );
+  console.log(
+    `  Admin:   ${SEED_CREDENTIALS.admin.email} / ${SEED_CREDENTIALS.admin.password}`,
+  );
 }
 
 try {
   await main();
 } catch (error) {
-  console.error("\n✗ Database seeding failed:", error);
+  console.error("\n✗ Seeding failed:", error);
   process.exitCode = 1;
 } finally {
   await client.end();

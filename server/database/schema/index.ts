@@ -6,3 +6,4 @@ export * from "./competitions";
 export * from "./study-match";
 export * from "./timetable";
 export * from "./tasks";
+export * from "./auth";

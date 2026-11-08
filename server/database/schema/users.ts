@@ -1,4 +1,15 @@
-import { pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+import {
+  index,
+  integer,
+  pgEnum,
+  pgTable,
+  text,
+  uniqueIndex,
+  uuid,
+} from "drizzle-orm/pg-core";
+
+import { createdAt, tz, updatedAt } from "./_shared";
 
 export const userRoleEnum = pgEnum("user_role", ["student", "admin"]);
 
@@ -20,40 +31,44 @@ export const cohortYearEnum = pgEnum("cohort_year", [
   "2030",
 ]);
 
-export const users = pgTable("users", {
-  id: uuid("id").defaultRandom().primaryKey(),
+export const users = pgTable(
+  "users",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
 
-  username: text("username").notNull().unique(),
-  email: text("email").notNull().unique(),
+    username: text("username").notNull().unique(),
+    email: text("email").notNull(),
+    password: text("password").notNull(),
 
-  password: text("password").notNull(),
+    fullName: text("full_name").notNull(),
+    nim: text("nim").unique(),
+    phone: text("phone"),
 
-  fullName: text("full_name").notNull(),
-  nim: text("nim").notNull().unique(),
-  phone: text("phone").notNull(),
+    role: userRoleEnum("role").notNull().default("student"),
+    year: cohortYearEnum("year"),
 
-  role: userRoleEnum("role").notNull().default("student"),
-  year: cohortYearEnum("year").notNull(),
+    major: text("major"),
+    bio: text("bio"),
+    personalWebsite: text("personal_website"),
+    profilePhotoUrl: text("profile_photo_url"),
 
-  personalWebsite: text("personal_website"),
-  profilePhotoUrl: text("profile_photo_url"),
+    status: userStatusEnum("status").notNull().default("active"),
+    blockedReason: text("blocked_reason"),
+    emailVerifiedAt: tz("email_verified_at"),
+    sessionVersion: integer("session_version").notNull().default(0),
+    onboardedAt: tz("onboarded_at"),
+    lastLoginAt: tz("last_login_at"),
 
-  status: userStatusEnum("status").notNull().default("active"),
-  blockedReason: text("blocked_reason"),
-
-  lastLoginAt: timestamp("last_login_at", {
-    withTimezone: true,
-  }),
-
-  createdAt: timestamp("created_at", {
-    withTimezone: true,
-  })
-    .notNull()
-    .defaultNow(),
-
-  updatedAt: timestamp("updated_at", {
-    withTimezone: true,
-  })
-    .notNull()
-    .defaultNow(),
-});
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    uniqueIndex("users_email_lower_unique").on(sql`lower(${t.email})`),
+    index("users_role_status_idx").on(t.role, t.status),
+    index("users_year_idx").on(t.year),
+    index("users_full_name_trgm_idx").using(
+      "gin",
+      sql`${t.fullName} gin_trgm_ops`,
+    ),
+  ],
+);

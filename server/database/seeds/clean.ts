@@ -1,7 +1,7 @@
 import { client } from "@database/client";
 
 async function cleanDatabase() {
-  if (process.env.ALLOW_DB_RESET !== "true") {
+  if (process.env.ALLOW_DB_RESET?.toLowerCase() !== "true") {
     throw new Error(
       "Database reset blocked. Set ALLOW_DB_RESET=true in .env to continue.",
     );

@@ -1,47 +1,18 @@
-import { eq } from "drizzle-orm";
-import { setCookie } from "h3";
-import { db } from "@database";
-import { users } from "@database/schema/index";
-import { successResponse, errorResponse } from "@server/utils/api-response.js";
+import { defineApi, ok } from "@server/utils/api.js";
+import { issueSession } from "@server/utils/session.js";
+import { fail } from "@server/utils/errors.js";
+import { mockLogin } from "@server/services/users/users.service.js";
+import { mockLoginBody } from "@server/validators/users.js";
 
-const TEST_USER_ID = "00000000-0000-4000-8000-000000000001";
+export default defineApi(
+  { auth: false, body: mockLoginBody },
+  async ({ event, body }) => {
+    if (!import.meta.dev) fail("NOT_FOUND");
 
-export default defineEventHandler(async (event) => {
-  if (!import.meta.dev) {
-    const response = errorResponse("Not found", null, 404);
-    setResponseStatus(event, response.statusCode);
-    return response;
-  }
+    const user = await mockLogin(body);
 
-  const [user] = await db
-    .select({
-      id: users.id,
-      username: users.username,
-      fullName: users.fullName,
-      email: users.email,
-      role: users.role,
-    })
-    .from(users)
-    .where(eq(users.id, TEST_USER_ID))
-    .limit(1);
+    await issueSession(event, user);
 
-  if (!user) {
-    const response = errorResponse(
-      "Test Profile 1 not found. Run your seed script first.",
-      null,
-      404,
-    );
-    setResponseStatus(event, response.statusCode);
-    return response;
-  }
-
-  setCookie(event, "unilink_test_user", user.id, {
-    httpOnly: true,
-    secure: !import.meta.dev,
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 8,
-  });
-
-  return successResponse(user, "Logged in as Test Profile 1");
-});
+    return ok(user, `Logged in as ${user.fullName}`);
+  },
+);

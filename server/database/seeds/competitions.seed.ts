@@ -1,105 +1,195 @@
-import { db } from "@database/client";
 import {
-  categories,
   competitionCategories,
   competitions,
+  teamMembers,
+  teams,
 } from "@database/schema";
-import { SEED_USER_IDS } from "./users.seed";
 
-const SEED_COMPETITION_IDS = {
-  hackathon: "00000000-0000-4000-8000-000000000101",
-  business: "00000000-0000-4000-8000-000000000102",
-  design: "00000000-0000-4000-8000-000000000103",
-} as const;
+import {
+  competitionSeeds,
+  teamBlurbs,
+  teamNamePool,
+} from "./data/competitions";
+import { SEED_USER_IDS, seedUuid, type SeedContext } from "./lib/context";
+import { insertMany } from "./lib/insert";
+import { daysFromNow } from "./lib/random";
 
-export async function seedCompetitions() {
-  await db
-    .insert(competitions)
-    .values([
-      {
-        id: SEED_COMPETITION_IDS.hackathon,
-        title: "National Student Hackathon",
-        description:
-          "A hackathon for university students to build innovative solutions.",
-        deadline: new Date("2027-06-30T23:59:00+08:00"),
-        maxTeamSize: 5,
-        host: "UniLink Demo Organizer",
-        sourceUrl: "https://example.com/hackathon",
-        status: "published",
-        createdBy: SEED_USER_IDS.admin,
-        createdByRole: "admin",
-      },
-      {
-        id: SEED_COMPETITION_IDS.business,
-        title: "Student Business Plan Competition",
-        description:
-          "Present an innovative business idea and compete with other students.",
-        deadline: new Date("2027-07-15T23:59:00+08:00"),
-        maxTeamSize: 4,
-        host: "UniLink Demo Organizer",
-        sourceUrl: "https://example.com/business",
-        status: "published",
-        createdBy: SEED_USER_IDS.admin,
-        createdByRole: "admin",
-      },
-      {
-        id: SEED_COMPETITION_IDS.design,
-        title: "UI/UX Design Challenge",
-        description:
-          "Design a user-friendly digital product for a real-world problem.",
-        deadline: new Date("2027-08-01T23:59:00+08:00"),
-        maxTeamSize: 3,
-        host: "UniLink Demo Organizer",
-        sourceUrl: "https://example.com/design",
-        status: "published",
-        createdBy: SEED_USER_IDS.student,
-        createdByRole: "student",
-      },
-    ])
-    .onConflictDoNothing();
+export async function seedCompetitions(ctx: SeedContext) {
+  const { rng, now } = ctx;
+  const students = ctx.ids.students;
 
-  const seededCategories = await db.select().from(categories);
+  const competitionRows = competitionSeeds.map((seed, index) => {
+    const id = seedUuid(20, index + 1);
+    ctx.ids.competitions.set(seed.key, id);
+    const createdBy =
+      seed.by === "admin" ? SEED_USER_IDS.admin : rng.pick(students.slice(1));
 
-  const categoryIds = new Map(
-    seededCategories.map((category) => [category.slug, category.id]),
+    return {
+      id,
+      title: seed.title,
+      description: seed.description,
+      deadline: daysFromNow(seed.deadlineInDays, now),
+      maxTeamSize: seed.maxTeamSize,
+      host: seed.host,
+      prize: seed.prize,
+      sourceUrl: `https://example.com/kompetisi/${seed.key}`,
+      imageUrl: null,
+      status: seed.status,
+      createdBy,
+      createdByRole: seed.by,
+      createdAt: daysFromNow(-rng.int(10, 120), now),
+    };
+  });
+
+  await insertMany(competitions, competitionRows);
+
+  await insertMany(
+    competitionCategories,
+    competitionSeeds.flatMap((seed) =>
+      seed.categories.map((name) => ({
+        competitionId: ctx.ids.competitions.get(seed.key)!,
+        categoryId: ctx.ids.categories.get(name)!,
+      })),
+    ),
   );
 
-  const categoryRelations: {
-    competitionId: string;
-    categoryId: string;
-  }[] = [];
+  const teamRows: (typeof teams.$inferInsert)[] = [];
+  const memberRows: (typeof teamMembers.$inferInsert)[] = [];
+  const names = rng.shuffle(teamNamePool);
+  let teamCounter = 0;
 
-  const technologyId = categoryIds.get("technology");
-  const businessId = categoryIds.get("business");
-  const designId = categoryIds.get("design");
+  for (const seed of competitionSeeds) {
+    if (!seed.teams) continue;
+    const competitionId = ctx.ids.competitions.get(seed.key)!;
+    const busy = new Set<string>();
+    const closed = seed.status === "closed";
 
-  if (technologyId) {
-    categoryRelations.push({
-      competitionId: SEED_COMPETITION_IDS.hackathon,
-      categoryId: technologyId,
+    for (let t = 0; t < seed.teams; t++) {
+      teamCounter++;
+      const teamId = seedUuid(21, teamCounter);
+
+      const preferMain =
+        (seed.key === "gemastik" && t === 0) ||
+        (seed.key === "ibpc" && t === 1);
+      const creatorPool = students.filter(
+        (id) => !busy.has(id) && id !== SEED_USER_IDS.student,
+      );
+      const creatorId =
+        seed.key === "gemastik" && t === 0
+          ? SEED_USER_IDS.student
+          : rng.pick(creatorPool);
+      busy.add(creatorId);
+
+      const roster = [creatorId];
+      const accepted = Math.min(
+        seed.maxTeamSize,
+        1 + rng.int(closed ? 1 : 0, seed.maxTeamSize - 1),
+      );
+      const wantMain = preferMain && seed.key === "ibpc";
+
+      if (wantMain) {
+        roster.push(SEED_USER_IDS.student);
+        busy.add(SEED_USER_IDS.student);
+      }
+
+      while (roster.length < accepted) {
+        const candidate = rng.pick(
+          students.filter(
+            (id) => !busy.has(id) && id !== SEED_USER_IDS.student,
+          ),
+        );
+        busy.add(candidate);
+        roster.push(candidate);
+      }
+
+      const reporter = closed ? rng.pick(roster) : null;
+
+      teamRows.push({
+        id: teamId,
+        competitionId,
+        name: names[teamCounter % names.length],
+        description: rng.pick(teamBlurbs),
+        maxMembers: seed.maxTeamSize,
+        creatorId,
+        result: closed
+          ? rng.weighted([
+              ["won", 0.35],
+              ["lost", 0.65],
+            ] as const)
+          : "unknown",
+        resultReportedAt: closed
+          ? daysFromNow(seed.deadlineInDays + rng.int(2, 9), now)
+          : null,
+        resultReportedBy: reporter,
+        createdAt: daysFromNow(
+          -rng.int(3, 40) + Math.min(seed.deadlineInDays, 0),
+          now,
+        ),
+      });
+
+      roster.forEach((userId, i) =>
+        memberRows.push({
+          teamId,
+          competitionId,
+          userId,
+          status: "accepted",
+          joinedAt: daysFromNow(
+            -rng.int(1, 25) + Math.min(seed.deadlineInDays, 0),
+            now,
+          ),
+        }),
+      );
+
+      const full = roster.length >= seed.maxTeamSize;
+      if (!closed && !full) {
+        const pendingCount = rng.int(
+          0,
+          Math.min(2, seed.maxTeamSize - roster.length),
+        );
+        const extra: string[] = [];
+        if (seed.key === "gemastik" && t === 0)
+          extra.push(...students.filter((id) => !busy.has(id)).slice(0, 2));
+        else
+          for (let p = 0; p < pendingCount; p++)
+            extra.push(
+              rng.pick(
+                students.filter((id) => !busy.has(id) && !extra.includes(id)),
+              ),
+            );
+        extra.forEach((userId) =>
+          memberRows.push({
+            teamId,
+            competitionId,
+            userId,
+            status: "pending",
+            joinedAt: daysFromNow(-rng.int(0, 4), now),
+          }),
+        );
+      }
+    }
+  }
+
+  const compfest = ctx.ids.competitions.get("compfest")!;
+  const compfestTeam = teamRows.find((row) => row.competitionId === compfest);
+  if (
+    compfestTeam &&
+    !memberRows.some(
+      (m) => m.competitionId === compfest && m.userId === SEED_USER_IDS.student,
+    )
+  ) {
+    memberRows.push({
+      teamId: compfestTeam.id!,
+      competitionId: compfest,
+      userId: SEED_USER_IDS.student,
+      status: "pending",
+      joinedAt: daysFromNow(-1, now),
     });
   }
 
-  if (businessId) {
-    categoryRelations.push({
-      competitionId: SEED_COMPETITION_IDS.business,
-      categoryId: businessId,
-    });
-  }
+  await insertMany(teams, teamRows);
+  await insertMany(teamMembers, memberRows);
 
-  if (designId) {
-    categoryRelations.push({
-      competitionId: SEED_COMPETITION_IDS.design,
-      categoryId: designId,
-    });
-  }
-
-  if (categoryRelations.length > 0) {
-    await db
-      .insert(competitionCategories)
-      .values(categoryRelations)
-      .onConflictDoNothing();
-  }
-
-  console.log("✓ Competitions seeded");
+  console.log(
+    `✓ Competitions: ${competitionRows.length}, ${teamRows.length} teams, ${memberRows.length} memberships`,
+  );
 }

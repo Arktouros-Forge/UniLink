@@ -1,16 +1,18 @@
+import { sql } from "drizzle-orm";
 import {
+  check,
+  index,
+  integer,
   pgEnum,
   pgTable,
   text,
-  timestamp,
-  uuid,
-  integer,
   time,
-  index,
+  uuid,
 } from "drizzle-orm/pg-core";
 
-import { users } from "./users";
+import { createdAt } from "./_shared";
 import { lecturers } from "./lecturers";
+import { users } from "./users";
 
 export const timetableRecurrenceEnum = pgEnum("timetable_recurrence", [
   "none",
@@ -36,32 +38,30 @@ export const timetableEvents = pgTable(
     title: text("title").notNull(),
 
     dayOfWeek: integer("day_of_week").notNull(),
-
     startTime: time("start_time").notNull(),
     endTime: time("end_time").notNull(),
-
     room: text("room"),
 
     lecturerId: uuid("lecturer_id").references(() => lecturers.id, {
       onDelete: "set null",
     }),
-
     lecturerNameFreeText: text("lecturer_name_free_text"),
 
     recurrence: timetableRecurrenceEnum("recurrence")
       .notNull()
       .default("weekly"),
-
     source: timetableSourceEnum("source").notNull().default("manual"),
 
-    createdAt: timestamp("created_at", {
-      withTimezone: true,
-    })
-      .notNull()
-      .defaultNow(),
+    createdAt: createdAt(),
   },
-  (table) => [
-    index("timetable_events_user_id_idx").on(table.userId),
-    index("timetable_events_lecturer_id_idx").on(table.lecturerId),
+  (t) => [
+    index("timetable_events_user_day_idx").on(
+      t.userId,
+      t.dayOfWeek,
+      t.startTime,
+    ),
+    index("timetable_events_lecturer_id_idx").on(t.lecturerId),
+    check("timetable_events_day_check", sql`${t.dayOfWeek} between 1 and 7`),
+    check("timetable_events_time_check", sql`${t.endTime} > ${t.startTime}`),
   ],
 );

@@ -1,12 +1,10 @@
 import { eq } from "drizzle-orm";
-import { getCookie } from "h3";
 
 import { db } from "@database/index";
 import { users } from "@database/schema/index";
 
+import { readSession } from "./session.js";
 import { createTtlCache } from "./ttl-cache.js";
-
-export const SESSION_COOKIE = "unilink_test_user";
 
 const sessions = createTtlCache({ ttl: 10_000, max: 1000 });
 
@@ -19,6 +17,8 @@ async function loadSession(userId) {
       role: users.role,
       status: users.status,
       blockedReason: users.blockedReason,
+      sessionVersion: users.sessionVersion,
+      emailVerifiedAt: users.emailVerifiedAt,
     })
     .from(users)
     .where(eq(users.id, userId))
@@ -27,11 +27,12 @@ async function loadSession(userId) {
 }
 
 export async function resolveSession(event) {
-  if (!import.meta.dev) return null;
-  const userId = getCookie(event, SESSION_COOKIE);
-  if (!userId || !/^[0-9a-f-]{36}$/i.test(userId)) return null;
+  const session = await readSession(event);
+  if (!session?.id) return null;
 
-  const cached = sessions.get(userId);
-  if (cached !== undefined) return cached;
-  return sessions.set(userId, await loadSession(userId));
+  let user = sessions.get(session.id);
+  if (user === undefined) user = sessions.set(session.id, await loadSession(session.id));
+
+  if (!user || user.sessionVersion !== session.version) return null;
+  return user;
 }

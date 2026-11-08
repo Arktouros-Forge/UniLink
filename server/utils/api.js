@@ -68,6 +68,7 @@ export function defineApi(options, handler) {
               : null,
           );
         if (!ROLES[auth].includes(user.role)) fail("FORBIDDEN");
+        if (auth !== "any" && !user.emailVerifiedAt) fail("EMAIL_NOT_VERIFIED");
       }
 
       const ctx = {

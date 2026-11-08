@@ -1,209 +1,130 @@
-import { and, asc, count, desc, eq, gt, isNull, ne, or } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 
 import { db } from "@database/index";
-import {
-  competitions,
-  lecturers,
-  studyRequests,
-  teamMembers,
-  teams,
-  timetableEvents,
-  users,
-} from "@database/schema/index";
 
-const DAY_NAMES = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
-
-async function getStudyMatchSummary(userId) {
-  const now = new Date();
-
-  const incomingCondition = or(
-    and(
-      eq(studyRequests.initiatedBy, "requester"),
-      eq(studyRequests.helperId, userId),
-    ),
-    and(
-      eq(studyRequests.initiatedBy, "helper"),
-      eq(studyRequests.requesterId, userId),
-    ),
-  );
-
-  const conditions = and(
-    eq(studyRequests.status, "pending"),
-    isNull(studyRequests.deletedAt),
-    gt(studyRequests.expiresAt, now),
-    incomingCondition,
-  );
-
-  const [countResult, latestResult] = await Promise.all([
-    db.select({ total: count() }).from(studyRequests).where(conditions),
-
-    db
-      .select({
-        id: studyRequests.id,
-        requesterId: studyRequests.requesterId,
-        helperId: studyRequests.helperId,
-        initiatedBy: studyRequests.initiatedBy,
-        subject: studyRequests.subject,
-        createdAt: studyRequests.createdAt,
-      })
-      .from(studyRequests)
-      .where(conditions)
-      .orderBy(desc(studyRequests.createdAt))
-      .limit(1),
-  ]);
-
-  const latest = latestResult[0];
-
-  if (!latest) {
-    return {
-      pendingRequestCount: Number(countResult[0]?.total ?? 0),
-      latestRequest: null,
-    };
-  }
-
-  const senderId =
-    latest.initiatedBy === "requester" ? latest.requesterId : latest.helperId;
-
-  const [sender] = await db
-    .select({
-      id: users.id,
-      fullName: users.fullName,
-      profilePhotoUrl: users.profilePhotoUrl,
-    })
-    .from(users)
-    .where(eq(users.id, senderId))
-    .limit(1);
-
-  return {
-    pendingRequestCount: Number(countResult[0]?.total ?? 0),
-    latestRequest: {
-      id: latest.id,
-      subject: latest.subject,
-      createdAt: latest.createdAt,
-      sender: sender ?? null,
-    },
-  };
-}
-
-async function getTeamSummary(userId) {
-  const activeConditions = and(
-    eq(teamMembers.userId, userId),
-    eq(teamMembers.status, "accepted"),
-    ne(competitions.status, "closed"),
-  );
-
-  const [activeTeams, latestResult] = await Promise.all([
-    db
-      .selectDistinct({
-        teamId: teams.id,
-      })
-      .from(teamMembers)
-      .innerJoin(teams, eq(teamMembers.teamId, teams.id))
-      .innerJoin(competitions, eq(teams.competitionId, competitions.id))
-      .where(activeConditions),
-
-    db
-      .select({
-        id: teams.id,
-        name: teams.name,
-        createdAt: teams.createdAt,
-        teamMaxMembers: teams.maxMembers,
-        competitionName: competitions.title,
-        competitionMaxTeamSize: competitions.maxTeamSize,
-      })
-      .from(teamMembers)
-      .innerJoin(teams, eq(teamMembers.teamId, teams.id))
-      .innerJoin(competitions, eq(teams.competitionId, competitions.id))
-      .where(activeConditions)
-      .orderBy(desc(teams.createdAt))
-      .limit(1),
-  ]);
-
-  const latest = latestResult[0];
-
-  if (!latest) {
-    return {
-      activeTeamCount: activeTeams.length,
-      latestTeam: null,
-    };
-  }
-
-  const [memberCountResult] = await db
-    .select({
-      total: count(),
-    })
-    .from(teamMembers)
-    .where(
-      and(
-        eq(teamMembers.teamId, latest.id),
-        eq(teamMembers.status, "accepted"),
-      ),
-    );
-
-  return {
-    activeTeamCount: activeTeams.length,
-    latestTeam: {
-      id: latest.id,
-      name: latest.name,
-      competitionName: latest.competitionName,
-      currentMemberCount: Number(memberCountResult?.total ?? 0),
-      maxTeamSize:
-        latest.teamMaxMembers ?? latest.competitionMaxTeamSize ?? null,
-    },
-  };
-}
-
-async function getTimetableSummary(userId) {
-  const events = await db
-    .select({
-      id: timetableEvents.id,
-      courseCode: timetableEvents.courseCode,
-      title: timetableEvents.title,
-      dayOfWeek: timetableEvents.dayOfWeek,
-      startTime: timetableEvents.startTime,
-      endTime: timetableEvents.endTime,
-      room: timetableEvents.room,
-      lecturerName: lecturers.name,
-      lecturerNameFreeText: timetableEvents.lecturerNameFreeText,
-    })
-    .from(timetableEvents)
-    .leftJoin(lecturers, eq(timetableEvents.lecturerId, lecturers.id))
-    .where(eq(timetableEvents.userId, userId))
-    .orderBy(asc(timetableEvents.dayOfWeek), asc(timetableEvents.startTime));
-
-  return {
-    events: events.map((event) => ({
-      id: event.id,
-      courseCode: event.courseCode,
-      title: event.title,
-      dayOfWeek: event.dayOfWeek,
-      dayName: DAY_NAMES[event.dayOfWeek - 1] ?? null,
-      startTime: event.startTime,
-      endTime: event.endTime,
-      room: event.room,
-      lecturer: event.lecturerName ?? event.lecturerNameFreeText ?? null,
-    })),
-  };
-}
+const rows = async (query) => [...(await db.execute(query))];
 
 export async function getStudentDashboard(userId) {
-  const [studyMatch, teams, timetable] = await Promise.all([
-    getStudyMatchSummary(userId),
-    getTeamSummary(userId),
-    getTimetableSummary(userId),
+  const [[counts], pending, teamsActive, tasksDue, today, activity] =
+    await Promise.all([
+      db.execute(sql`
+      select
+        (select count(*)::int from study_requests r where r.deleted_at is null and r.status = 'pending' and r.expires_at > now()
+          and ((r.initiated_by = 'requester' and r.helper_id = ${userId}) or (r.initiated_by = 'helper' and r.requester_id = ${userId}))) as "pendingRequests",
+        (select count(*)::int from team_members m join teams t on t.id = m.team_id join competitions c on c.id = t.competition_id
+          where m.user_id = ${userId} and m.status = 'accepted' and c.status <> 'closed') as "activeTeams",
+        (select count(*)::int from tasks where user_id = ${userId} and not completed) as "openTasks",
+        (select count(*)::int from tasks where user_id = ${userId} and not completed and due_date < current_date) as "overdueTasks",
+        (select count(*)::int from tasks where user_id = ${userId} and completed and completed_at > now() - interval '7 days') as "doneThisWeek",
+        (select count(*)::int from study_requests r where r.helper_id = ${userId} and r.status = 'accepted' and r.deleted_at is null) as helped
+    `),
+      rows(sql`
+      select r.id, r.subject, r.created_at as "createdAt",
+        json_build_object('id', u.id, 'fullName', u.full_name, 'profilePhotoUrl', u.profile_photo_url) as sender
+      from study_requests r
+      join users u on u.id = case when r.initiated_by = 'requester' then r.requester_id else r.helper_id end
+      where r.deleted_at is null and r.status = 'pending' and r.expires_at > now()
+        and ((r.initiated_by = 'requester' and r.helper_id = ${userId}) or (r.initiated_by = 'helper' and r.requester_id = ${userId}))
+      order by r.created_at desc limit 3
+    `),
+      rows(sql`
+      select t.id, t.name, c.title as "competitionTitle", c.deadline as "competitionDeadline",
+        (select count(*) from team_members x where x.team_id = t.id and x.status = 'accepted')::int as "memberCount",
+        coalesce(t.max_members, c.max_team_size) as "capacity",
+        (select count(*) from team_members x where x.team_id = t.id and x.status = 'pending' and t.creator_id = ${userId})::int as "pendingJoin"
+      from team_members m join teams t on t.id = m.team_id join competitions c on c.id = t.competition_id
+      where m.user_id = ${userId} and m.status = 'accepted' and c.status <> 'closed'
+      order by c.deadline asc limit 3
+    `),
+      rows(sql`
+      select id, title, course, priority, due_date as "dueDate" from tasks
+      where user_id = ${userId} and not completed order by due_date asc nulls last, priority desc limit 5
+    `),
+      rows(sql`
+      select e.id, e.title, e.course_code as "courseCode", e.room, to_char(e.start_time, 'HH24:MI') as "startTime", to_char(e.end_time, 'HH24:MI') as "endTime",
+        coalesce(l.name, e.lecturer_name_free_text) as "lecturerName"
+      from timetable_events e left join lecturers l on l.id = e.lecturer_id
+      where e.user_id = ${userId} and e.day_of_week = extract(isodow from (now() at time zone 'Asia/Makassar'))::int
+      order by e.start_time
+    `),
+      rows(sql`
+      (select 'request-accepted' as type, r.subject as label, r.responded_at as at from study_requests r
+        where r.deleted_at is null and r.status = 'accepted' and (r.requester_id = ${userId} or r.helper_id = ${userId}) and r.responded_at is not null)
+      union all
+      (select 'team-joined', t.name, m.joined_at from team_members m join teams t on t.id = m.team_id where m.user_id = ${userId} and m.status = 'accepted')
+      union all
+      (select 'task-done', k.title, k.completed_at from tasks k where k.user_id = ${userId} and k.completed and k.completed_at is not null)
+      order by at desc limit 5
+    `),
+    ]);
+
+  return {
+    counts,
+    pendingRequests: pending,
+    teams: teamsActive,
+    tasks: tasksDue,
+    today,
+    activity,
+  };
+}
+
+export async function getAdminDashboard() {
+  const [
+    [totals],
+    signups,
+    byYear,
+    byCategory,
+    requestStatus,
+    topSkills,
+    recentUsers,
+  ] = await Promise.all([
+    db.execute(sql`
+      select
+        (select count(*)::int from users where role = 'student') as students,
+        (select count(*)::int from users where role = 'student' and status = 'blocked') as blocked,
+        (select count(*)::int from users where role = 'student' and last_login_at > now() - interval '7 days') as "activeWeek",
+        (select count(*)::int from competitions where status = 'published' and deadline > now()) as "openCompetitions",
+        (select count(*)::int from competitions) as competitions,
+        (select count(*)::int from teams) as teams,
+        (select count(*)::int from study_requests where deleted_at is null) as requests,
+        (select count(*)::int from study_requests where deleted_at is null and status = 'accepted') as "acceptedRequests",
+        (select count(*)::int from help_signs where status = 'open' and expires_at > now()) as "openSigns",
+        (select count(*)::int from skills) as skills
+    `),
+    rows(sql`
+      select to_char(m, 'YYYY-MM') as month, count(u.id)::int as count
+      from generate_series(date_trunc('month', now()) - interval '5 months', date_trunc('month', now()), interval '1 month') m
+      left join users u on date_trunc('month', u.created_at) = m and u.role = 'student'
+      group by m order by m
+    `),
+    rows(
+      sql`select year::text as year, count(*)::int as count from users where role = 'student' group by year order by year`,
+    ),
+    rows(sql`
+      select c.name, c.color, count(cc.competition_id)::int as count
+      from categories c left join competition_categories cc on cc.category_id = c.id
+      group by c.id order by count desc, c.name
+    `),
+    rows(
+      sql`select status::text as status, count(*)::int as count from study_requests where deleted_at is null group by status order by count desc`,
+    ),
+    rows(sql`
+      select s.name, count(us.user_id)::int as count
+      from skills s left join user_skills us on us.skill_id = s.id
+      group by s.id order by count desc, s.name limit 8
+    `),
+    rows(
+      sql`select id, full_name as "fullName", year, major, status, created_at as "createdAt" from users where role = 'student' order by created_at desc limit 5`,
+    ),
   ]);
 
   return {
-    studyMatch,
-    teams,
-    timetable,
+    totals,
+    signups,
+    byYear,
+    byCategory,
+    requestStatus,
+    topSkills,
+    recentUsers,
   };
 }

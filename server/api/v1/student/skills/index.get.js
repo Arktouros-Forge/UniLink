@@ -1,46 +1,4 @@
-import { z } from "zod";
-import { getSkills } from "@server/services/skills/skills.service.js";
-import { getCurrentUser } from "@server/utils/current-user.js";
-import { successResponse, errorResponse } from "@server/utils/api-response.js";
+import { defineApi } from "@server/utils/api.js";
+import { listSkills } from "@server/services/reference/reference.service.js";
 
-const querySchema = z.object({
-  q: z.string().trim().max(100).optional(),
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(50).default(10),
-});
-
-export default defineEventHandler(async (event) => {
-  const currentUser = await getCurrentUser(event);
-
-  if (!currentUser) {
-    const response = errorResponse("You are not logged in", null, 401);
-    setResponseStatus(event, response.statusCode);
-    return response;
-  }
-
-  if (currentUser.role !== "student") {
-    const response = errorResponse("Student access required", null, 403);
-    setResponseStatus(event, response.statusCode);
-    return response;
-  }
-
-  const result = querySchema.safeParse(getQuery(event));
-
-  if (!result.success) {
-    const response = errorResponse(
-      "Invalid query parameters",
-      result.error.issues.map((issue) => ({
-        field: issue.path.join("."),
-        message: issue.message,
-      })),
-      422,
-    );
-
-    setResponseStatus(event, response.statusCode);
-    return response;
-  }
-
-  const data = await getSkills(result.data);
-
-  return successResponse(data, "Skills retrieved successfully");
-});
+export default defineApi({ auth: "any", cache: 60 }, () => listSkills());

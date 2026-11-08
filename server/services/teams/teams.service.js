@@ -1,4 +1,4 @@
-import { and, asc, count, eq, inArray, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, sql } from "drizzle-orm";
 
 import { db } from "@database/index";
 import {
@@ -8,458 +8,356 @@ import {
   users,
 } from "@database/schema/index";
 
-async function getAcceptedMemberCount(executor, teamId) {
-  const [result] = await executor
-    .select({
-      count: count(),
-    })
-    .from(teamMembers)
-    .where(
-      and(eq(teamMembers.teamId, teamId), eq(teamMembers.status, "accepted")),
-    );
+import { assert, fail } from "../../utils/errors.js";
+import { ref, userSkillsJson, whatsappUrl } from "../_sql.js";
 
-  return Number(result?.count ?? 0);
-}
+const memberCount = (teamIdColumn) =>
+  sql`(select count(*) from team_members m where m.team_id = ${ref(teamIdColumn)} and m.status = 'accepted')`.mapWith(
+    Number,
+  );
 
-async function getTeamWithDetails(executor, teamId) {
-  const [team] = await executor
+async function loadTeam(executor, teamId, { lock = false } = {}) {
+  const query = executor
     .select({
       id: teams.id,
       competitionId: teams.competitionId,
-      competitionTitle: competitions.title,
-      competitionDeadline: competitions.deadline,
-      competitionStatus: competitions.status,
       name: teams.name,
       description: teams.description,
-      maxMembers: teams.maxMembers,
       creatorId: teams.creatorId,
+      maxMembers: teams.maxMembers,
       result: teams.result,
       resultReportedAt: teams.resultReportedAt,
-      resultReportedBy: teams.resultReportedBy,
-      createdAt: teams.createdAt,
+      competitionTitle: competitions.title,
+      competitionStatus: competitions.status,
+      competitionDeadline: competitions.deadline,
+      competitionMaxTeamSize: competitions.maxTeamSize,
     })
     .from(teams)
-    .innerJoin(competitions, eq(teams.competitionId, competitions.id))
-    .where(eq(teams.id, teamId))
-    .limit(1);
+    .innerJoin(competitions, eq(competitions.id, teams.competitionId))
+    .where(eq(teams.id, teamId));
 
-  if (!team) return null;
+  const [team] = lock ? await query.for("update", { of: teams }) : await query;
+  if (!team) fail("TEAM_NOT_FOUND");
+  return team;
+}
 
-  const members = await executor
+const capacity = (team) =>
+  team.maxMembers ?? team.competitionMaxTeamSize ?? null;
+
+function assertEditable(team) {
+  assert(team.competitionStatus !== "closed", "COMPETITION_CLOSED");
+  assert(
+    new Date(team.competitionDeadline) > new Date(),
+    "COMPETITION_DEADLINE_PASSED",
+  );
+}
+
+async function acceptedCount(executor, teamId) {
+  const [row] = await executor
+    .select({ n: memberCount(teams.id) })
+    .from(teams)
+    .where(eq(teams.id, teamId));
+  return row.n;
+}
+
+export async function getTeam(viewerId, teamId) {
+  const team = await loadTeam(db, teamId);
+
+  const members = await db
     .select({
-      id: teamMembers.id,
-      userId: teamMembers.userId,
-      username: users.username,
+      memberId: teamMembers.id,
+      userId: users.id,
       fullName: users.fullName,
+      username: users.username,
+      year: users.year,
+      major: users.major,
       profilePhotoUrl: users.profilePhotoUrl,
+      phone: users.phone,
       status: teamMembers.status,
       joinedAt: teamMembers.joinedAt,
+      skills: userSkillsJson(users.id),
     })
     .from(teamMembers)
-    .innerJoin(users, eq(teamMembers.userId, users.id))
+    .innerJoin(users, eq(users.id, teamMembers.userId))
     .where(eq(teamMembers.teamId, teamId))
     .orderBy(asc(teamMembers.joinedAt));
 
-  const acceptedMemberCount = members.filter(
+  const me = members.find((member) => member.userId === viewerId);
+  const isCreator = team.creatorId === viewerId;
+  const isAccepted = me?.status === "accepted";
+
+  const visible = members
+    .filter((member) => isCreator || member.status === "accepted")
+    .map(({ phone, ...member }) => ({
+      ...member,
+      isCreator: member.userId === team.creatorId,
+      contact:
+        isAccepted && member.status === "accepted" && member.userId !== viewerId
+          ? { whatsappUrl: whatsappUrl(phone) }
+          : null,
+    }));
+
+  const accepted = members.filter(
     (member) => member.status === "accepted",
   ).length;
+  const limit = capacity(team);
 
   return {
     ...team,
-    acceptedMemberCount,
-    members,
+    acceptedCount: accepted,
+    pendingCount: members.length - accepted,
+    isFull: limit !== null && accepted >= limit,
+    members: visible,
+    viewer: {
+      isCreator,
+      status: me?.status ?? null,
+      canJoin: !me && (limit === null || accepted < limit),
+    },
   };
 }
 
-export async function createTeam(userId, data) {
-  return db.transaction(async (tx) => {
+export async function listMyTeams(userId) {
+  return db
+    .select({
+      id: teams.id,
+      name: teams.name,
+      description: teams.description,
+      result: teams.result,
+      maxMembers: teams.maxMembers,
+      myStatus: teamMembers.status,
+      isCreator: sql`${teams.creatorId} = ${userId}`.mapWith(Boolean),
+      acceptedCount: memberCount(teams.id),
+      pendingCount:
+        sql`(select count(*) from team_members m where m.team_id = ${teams.id} and m.status = 'pending')`.mapWith(
+          Number,
+        ),
+      competition: sql`json_build_object('id', ${competitions.id}, 'title', ${competitions.title}, 'host', ${competitions.host}, 'deadline', ${competitions.deadline}, 'status', ${competitions.status}, 'maxTeamSize', ${competitions.maxTeamSize})`,
+      members: sql`coalesce((
+        select json_agg(json_build_object('id', mu.id, 'fullName', mu.full_name, 'profilePhotoUrl', mu.profile_photo_url) order by m.joined_at)
+        from team_members m join users mu on mu.id = m.user_id
+        where m.team_id = ${teams.id} and m.status = 'accepted'
+      ), '[]'::json)`,
+    })
+    .from(teamMembers)
+    .innerJoin(teams, eq(teams.id, teamMembers.teamId))
+    .innerJoin(competitions, eq(competitions.id, teams.competitionId))
+    .where(eq(teamMembers.userId, userId))
+    .orderBy(desc(competitions.deadline));
+}
+
+export async function createTeam(
+  userId,
+  { competitionId, name, description, maxMembers },
+) {
+  const id = await db.transaction(async (tx) => {
     const [competition] = await tx
       .select({
-        id: competitions.id,
         status: competitions.status,
         deadline: competitions.deadline,
         maxTeamSize: competitions.maxTeamSize,
       })
       .from(competitions)
-      .where(eq(competitions.id, data.competitionId))
-      .limit(1);
+      .where(eq(competitions.id, competitionId))
+      .for("share");
 
-    if (!competition) {
-      return { error: "COMPETITION_NOT_FOUND" };
-    }
+    if (!competition) fail("COMPETITION_NOT_FOUND");
+    assert(competition.status === "published", "COMPETITION_CLOSED");
+    assert(
+      new Date(competition.deadline) > new Date(),
+      "COMPETITION_DEADLINE_PASSED",
+    );
 
-    if (competition.status === "closed") {
-      return { error: "COMPETITION_CLOSED" };
-    }
-
-    if (competition.deadline && new Date(competition.deadline) <= new Date()) {
-      return { error: "COMPETITION_DEADLINE_PASSED" };
-    }
-
-    const [existingMembership] = await tx
-      .select({
-        id: teamMembers.id,
-      })
-      .from(teamMembers)
-      .innerJoin(teams, eq(teamMembers.teamId, teams.id))
-      .where(
-        and(
-          eq(teamMembers.userId, userId),
-          eq(teams.competitionId, data.competitionId),
-        ),
-      )
-      .limit(1);
-
-    if (existingMembership) {
-      return { error: "ALREADY_IN_TEAM" };
-    }
-
-    const [existingCreatorTeam] = await tx
-      .select({
-        id: teams.id,
-      })
-      .from(teams)
-      .where(
-        and(
-          eq(teams.competitionId, data.competitionId),
-          eq(teams.creatorId, userId),
-        ),
-      )
-      .limit(1);
-
-    if (existingCreatorTeam) {
-      return { error: "TEAM_ALREADY_CREATED" };
-    }
-
-    const maxMembers = data.maxMembers ?? competition.maxTeamSize ?? null;
-
-    if (maxMembers !== null && maxMembers < 1) {
-      return { error: "INVALID_TEAM_SIZE" };
-    }
-
+    const size = maxMembers ?? competition.maxTeamSize ?? null;
     if (
       competition.maxTeamSize !== null &&
-      maxMembers !== null &&
-      maxMembers > competition.maxTeamSize
-    ) {
-      return { error: "TEAM_SIZE_EXCEEDS_COMPETITION_LIMIT" };
-    }
+      size !== null &&
+      size > competition.maxTeamSize
+    )
+      fail("TEAM_SIZE_EXCEEDS_COMPETITION_LIMIT");
+
+    const [existing] = await tx
+      .select({ id: teamMembers.id })
+      .from(teamMembers)
+      .where(
+        and(
+          eq(teamMembers.competitionId, competitionId),
+          eq(teamMembers.userId, userId),
+          eq(teamMembers.status, "accepted"),
+        ),
+      )
+      .limit(1);
+    if (existing) fail("ALREADY_IN_TEAM");
 
     const [team] = await tx
       .insert(teams)
       .values({
-        competitionId: competition.id,
-        name: data.name.trim(),
-        description: data.description?.trim() || null,
-        maxMembers,
+        competitionId,
+        name: name.trim(),
+        description: description ?? null,
+        maxMembers: size,
         creatorId: userId,
       })
-      .returning();
+      .returning({ id: teams.id });
 
-    await tx.insert(teamMembers).values({
-      teamId: team.id,
-      userId,
-      status: "accepted",
-    });
-
-    return getTeamWithDetails(tx, team.id);
+    await tx
+      .delete(teamMembers)
+      .where(
+        and(
+          eq(teamMembers.competitionId, competitionId),
+          eq(teamMembers.userId, userId),
+          eq(teamMembers.status, "pending"),
+        ),
+      );
+    await tx
+      .insert(teamMembers)
+      .values({ teamId: team.id, competitionId, userId, status: "accepted" });
+    return team.id;
   });
-}
 
-export async function getTeamById(teamId) {
-  return getTeamWithDetails(db, teamId);
+  return getTeam(userId, id);
 }
 
 export async function updateTeam(userId, teamId, data) {
-  const [team] = await db
-    .select({
-      id: teams.id,
-      competitionId: teams.competitionId,
-      creatorId: teams.creatorId,
-      maxMembers: teams.maxMembers,
-      competitionMaxTeamSize: competitions.maxTeamSize,
-      competitionStatus: competitions.status,
-      competitionDeadline: competitions.deadline,
-    })
-    .from(teams)
-    .innerJoin(competitions, eq(teams.competitionId, competitions.id))
-    .where(eq(teams.id, teamId))
-    .limit(1);
+  await db.transaction(async (tx) => {
+    const team = await loadTeam(tx, teamId, { lock: true });
+    assert(team.creatorId === userId, "FORBIDDEN");
+    assertEditable(team);
 
-  if (!team) return { error: "TEAM_NOT_FOUND" };
+    const next =
+      data.maxMembers !== undefined ? data.maxMembers : team.maxMembers;
+    if (
+      team.competitionMaxTeamSize !== null &&
+      next !== null &&
+      next > team.competitionMaxTeamSize
+    )
+      fail("TEAM_SIZE_EXCEEDS_COMPETITION_LIMIT");
+    if (next !== null && (await acceptedCount(tx, teamId)) > next)
+      fail("TEAM_SIZE_BELOW_CURRENT_MEMBERS");
 
-  if (team.creatorId !== userId) {
-    return { error: "FORBIDDEN" };
-  }
+    await tx
+      .update(teams)
+      .set({
+        ...(data.name !== undefined && { name: data.name.trim() }),
+        ...(data.description !== undefined && {
+          description: data.description,
+        }),
+        ...(data.maxMembers !== undefined && { maxMembers: data.maxMembers }),
+      })
+      .where(eq(teams.id, teamId));
+  });
 
-  if (team.competitionStatus === "closed") {
-    return { error: "COMPETITION_CLOSED" };
-  }
-
-  if (
-    team.competitionDeadline &&
-    new Date(team.competitionDeadline) <= new Date()
-  ) {
-    return { error: "COMPETITION_DEADLINE_PASSED" };
-  }
-
-  const nextMaxMembers =
-    data.maxMembers !== undefined ? data.maxMembers : team.maxMembers;
-
-  if (nextMaxMembers !== null && nextMaxMembers < 1) {
-    return { error: "INVALID_TEAM_SIZE" };
-  }
-
-  if (
-    team.competitionMaxTeamSize !== null &&
-    nextMaxMembers !== null &&
-    nextMaxMembers > team.competitionMaxTeamSize
-  ) {
-    return { error: "TEAM_SIZE_EXCEEDS_COMPETITION_LIMIT" };
-  }
-
-  const acceptedMemberCount = await getAcceptedMemberCount(db, teamId);
-
-  if (nextMaxMembers !== null && acceptedMemberCount > nextMaxMembers) {
-    return { error: "TEAM_SIZE_BELOW_CURRENT_MEMBERS" };
-  }
-
-  await db
-    .update(teams)
-    .set({
-      ...(data.name !== undefined && {
-        name: data.name.trim(),
-      }),
-      ...(data.description !== undefined && {
-        description: data.description?.trim() || null,
-      }),
-      ...(data.maxMembers !== undefined && {
-        maxMembers: data.maxMembers,
-      }),
-    })
-    .where(eq(teams.id, teamId));
-
-  return getTeamWithDetails(db, teamId);
+  return getTeam(userId, teamId);
 }
 
 export async function deleteTeam(userId, teamId) {
-  const [team] = await db
-    .select({
-      id: teams.id,
-      creatorId: teams.creatorId,
-      competitionStatus: competitions.status,
-      competitionDeadline: competitions.deadline,
-    })
-    .from(teams)
-    .innerJoin(competitions, eq(teams.competitionId, competitions.id))
-    .where(eq(teams.id, teamId))
-    .limit(1);
-
-  if (!team) return { error: "TEAM_NOT_FOUND" };
-
-  if (team.creatorId !== userId) {
-    return { error: "FORBIDDEN" };
-  }
-
-  if (team.competitionStatus === "closed") {
-    return { error: "COMPETITION_CLOSED" };
-  }
-
-  if (
-    team.competitionDeadline &&
-    new Date(team.competitionDeadline) <= new Date()
-  ) {
-    return { error: "COMPETITION_DEADLINE_PASSED" };
-  }
-
+  const team = await loadTeam(db, teamId);
+  assert(team.creatorId === userId, "FORBIDDEN");
+  assertEditable(team);
   await db.delete(teams).where(eq(teams.id, teamId));
-
-  return { success: true };
+  return { id: teamId };
 }
 
 export async function joinTeam(userId, teamId) {
   return db.transaction(async (tx) => {
-    const [team] = await tx
-      .select({
-        id: teams.id,
-        competitionId: teams.competitionId,
-        maxMembers: teams.maxMembers,
-        competitionMaxTeamSize: competitions.maxTeamSize,
-        competitionStatus: competitions.status,
-        competitionDeadline: competitions.deadline,
-      })
-      .from(teams)
-      .innerJoin(competitions, eq(teams.competitionId, competitions.id))
-      .where(eq(teams.id, teamId))
-      .limit(1);
+    const team = await loadTeam(tx, teamId, { lock: true });
+    assert(team.competitionStatus === "published", "COMPETITION_CLOSED");
+    assertEditable(team);
 
-    if (!team) return { error: "TEAM_NOT_FOUND" };
-
-    if (team.competitionStatus === "closed") {
-      return { error: "COMPETITION_CLOSED" };
-    }
-
-    if (
-      team.competitionDeadline &&
-      new Date(team.competitionDeadline) <= new Date()
-    ) {
-      return { error: "COMPETITION_DEADLINE_PASSED" };
-    }
-
-    const [existingMembership] = await tx
-      .select({
-        id: teamMembers.id,
-        teamId: teamMembers.teamId,
-        status: teamMembers.status,
-      })
+    const memberships = await tx
+      .select({ teamId: teamMembers.teamId, status: teamMembers.status })
       .from(teamMembers)
-      .innerJoin(teams, eq(teamMembers.teamId, teams.id))
       .where(
         and(
+          eq(teamMembers.competitionId, team.competitionId),
           eq(teamMembers.userId, userId),
-          eq(teams.competitionId, team.competitionId),
         ),
-      )
-      .limit(1);
+      );
 
-    if (existingMembership) {
-      if (existingMembership.teamId === teamId) {
-        return existingMembership.status === "pending"
-          ? { error: "JOIN_REQUEST_ALREADY_EXISTS" }
-          : { error: "ALREADY_TEAM_MEMBER" };
-      }
+    const here = memberships.find((row) => row.teamId === teamId);
+    if (here)
+      fail(
+        here.status === "pending"
+          ? "JOIN_REQUEST_ALREADY_EXISTS"
+          : "ALREADY_TEAM_MEMBER",
+      );
+    if (memberships.some((row) => row.status === "accepted"))
+      fail("ALREADY_IN_TEAM");
 
-      return { error: "ALREADY_IN_TEAM" };
-    }
-
-    const acceptedMemberCount = await getAcceptedMemberCount(tx, teamId);
-
-    const maxMembers = team.maxMembers ?? team.competitionMaxTeamSize;
-
-    if (maxMembers !== null && acceptedMemberCount >= maxMembers) {
-      return { error: "TEAM_FULL" };
-    }
+    const limit = capacity(team);
+    if (limit !== null && (await acceptedCount(tx, teamId)) >= limit)
+      fail("TEAM_FULL");
 
     const [member] = await tx
       .insert(teamMembers)
       .values({
         teamId,
+        competitionId: team.competitionId,
         userId,
         status: "pending",
       })
-      .returning();
+      .returning({
+        id: teamMembers.id,
+        status: teamMembers.status,
+        joinedAt: teamMembers.joinedAt,
+      });
 
-    return {
-      ...member,
-      message: "Join request submitted",
-    };
+    return member;
   });
 }
 
 export async function leaveTeam(userId, teamId) {
-  const [membership] = await db
-    .select({
-      id: teamMembers.id,
-      status: teamMembers.status,
-      creatorId: teams.creatorId,
-      competitionStatus: competitions.status,
-      competitionDeadline: competitions.deadline,
-    })
-    .from(teamMembers)
-    .innerJoin(teams, eq(teamMembers.teamId, teams.id))
-    .innerJoin(competitions, eq(teams.competitionId, competitions.id))
+  const team = await loadTeam(db, teamId);
+  assertEditable(team);
+  assert(team.creatorId !== userId, "CREATOR_CANNOT_LEAVE");
+
+  const removed = await db
+    .delete(teamMembers)
     .where(and(eq(teamMembers.teamId, teamId), eq(teamMembers.userId, userId)))
-    .limit(1);
+    .returning({ id: teamMembers.id });
 
-  if (!membership) return { error: "NOT_TEAM_MEMBER" };
-
-  if (membership.creatorId === userId) {
-    return { error: "CREATOR_CANNOT_LEAVE" };
-  }
-
-  if (membership.competitionStatus === "closed") {
-    return { error: "COMPETITION_CLOSED" };
-  }
-
-  if (
-    membership.competitionDeadline &&
-    new Date(membership.competitionDeadline) <= new Date()
-  ) {
-    return { error: "COMPETITION_DEADLINE_PASSED" };
-  }
-
-  await db.delete(teamMembers).where(eq(teamMembers.id, membership.id));
-
-  return { success: true };
+  if (!removed.length) fail("NOT_TEAM_MEMBER");
+  return { id: teamId };
 }
 
-export async function getTeamMembers(teamId) {
-  const team = await getTeamById(teamId);
+export async function listMembers(viewerId, teamId) {
+  const team = await getTeam(viewerId, teamId);
+  return team.members;
+}
 
-  // console.log("getTeamById result:", team);
-
-  if (!team) return null;
+export async function listJoinRequests(userId, teamId) {
+  const team = await loadTeam(db, teamId);
+  assert(team.creatorId === userId, "FORBIDDEN");
 
   return db
     .select({
-      id: teamMembers.id,
-      userId: teamMembers.userId,
-      username: users.username,
+      memberId: teamMembers.id,
+      userId: users.id,
       fullName: users.fullName,
+      username: users.username,
+      year: users.year,
+      major: users.major,
+      bio: users.bio,
       profilePhotoUrl: users.profilePhotoUrl,
-      status: teamMembers.status,
-      joinedAt: teamMembers.joinedAt,
+      requestedAt: teamMembers.joinedAt,
+      skills: userSkillsJson(users.id),
     })
     .from(teamMembers)
-    .innerJoin(users, eq(teamMembers.userId, users.id))
-    .where(eq(teamMembers.teamId, teamId))
+    .innerJoin(users, eq(users.id, teamMembers.userId))
+    .where(
+      and(eq(teamMembers.teamId, teamId), eq(teamMembers.status, "pending")),
+    )
     .orderBy(asc(teamMembers.joinedAt));
 }
 
-export async function updateMemberStatus(
-  creatorId,
-  teamId,
-  memberUserId,
-  status,
-) {
-  return db.transaction(async (tx) => {
-    const [team] = await tx
-      .select({
-        id: teams.id,
-        creatorId: teams.creatorId,
-        maxMembers: teams.maxMembers,
-        competitionMaxTeamSize: competitions.maxTeamSize,
-        competitionStatus: competitions.status,
-        competitionDeadline: competitions.deadline,
-      })
-      .from(teams)
-      .innerJoin(competitions, eq(teams.competitionId, competitions.id))
-      .where(eq(teams.id, teamId))
-      .limit(1);
-
-    if (!team) return { error: "TEAM_NOT_FOUND" };
-
-    if (team.creatorId !== creatorId) {
-      return { error: "FORBIDDEN" };
-    }
-
-    if (team.competitionStatus === "closed") {
-      return { error: "COMPETITION_CLOSED" };
-    }
-
-    if (
-      team.competitionDeadline &&
-      new Date(team.competitionDeadline) <= new Date()
-    ) {
-      return { error: "COMPETITION_DEADLINE_PASSED" };
-    }
+export async function respondToJoin(creatorId, teamId, memberUserId, decision) {
+  await db.transaction(async (tx) => {
+    const team = await loadTeam(tx, teamId, { lock: true });
+    assert(team.creatorId === creatorId, "FORBIDDEN");
+    assertEditable(team);
+    assert(memberUserId !== creatorId, "CANNOT_CHANGE_CREATOR");
 
     const [member] = await tx
-      .select({
-        id: teamMembers.id,
-        userId: teamMembers.userId,
-        status: teamMembers.status,
-      })
+      .select({ id: teamMembers.id, status: teamMembers.status })
       .from(teamMembers)
       .where(
         and(
@@ -468,61 +366,53 @@ export async function updateMemberStatus(
         ),
       )
       .limit(1);
+    if (!member) fail("MEMBER_NOT_FOUND");
 
-    if (!member) return { error: "MEMBER_NOT_FOUND" };
-
-    if (member.userId === creatorId) {
-      return { error: "CANNOT_CHANGE_CREATOR" };
-    }
-
-    if (status === "accepted") {
-      const acceptedMemberCount = await getAcceptedMemberCount(tx, teamId);
-
-      const maxMembers = team.maxMembers ?? team.competitionMaxTeamSize;
-
-      if (maxMembers !== null && acceptedMemberCount >= maxMembers) {
-        return { error: "TEAM_FULL" };
-      }
-
-      await tx
-        .update(teamMembers)
-        .set({
-          status: "accepted",
-        })
-        .where(eq(teamMembers.id, member.id));
-    } else {
+    if (
+      decision === "decline" ||
+      (decision === "remove" && member.status === "accepted")
+    ) {
       await tx.delete(teamMembers).where(eq(teamMembers.id, member.id));
+      return;
     }
 
-    return getTeamWithDetails(tx, teamId);
+    if (member.status === "accepted") return;
+
+    const limit = capacity(team);
+    if (limit !== null && (await acceptedCount(tx, teamId)) >= limit)
+      fail("TEAM_FULL");
+
+    const [clash] = await tx
+      .select({ id: teamMembers.id })
+      .from(teamMembers)
+      .where(
+        and(
+          eq(teamMembers.competitionId, team.competitionId),
+          eq(teamMembers.userId, memberUserId),
+          eq(teamMembers.status, "accepted"),
+        ),
+      )
+      .limit(1);
+    if (clash) fail("ALREADY_IN_TEAM");
+
+    await tx
+      .update(teamMembers)
+      .set({ status: "accepted" })
+      .where(eq(teamMembers.id, member.id));
   });
+
+  return getTeam(creatorId, teamId);
 }
 
-export async function reportTeamResult(userId, teamId, result) {
-  const [team] = await db
-    .select({
-      id: teams.id,
-      competitionDeadline: competitions.deadline,
-      competitionStatus: competitions.status,
-    })
-    .from(teams)
-    .innerJoin(competitions, eq(teams.competitionId, competitions.id))
-    .where(eq(teams.id, teamId))
-    .limit(1);
-
-  if (!team) return { error: "TEAM_NOT_FOUND" };
-
-  if (
-    !team.competitionDeadline ||
-    new Date(team.competitionDeadline) > new Date()
-  ) {
-    return { error: "COMPETITION_NOT_FINISHED" };
-  }
+export async function reportResult(userId, teamId, result) {
+  const team = await loadTeam(db, teamId);
+  assert(
+    new Date(team.competitionDeadline) <= new Date(),
+    "COMPETITION_NOT_FINISHED",
+  );
 
   const [membership] = await db
-    .select({
-      id: teamMembers.id,
-    })
+    .select({ id: teamMembers.id })
     .from(teamMembers)
     .where(
       and(
@@ -532,20 +422,17 @@ export async function reportTeamResult(userId, teamId, result) {
       ),
     )
     .limit(1);
+  if (!membership) fail("NOT_ACCEPTED_MEMBER");
 
-  if (!membership) {
-    return { error: "NOT_ACCEPTED_MEMBER" };
-  }
-
-  const [updatedTeam] = await db
+  const [updated] = await db
     .update(teams)
-    .set({
-      result,
-      resultReportedAt: new Date(),
-      resultReportedBy: userId,
-    })
+    .set({ result, resultReportedAt: new Date(), resultReportedBy: userId })
     .where(eq(teams.id, teamId))
-    .returning();
+    .returning({
+      id: teams.id,
+      result: teams.result,
+      resultReportedAt: teams.resultReportedAt,
+    });
 
-  return updatedTeam;
+  return updated;
 }

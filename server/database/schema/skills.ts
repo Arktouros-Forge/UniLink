@@ -1,12 +1,6 @@
-import {
-  pgTable,
-  text,
-  timestamp,
-  uuid,
-  uniqueIndex,
-  index,
-} from "drizzle-orm/pg-core";
+import { index, pgTable, primaryKey, text, uuid } from "drizzle-orm/pg-core";
 
+import { createdAt, updatedAt } from "./_shared";
 import { users } from "./users";
 
 export const skills = pgTable("skills", {
@@ -16,24 +10,13 @@ export const skills = pgTable("skills", {
   slug: text("slug").notNull().unique(),
   description: text("description"),
 
-  createdAt: timestamp("created_at", {
-    withTimezone: true,
-  })
-    .notNull()
-    .defaultNow(),
-
-  updatedAt: timestamp("updated_at", {
-    withTimezone: true,
-  })
-    .notNull()
-    .defaultNow(),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
 });
 
 export const userSkills = pgTable(
   "user_skills",
   {
-    id: uuid("id").defaultRandom().primaryKey(),
-
     userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
@@ -42,18 +25,10 @@ export const userSkills = pgTable(
       .notNull()
       .references(() => skills.id, { onDelete: "cascade" }),
 
-    createdAt: timestamp("created_at", {
-      withTimezone: true,
-    })
-      .notNull()
-      .defaultNow(),
+    createdAt: createdAt(),
   },
-  (table) => [
-    uniqueIndex("user_skills_user_skill_unique").on(
-      table.userId,
-      table.skillId,
-    ),
-
-    index("user_skills_skill_id_idx").on(table.skillId),
+  (t) => [
+    primaryKey({ columns: [t.userId, t.skillId] }),
+    index("user_skills_skill_id_idx").on(t.skillId),
   ],
 );

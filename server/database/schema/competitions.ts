@@ -1,19 +1,19 @@
+import { sql } from "drizzle-orm";
 import {
+  check,
+  index,
+  integer,
   pgEnum,
   pgTable,
-  text,
-  integer,
-  timestamp,
-  uuid,
-  uniqueIndex,
   primaryKey,
-  index,
+  text,
+  uniqueIndex,
+  uuid,
 } from "drizzle-orm/pg-core";
 
-import { sql } from "drizzle-orm";
-
-import { users } from "./users";
+import { createdAt, tz, updatedAt } from "./_shared";
 import { categories } from "./categories";
+import { users } from "./users";
 
 export const competitionStatusEnum = pgEnum("competition_status", [
   "draft",
@@ -40,41 +40,36 @@ export const competitions = pgTable(
 
     title: text("title").notNull(),
     description: text("description").notNull(),
-    deadline: timestamp("deadline", {
-      withTimezone: true,
-    }).notNull(),
-
+    deadline: tz("deadline").notNull(),
     maxTeamSize: integer("max_team_size"),
 
     host: text("host").notNull(),
+    prize: text("prize"),
     sourceUrl: text("source_url"),
     imageUrl: text("image_url"),
 
     status: competitionStatusEnum("status").notNull().default("draft"),
 
-    createdBy: uuid("created_by")
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-
+    createdBy: uuid("created_by").references(() => users.id, {
+      onDelete: "set null",
+    }),
     createdByRole: competitionCreatorRoleEnum("created_by_role").notNull(),
 
-    createdAt: timestamp("created_at", {
-      withTimezone: true,
-    })
-      .notNull()
-      .defaultNow(),
-
-    updatedAt: timestamp("updated_at", {
-      withTimezone: true,
-    })
-      .notNull()
-      .defaultNow(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
   },
-  (table) => [
+  (t) => [
     uniqueIndex("competitions_title_host_unique").on(
-      sql`lower(btrim(${table.title}))`,
-      sql`lower(btrim(${table.host}))`,
+      sql`lower(btrim(${t.title}))`,
+      sql`lower(btrim(${t.host}))`,
     ),
+    index("competitions_status_deadline_idx").on(t.status, t.deadline),
+    index("competitions_created_by_idx").on(t.createdBy),
+    index("competitions_title_trgm_idx").using(
+      "gin",
+      sql`${t.title} gin_trgm_ops`,
+    ),
+    check("competitions_max_team_size_check", sql`${t.maxTeamSize} > 0`),
   ],
 );
 
@@ -89,10 +84,9 @@ export const competitionCategories = pgTable(
       .notNull()
       .references(() => categories.id, { onDelete: "cascade" }),
   },
-  (table) => [
-    primaryKey({
-      columns: [table.competitionId, table.categoryId],
-    }),
+  (t) => [
+    primaryKey({ columns: [t.competitionId, t.categoryId] }),
+    index("competition_categories_category_idx").on(t.categoryId),
   ],
 );
 
@@ -107,7 +101,6 @@ export const teams = pgTable(
 
     name: text("name").notNull(),
     description: text("description"),
-
     maxMembers: integer("max_members"),
 
     creatorId: uuid("creator_id")
@@ -115,27 +108,22 @@ export const teams = pgTable(
       .references(() => users.id, { onDelete: "cascade" }),
 
     result: teamResultEnum("result").notNull().default("unknown"),
-
-    resultReportedAt: timestamp("result_reported_at", {
-      withTimezone: true,
-    }),
-
+    resultReportedAt: tz("result_reported_at"),
     resultReportedBy: uuid("result_reported_by").references(() => users.id, {
       onDelete: "set null",
     }),
 
-    createdAt: timestamp("created_at", {
-      withTimezone: true,
-    })
-      .notNull()
-      .defaultNow(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
   },
-  (table) => [
-    index("teams_competition_id_idx").on(table.competitionId),
+  (t) => [
+    index("teams_competition_id_idx").on(t.competitionId),
+    index("teams_creator_id_idx").on(t.creatorId),
     uniqueIndex("teams_competition_creator_unique").on(
-      table.competitionId,
-      table.creatorId,
+      t.competitionId,
+      t.creatorId,
     ),
+    check("teams_max_members_check", sql`${t.maxMembers} > 0`),
   ],
 );
 
@@ -148,21 +136,24 @@ export const teamMembers = pgTable(
       .notNull()
       .references(() => teams.id, { onDelete: "cascade" }),
 
+    competitionId: uuid("competition_id")
+      .notNull()
+      .references(() => competitions.id, { onDelete: "cascade" }),
+
     userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
 
-    status: teamMemberStatusEnum("status").notNull().default("accepted"),
+    status: teamMemberStatusEnum("status").notNull().default("pending"),
 
-    joinedAt: timestamp("joined_at", {
-      withTimezone: true,
-    })
-      .notNull()
-      .defaultNow(),
+    joinedAt: tz("joined_at").notNull().defaultNow(),
   },
-  (table) => [
-    uniqueIndex("team_members_team_user_unique").on(table.teamId, table.userId),
-
-    index("team_members_user_id_idx").on(table.userId),
+  (t) => [
+    uniqueIndex("team_members_team_user_unique").on(t.teamId, t.userId),
+    uniqueIndex("team_members_one_accepted_per_competition")
+      .on(t.competitionId, t.userId)
+      .where(sql`${t.status} = 'accepted'`),
+    index("team_members_user_status_idx").on(t.userId, t.status),
+    index("team_members_team_status_idx").on(t.teamId, t.status),
   ],
 );

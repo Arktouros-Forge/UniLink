@@ -1,25 +1,24 @@
-import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+import { pgTable, text, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
-export const lecturers = pgTable("lecturers", {
-  id: uuid("id").defaultRandom().primaryKey(),
+import { createdAt, updatedAt } from "./_shared";
 
-  name: text("name").notNull(),
-  email: text("email").notNull().unique(),
+export const lecturers = pgTable(
+  "lecturers",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
 
-  phone: text("phone"),
-  profilePhotoUrl: text("profile_photo_url"),
-  bio: text("bio"),
-  nidn: text("nidn").unique(),
+    name: text("name").notNull(),
+    email: text("email").notNull(),
+    phone: text("phone"),
+    profilePhotoUrl: text("profile_photo_url"),
+    bio: text("bio"),
+    nidn: text("nidn").unique(),
 
-  createdAt: timestamp("created_at", {
-    withTimezone: true,
-  })
-    .notNull()
-    .defaultNow(),
-
-  updatedAt: timestamp("updated_at", {
-    withTimezone: true,
-  })
-    .notNull()
-    .defaultNow(),
-});
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    uniqueIndex("lecturers_email_lower_unique").on(sql`lower(${t.email})`),
+  ],
+);

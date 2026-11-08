@@ -67,6 +67,12 @@ export const ERRORS = {
   CANNOT_MODIFY_SELF: [409, "You cannot do this to your own account"],
   CANNOT_MODIFY_ADMIN: [409, "Admin accounts cannot be modified here"],
   IN_USE: [409, "This item is still in use and cannot be deleted"],
+  INVALID_CREDENTIALS: [401, "Email or password is incorrect"],
+  EMAIL_NOT_VERIFIED: [403, "Please verify your email first"],
+  ALREADY_VERIFIED: [409, "Your email is already verified"],
+  TOKEN_INVALID: [400, "This link is invalid or has expired"],
+  RATE_LIMITED: [429, "Too many attempts. Please try again later"],
+  EMAIL_DOMAIN_NOT_ALLOWED: [422, "Please use your campus email address"],
   IMPORT_EMPTY: [422, "No valid events found in the import file"],
 };
 
