@@ -22,6 +22,7 @@
         "nuxt-zod": "1.6.2",
         "pinia": "^4.1.0",
         "postgres": "^3.4.9",
+        "srvx": "^1.0.8",
         "vue": "^3.5.44",
         "vue-router": "^5.4.0",
         "vue-sonner": "^2.0.9",

@@ -1,0 +1,25 @@
+diff --git a/dist/devtools.mjs b/dist/devtools.mjs
+index c30b54d0a788924ab91344db9aa19ecb5c3d36d8..c4441bd1b8092eaa53bd95b3f2b89b13ab7920f8 100644
+--- a/dist/devtools.mjs
++++ b/dist/devtools.mjs
+@@ -1,6 +1,7 @@
+ import { spawn } from 'node:child_process';
+ import { readFileSync } from 'node:fs';
+-import { createRequire, findPackageJSON } from 'node:module';
++import nodeModule, { createRequire } from 'node:module';
++const findPackageJSON = typeof nodeModule.findPackageJSON === 'function' ? nodeModule.findPackageJSON : () => undefined;
+ import { join } from 'node:path';
+ import { pathToFileURL } from 'node:url';
+ import { useNuxt, useLogger, getAddDependencyCommand } from '@nuxt/kit';
+diff --git a/dist/kit.mjs b/dist/kit.mjs
+index e8188c7e6235f56a755e41e2ac7b263e98aa883f..99250b2e9d781c0f5f6b54986924512236247edd 100644
+--- a/dist/kit.mjs
++++ b/dist/kit.mjs
+@@ -1,5 +1,6 @@
+ import { readFile } from 'node:fs/promises';
+-import { findPackageJSON } from 'node:module';
++import nodeModule from 'node:module';
++const findPackageJSON = typeof nodeModule.findPackageJSON === 'function' ? nodeModule.findPackageJSON : () => undefined;
+ import { isAbsolute, resolve, relative, sep, join } from 'node:path';
+ import { pathToFileURL } from 'node:url';
+ import { getNitroVersion, addTypeTemplate, useNuxt, useLogger, resolveModule, directoryToURL, createResolver, addTemplate, loadNuxtModuleInstance, hasNuxtModule, tryUseNuxt, hasNuxtModuleCompatibility } from '@nuxt/kit';
