@@ -15,7 +15,7 @@ const active = computed(() => data.value.signs.filter((item) => item.status === 
     <UiButton icon="plus" to="/student/help-board/new">{{ board.post }}</UiButton>
   </PageHeading>
   <AutoSkeleton :loading="pending" id="my-signs-list">
-    <div class="grid gap-6 md:grid-cols-2">
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2">
       <HelpSignCard v-for="item in data.signs" :key="item.id" :item="item" mine />
     </div>
     <UiEmpty v-if="!data.signs.length" :title="copy.emptyTitle" icon="flag"><UiButton to="/student/help-board/new" icon="plus">{{ board.post }}</UiButton></UiEmpty>

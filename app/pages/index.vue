@@ -9,21 +9,27 @@ import {
 import { university } from "@app/constants/site.json";
 
 const toneBlock = { blue: "bg-blue", red: "bg-red", yellow: "bg-yellow" };
+
+usePageSeo("home");
+useSchemaOrg([
+    defineWebSite({ name: "UniLink", inLanguage: "id-ID" }),
+    defineWebPage({ name: "UniLink", about: "Platform kolaborasi mahasiswa Universitas Udayana" }),
+]);
 </script>
 
 <template>
     <div>
         <section
-            class="container-app !max-w-[1440px] min-h-screen md:!px-20 py-12 md:py-[103px] grid gap-12 md:grid-cols-[1.25fr_1fr] md:items-center"
+            class="container-wide py-10 md:py-16 lg:py-20 grid gap-10 lg:grid-cols-[1.25fr_1fr] lg:gap-16 lg:items-center"
         >
             <div class="flex flex-col gap-6">
                 <UiChip tone="neutral" size="md" class="self-start">{{
                     hero.tag
                 }}</UiChip>
-                <h1 class="t-d1 text-ink m-0 md:max-w-[640px]">
+                <h1 class="t-d1 text-ink m-0 lg:max-w-[640px]">
                     {{ hero.title }}
                 </h1>
-                <p class="t-body-l text-ink m-0 md:max-w-[760px]">
+                <p class="t-body-l text-ink m-0 max-w-[60ch]">
                     {{ hero.text }}
                 </p>
                 <div class="flex flex-col gap-3 sm:flex-row">
@@ -51,25 +57,25 @@ const toneBlock = { blue: "bg-blue", red: "bg-red", yellow: "bg-yellow" };
 
         <section class="bg-card border-y border-hairline">
             <div
-                class="container-app !max-w-[1440px] md:!px-20 py-16 md:py-24 flex flex-col gap-16 md:gap-24"
+                class="container-wide py-14 md:py-20 lg:py-24 flex flex-col gap-14 md:gap-16 lg:gap-24"
             >
                 <article
                     v-for="(section, index) in sections"
                     :key="section.numeral"
-                    class="grid gap-6 md:grid-cols-[320px_1fr_320px] md:gap-12 md:items-start"
-                    :class="index % 2 && 'md:[&>:last-child]:order-first'"
+                    class="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[240px_1fr_280px] lg:gap-12 lg:items-start"
+                    :class="index % 2 && 'lg:[&>:last-child]:order-first'"
                 >
-                    <div class="flex items-end gap-4 md:gap-6">
-                        <span class="t-serif-step text-ink">{{
+                    <div class="flex items-end gap-4 lg:gap-6">
+                        <span class="t-serif-step text-ink shrink-0 whitespace-nowrap">{{
                             section.numeral
                         }}</span>
-                        <h2 class="t-d3 text-ink m-0 pb-2 md:hidden">
+                        <h2 class="t-d3 text-ink m-0 pb-2 lg:hidden">
                             {{ section.title }}
                         </h2>
                     </div>
                     <div class="flex flex-col gap-4">
                         <h2
-                            class="t-d2 text-ink m-0 hidden md:block !text-[36px] !leading-[44px]"
+                            class="t-d3 text-ink m-0 hidden lg:block"
                         >
                             {{ section.title }}
                         </h2>
@@ -89,7 +95,7 @@ const toneBlock = { blue: "bg-blue", red: "bg-red", yellow: "bg-yellow" };
                         </ul>
                     </div>
                     <div
-                        class="relative h-[160px] md:h-[200px] border-2 border-outline"
+                        class="relative h-32 md:h-40 lg:h-[200px] border-2 border-outline"
                         :class="toneBlock[section.tone]"
                     >
                         <span
@@ -101,10 +107,10 @@ const toneBlock = { blue: "bg-blue", red: "bg-red", yellow: "bg-yellow" };
         </section>
 
         <section
-            class="container-app h-screen !max-w-[1440px] md:!px-20 pt-16 md:pt-24 flex flex-col gap-10"
+            class="container-wide py-16 md:py-20 lg:py-24 flex flex-col gap-10"
         >
             <h2 class="t-d2 text-ink m-0">{{ stepsTitle }}</h2>
-            <ol class="grid gap-6 m-0 p-0 list-none md:grid-cols-4 md:gap-8">
+            <ol class="grid gap-6 m-0 p-0 list-none sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
                 <li
                     v-for="(step, index) in steps"
                     :key="step.title"

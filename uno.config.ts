@@ -68,16 +68,17 @@ export default defineConfig({
   },
   shortcuts: {
     "t-d1":
-      "font-display font-extrabold text-[44px] leading-[48px] tracking-[-0.035em] md:text-[72px] md:leading-[76px]",
+      "font-display font-extrabold text-[clamp(2.5rem,1.7rem+3.4vw,4.5rem)] leading-[1.05] tracking-[-0.035em]",
     "t-d2":
-      "font-display font-bold text-[28px] leading-9 tracking-[-0.02em] md:text-[44px] md:leading-[52px] md:tracking-[-0.03em]",
-    "t-d3": "font-display font-bold text-[28px] leading-9 tracking-[-0.02em]",
-    "t-d4": "font-display font-semibold text-xl leading-7 tracking-[-0.01em]",
-    "t-xs": "font-sans font-semibold text-base leading-6 tracking-[-0.01em]",
+      "font-display font-bold text-[clamp(1.75rem,1.3rem+1.7vw,2.75rem)] leading-[1.15] tracking-[-0.025em]",
+    "t-d3":
+      "font-display font-bold text-[clamp(1.375rem,1.15rem+0.9vw,1.875rem)] leading-[1.2] tracking-[-0.02em]",
+    "t-d4":
+      "font-display font-semibold text-[clamp(1.125rem,1.05rem+0.35vw,1.25rem)] leading-[1.35] tracking-[-0.01em]",
     "t-serif-display":
-      "font-serif text-[96px] leading-[96px] md:text-[160px] md:leading-[160px]",
+      "font-serif text-[clamp(6rem,4rem+8vw,10rem)] leading-none",
     "t-serif-step":
-      "font-serif text-[64px] leading-[64px] md:text-[96px] md:leading-[96px]",
+      "font-serif text-[clamp(4rem,3rem+3.5vw,6rem)] leading-none",
     "t-serif-stat":
       "font-serif text-[56px] leading-[56px] md:text-[64px] md:leading-[64px]",
     "t-serif-small": "font-serif text-[56px] leading-[56px]",
@@ -89,7 +90,8 @@ export default defineConfig({
     "t-button": "font-sans font-medium text-[15px] leading-5",
     "t-mono-s": "font-mono font-medium text-xs leading-4 tracking-[0.02em]",
     "t-mono-m": "font-mono font-medium text-sm leading-5 tracking-[0.02em]",
-    "container-app": "mx-auto w-full max-w-[1240px] px-5 md:px-12",
+    "container-app": "mx-auto w-full max-w-[1240px] px-5 md:px-8 lg:px-12",
+    "container-wide": "mx-auto w-full max-w-[1440px] px-5 md:px-8 lg:px-12 xl:px-20",
     "focus-ring":
       "outline-none focus-visible:shadow-[0_0_0_2px_var(--canvas-paper),0_0_0_4px_var(--brand-blue)]",
     surface: "bg-card border border-hairline rounded-md shadow-rest",

@@ -16,15 +16,11 @@ const valid = computed(() => props.fields.filter((field) => field.required).ever
 </script>
 
 <template>
-  <UiModal :open="open" :title="title" @close="emit('close')">
+  <UiModal :open="open" eyebrow="Admin" :title="title" submit="Simpan" :pending="pending" :disabled="!valid" @close="emit('close')" @submit="emit('save', { ...initial, ...values })">
     <FormField v-for="field in fields" :key="field.key" :label="field.label" :error="errors[field.payloadKey ?? field.key]" v-slot="{ id }">
       <FormSelect v-if="field.options" :id="id" v-model="values[field.key]" :options="field.options" placeholder="Pilih" />
-      <FormTextarea v-else-if="field.multiline" :id="id" v-model="values[field.key]" />
+      <FormTextarea v-else-if="field.multiline" :id="id" v-model="values[field.key]" :rows="3" />
       <FormInput v-else :id="id" v-model="values[field.key]" :type="field.type || 'text'" />
     </FormField>
-    <template #footer>
-      <UiButton icon="check" :loading="pending" :disabled="!valid" @click="emit('save', { ...initial, ...values })">Simpan</UiButton>
-      <UiButton variant="link" @click="emit('close')">Batal</UiButton>
-    </template>
   </UiModal>
 </template>

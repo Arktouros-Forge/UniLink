@@ -27,7 +27,7 @@ export async function issueSession(event, user, { remember = false } = {}) {
   });
 }
 
-export const clearSession = (event) => deleteCookie(event, SESSION_COOKIE, { path: "/" });
+export const clearSessionCookie = (event) => deleteCookie(event, SESSION_COOKIE, { path: "/" });
 
 export async function readSession(event) {
   const token = getCookie(event, SESSION_COOKIE);

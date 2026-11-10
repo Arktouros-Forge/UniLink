@@ -45,16 +45,6 @@
       "tone": "success"
     }
   ],
-  "sortOptions": [
-    {
-      "value": "newest",
-      "label": "Terbaru"
-    },
-    {
-      "value": "oldest",
-      "label": "Terlama"
-    }
-  ],
   "onboarding": [
     {
       "title": "Identitas",
@@ -75,7 +65,6 @@
   ],
   "limits": {
     "pending": 5,
-    "perDay": 20,
     "activeSigns": 3,
     "signsPerWeek": 3,
     "signDays": 14,

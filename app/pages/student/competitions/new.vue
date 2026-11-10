@@ -27,13 +27,13 @@ const { run, pending, fieldErrors } = useAction(
 
 <template>
   <PageHeading :title="copy.title" :text="copy.text" />
-  <div class="grid gap-6 md:grid-cols-[minmax(0,1fr)_320px] md:items-start">
+  <div class="grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-[minmax(0,1fr)_320px] md:items-start">
     <UiCard class="flex flex-col gap-5">
       <FormField :label="copy.name" :error="fieldErrors.title" v-slot="{ id }"><FormInput :id="id" v-model="form.title" /></FormField>
       <FormField :label="copy.host" :error="fieldErrors.host" v-slot="{ id }"><FormInput :id="id" v-model="form.host" /></FormField>
       <FormField :label="copy.about" :error="fieldErrors.description" v-slot="{ id }"><FormTextarea :id="id" v-model="form.description" /></FormField>
       <FormField :label="copy.source" :error="fieldErrors.sourceUrl" v-slot="{ id }"><FormInput :id="id" v-model="form.sourceUrl" type="url" icon="external" placeholder="https://" /></FormField>
-      <div class="grid gap-4 md:grid-cols-2">
+      <div class="grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2">
         <FormField :label="copy.deadline" :error="fieldErrors.deadline" v-slot="{ id }"><FormInput :id="id" v-model="form.deadline" type="date" /></FormField>
         <FormField :label="copy.maxTeam" optional :error="fieldErrors.maxTeamSize" v-slot="{ id }"><FormInput :id="id" v-model="form.maxTeamSize" type="number" /></FormField>
       </div>

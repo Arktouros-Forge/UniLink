@@ -6,7 +6,7 @@ const auth = useAuthStore();
 
 <template>
     <header
-        class="md:hidden sticky top-0 z-30 flex items-center justify-between h-14 px-5 bg-paper border-b border-hairline"
+        class="lg:hidden flex items-center justify-between h-14 px-5 md:px-8 bg-paper border-b border-hairline"
     >
         <NuxtLink to="/student/dashboard"><UiLogo /></NuxtLink>
         <div class="flex items-center gap-2">

@@ -1,5 +1,7 @@
 <script setup>
 import { blocked } from "@app/constants/auth.json";
+
+usePageSeo("help");
 </script>
 
 <template>

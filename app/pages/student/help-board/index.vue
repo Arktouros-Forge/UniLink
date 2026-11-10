@@ -23,7 +23,7 @@ const { data, pending } = await useApiData("help-board", "/student/study-match/h
         <FilterSelect v-model="skill" :options="skillFilter" icon="filter" />
     </div>
     <AutoSkeleton :loading="pending" id="help-board-list">
-        <div class="grid gap-6 md:grid-cols-2">
+        <div class="grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2">
             <HelpSignCard v-for="item in data.signs" :key="item.id" :item="item" />
         </div>
         <UiEmpty v-if="!data.signs.length" :title="copy.emptyTitle" :text="copy.emptyText" icon="flag" />

@@ -56,7 +56,7 @@ onBeforeUnmount(() => clearInterval(timer));
 <template>
   <AuthFrame>
     <div class="flex flex-col gap-2">
-      <h1 class="t-d2 text-ink m-0 !text-[36px] !leading-[44px] md:!text-[40px] md:!leading-[48px]">
+      <h1 class="t-d2 text-ink m-0">
         {{ state === "checking" ? copy.verifyingTitle : state === "done" ? copy.successTitle : state === "failed" ? copy.failedTitle : copy.title }}
       </h1>
       <p class="t-body-s text-ink-2 m-0">{{ state === "done" ? copy.successText : state === "failed" ? copy.failedText : copy.text }}</p>

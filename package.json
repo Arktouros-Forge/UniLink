@@ -17,6 +17,8 @@
   },
   "dependencies": {
     "@nuxt/image": "2.2.0",
+    "@nuxtjs/robots": "^7.0.2",
+    "@nuxtjs/sitemap": "^9.1.0",
     "@pinia/nuxt": "1.0.3",
     "@vueuse/core": "^15.0.0",
     "@vueuse/nuxt": "^15.0.0",
@@ -26,12 +28,14 @@
     "firebase": "^13.2.0",
     "jose": "^6.2.15",
     "nuxt": "^4.6.3",
-    "nuxt-charts": "^3.1.0",
+    "nuxt-schema-org": "^7.0.1",
+    "nuxt-seo-utils": "^9.0.1",
     "nuxt-zod": "1.6.2",
     "pinia": "^4.1.0",
     "postgres": "^3.4.9",
     "vue": "^3.5.44",
     "vue-router": "^5.4.0",
+    "vue-sonner": "^2.0.9",
     "zod": "^4.6.7"
   },
   "devDependencies": {
@@ -44,5 +48,8 @@
     "@unocss/transformer-compile-class": "^66.12.0",
     "drizzle-kit": "^0.31.11",
     "unocss": "^66.12.0"
+  },
+  "patchedDependencies": {
+    "nuxtseo-shared@6.0.3": "patches/nuxtseo-shared@6.0.3.patch"
   }
 }

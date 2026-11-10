@@ -30,27 +30,6 @@ export const templates = {
       { text: "Semua sesi di perangkat lain telah dikeluarkan demi keamanan. Jika ini bukan kamu, segera atur ulang kata sandi." },
       { type: "button", label: "Atur ulang kata sandi", href: `${appUrl()}/auth/forgot` },
     ]),
-
-  welcome: ({ name }) =>
-    build("Profilmu siap", "Mulai cari teman belajar dan tim lomba.", [
-      { text: `Halo ${firstName(name)}, profilmu sudah lengkap.` },
-      { text: "Cari teman belajar, pasang tanda bantuan, atau bentuk tim untuk kompetisi berikutnya." },
-      { type: "button", label: "Buka dasbor", href: `${appUrl()}/student/dashboard` },
-    ]),
-
-  requestReceived: ({ name, from, subject }) =>
-    build("Permintaan belajar baru", `${from} meminta bantuanmu.`, [
-      { text: `Halo ${firstName(name)}, ${from} meminta bantuanmu untuk topik "${subject}".` },
-      { text: "Permintaan berlaku 7 hari. Terima atau tolak dari halaman Permintaan belajar." },
-      { type: "button", label: "Lihat permintaan", href: `${appUrl()}/student/study-match/requests` },
-    ]),
-
-  requestAccepted: ({ name, from, subject }) =>
-    build("Permintaanmu diterima", `${from} menerima permintaanmu.`, [
-      { text: `Kabar baik, ${firstName(name)}. ${from} menerima permintaanmu untuk topik "${subject}".` },
-      { text: "Nomor WhatsApp-nya sekarang terbuka. Lanjutkan percakapan di sana." },
-      { type: "button", label: "Buka permintaan", href: `${appUrl()}/student/study-match/requests` },
-    ]),
 };
 
 export function composeMail(name, to, data) {

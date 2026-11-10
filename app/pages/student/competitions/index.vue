@@ -25,7 +25,7 @@ const { data, pending } = await useApiData("competitions", "/student/competition
     <FilterSelect v-model="sort" :options="competitionSort" variant="text" />
   </div>
   <AutoSkeleton :loading="pending" id="competition-list">
-    <div class="grid gap-6 md:grid-cols-2">
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2">
       <CompetitionCard v-for="item in data.competitions" :key="item.id" :item="item" />
     </div>
     <UiEmpty v-if="!data.competitions.length" :title="copy.emptyTitle" :text="copy.emptyText" icon="trophy" />

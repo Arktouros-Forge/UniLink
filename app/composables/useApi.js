@@ -1,3 +1,5 @@
+import copy from "@app/constants/toast.json";
+
 export class ApiRequestError extends Error {
   constructor(message, statusCode, errors) {
     super(message);
@@ -13,7 +15,7 @@ export class ApiRequestError extends Error {
 const toError = (error) => {
   const body = error?.data ?? {};
   return new ApiRequestError(
-    body.message ?? error?.message ?? "Network error",
+    body.message ?? (error?.statusCode ? error?.message : copy.network),
     body.statusCode ?? error?.statusCode ?? 0,
     body.errors,
   );

@@ -47,7 +47,7 @@ const sendJoin = async () => {
           <NuxtImg v-if="item.imageUrl" :src="item.imageUrl" :alt="item.title" class="absolute inset-0 size-full object-cover" />
           <template v-else>
             <p class="t-mono-s text-ink m-0">{{ item.host }}</p>
-            <h1 class="t-d2 text-ink m-0 max-w-[60%] !text-[28px] md:!text-[36px]">{{ item.title }}</h1>
+            <h1 class="t-d2 text-ink m-0 max-w-[60%]">{{ item.title }}</h1>
             <span class="absolute right-0 top-0 w-[26%] h-[40%] border-2 border-outline bg-blue" />
             <span class="absolute right-[10%] top-[52%] w-[20%] h-[26%] bg-red border-2 border-outline" />
           </template>
@@ -70,7 +70,7 @@ const sendJoin = async () => {
           <h2 class="t-d4 text-ink m-0">{{ copy.teamsTitle }}</h2>
           <UiChip tone="yellow" filled>{{ list.length }} {{ copy.teamsCount }}</UiChip>
         </div>
-        <div v-if="list.length" class="grid gap-4 md:grid-cols-2">
+        <div v-if="list.length" class="grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2">
           <TeamCard v-for="team in list" :key="team.id" :team="team">
             <UiButton v-if="!team.myStatus && !team.isFull && item.isOpen" size="sm" icon="userPlus" @click="joinTarget = team">{{ copy.join }}</UiButton>
             <UiChip v-else-if="team.myStatus === 'pending'" tone="yellow">{{ copy.pending }}</UiChip>

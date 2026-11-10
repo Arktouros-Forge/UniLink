@@ -2,6 +2,10 @@ import { fileURLToPath } from "node:url";
 
 export default defineNuxtConfig({
   modules: [
+    "@nuxtjs/robots",
+    "@nuxtjs/sitemap",
+    "nuxt-schema-org",
+    "nuxt-seo-utils",
     "@nuxt/image",
     "@unocss/nuxt",
     "@pinia/nuxt",
@@ -19,11 +23,47 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
 
-  css: ["~/assets/css/tokens.css", "~/assets/css/base.css"],
+  css: ["vue-sonner/style.css", "~/assets/css/tokens.css", "~/assets/css/base.css"],
 
   components: [{ path: "~/components", pathPrefix: false }],
 
+  site: {
+    url: process.env.NUXT_PUBLIC_SITE_URL || undefined,
+    name: "UniLink",
+    description: "Platform mahasiswa Universitas Udayana untuk mencari teman belajar, membentuk tim kompetisi, dan merapikan jadwal kuliah.",
+    defaultLocale: "id",
+  },
+
+  robots: {
+    disallow: ["/student", "/admin", "/onboarding", "/auth/verify-email", "/auth/reset", "/auth/blocked", "/auth/forgot"],
+    blockAiBots: false,
+  },
+
+  sitemap: {
+    exclude: ["/student/**", "/admin/**", "/onboarding/**", "/auth/verify-email", "/auth/reset", "/auth/blocked", "/auth/forgot", "/maintenance", "/offline"],
+    defaults: { changefreq: "monthly" },
+  },
+
+  schemaOrg: {
+    identity: {
+      type: "Organization",
+      name: "UniLink",
+      logo: "/logo.png",
+      description: "Platform kolaborasi mahasiswa Universitas Udayana.",
+    },
+  },
+
+  seo: { redirectTitleTemplate: false },
+
   routeRules: {
+    "/student/**": { robots: false },
+    "/admin/**": { robots: false },
+    "/onboarding/**": { robots: false },
+    "/auth/verify-email": { robots: false },
+    "/auth/reset": { robots: false },
+    "/auth/blocked": { robots: false },
+    "/auth/forgot": { robots: false },
+    "/": { sitemap: { priority: 1 } },
     "/onboarding": { redirect: "/onboarding/1" },
     "/student": { redirect: "/student/dashboard" },
   },
@@ -32,7 +72,15 @@ export default defineNuxtConfig({
     head: {
       htmlAttrs: { lang: "id" },
       meta: [
-        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { name: "theme-color", content: "#f5f1e8" },
+        { name: "application-name", content: "UniLink" },
+        { name: "format-detection", content: "telephone=no" },
+      ],
+      link: [
+        { rel: "icon", href: "/favicon.ico", sizes: "48x48" },
+        { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+        { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+        { rel: "manifest", href: "/site.webmanifest" },
       ],
     },
   },

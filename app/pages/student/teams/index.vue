@@ -8,7 +8,7 @@ const { data: teams, pending } = await useApiData("teams", "/student/teams", { d
 <template>
   <PageHeading :title="copy.title" :text="copy.text" />
   <AutoSkeleton :loading="pending" id="teams-list">
-    <div class="grid gap-6 md:grid-cols-2">
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2">
       <UiCard v-for="team in teams" :key="team.id" class="flex flex-col gap-3" hover>
         <h2 class="t-d4 text-ink m-0 line-clamp-2">{{ team.name }}</h2>
         <p class="t-body-s text-ink-2 m-0 line-clamp-2">{{ team.competition.title }}</p>

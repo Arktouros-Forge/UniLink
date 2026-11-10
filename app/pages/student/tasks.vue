@@ -75,7 +75,7 @@ const save = useAction(
   <PageHeading :title="copy.title" :text="copy.text">
     <UiButton icon="plus" @click="edit(blank())">{{ copy.add }}</UiButton>
   </PageHeading>
-  <div class="grid gap-6 md:grid-cols-[minmax(0,1fr)_320px] md:items-start">
+  <div class="grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-[minmax(0,1fr)_320px] md:items-start">
     <div class="flex flex-col gap-4">
       <div class="flex flex-wrap items-center gap-3">
         <FilterSelect v-model="status" :options="copy.statuses" icon="chevronDown" />

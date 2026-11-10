@@ -11,7 +11,7 @@ const reason = computed(() => (typeof auth.blocked === "string" ? auth.blocked :
   <AuthFrame>
     <div class="flex flex-col gap-3">
       <UiChip tone="danger" icon="ban" size="md" class="self-start">{{ copy.chip }}</UiChip>
-      <h1 class="t-d2 text-ink m-0 !text-[36px] !leading-[44px] md:!text-[40px] md:!leading-[48px]">{{ copy.title }}</h1>
+      <h1 class="t-d2 text-ink m-0">{{ copy.title }}</h1>
       <p class="t-body-s text-ink-2 m-0">{{ copy.text }}</p>
     </div>
     <UiCallout :title="copy.reasonTitle">{{ reason }}</UiCallout>

@@ -1,6 +1,8 @@
 <script setup>
 import { limits } from "@app/constants/options.json";
+import { modals } from "@app/constants/student.json";
 
+const copy = modals.request;
 const props = defineProps({
     open: { type: Boolean, default: false },
     helper: { type: Object, default: null },
@@ -8,7 +10,7 @@ const props = defineProps({
 const emit = defineEmits(["close", "sent"]);
 const api = useApi();
 const form = reactive({ skill: "", message: "", time: "" });
-const tooShort = computed(() => form.message.length < 20);
+const tooShort = computed(() => form.message.trim().length < 20);
 const skillNames = computed(() => props.helper?.skills?.map((skill) => skill.name) ?? []);
 watch(
     () => props.helper,
@@ -26,60 +28,27 @@ const { run, pending, fieldErrors } = useAction(async () => {
     form.time = "";
     emit("sent");
 });
-const send = () => !tooShort.value && run();
 </script>
 
 <template>
-    <UiModal :open="open" title="Minta bantuan" @close="emit('close')">
-        <UiCard
-            v-if="helper"
-            padding="p-4"
-            class="flex items-center gap-3 shadow-none"
-        >
+    <UiModal :open="open" :eyebrow="copy.eyebrow" :title="copy.title" :text="copy.text" :submit="copy.submit" :pending="pending" :disabled="tooShort" @close="emit('close')" @submit="run()">
+        <div v-if="helper" class="flex items-center gap-3 p-3 rounded-md border border-hairline bg-paper/60">
             <UiAvatar :name="helper.fullName" :size="40" />
-            <div>
-                <p class="t-label text-ink m-0">{{ helper.fullName }}</p>
-                <p class="t-body-xs text-ink-2 m-0">
-                    {{ helper.major }} · Universitas Udayana
-                </p>
-                <p class="t-mono-s text-ink m-0">
-                    {{ skillNames.join(" · ") }}
-                </p>
+            <div class="min-w-0">
+                <p class="t-label text-ink m-0 truncate">{{ helper.fullName }}</p>
+                <p class="t-body-xs text-ink-2 m-0 truncate">{{ helper.major }}</p>
             </div>
-        </UiCard>
-        <FormField label="Keahlian yang dibutuhkan" v-slot="{ id }"
-            ><FormSelect
-                :id="id"
-                v-model="form.skill"
-                :options="skillNames"
-        /></FormField>
-        <FormField
-            label="Apa yang ingin kamu pahami?"
-            hint="Minimal 20 karakter. Fokus pada pemahaman, bukan meminta jawaban tugas."
-            :error="fieldErrors.description || (form.message && tooShort ? 'Minimal 20 karakter.' : '')"
-            v-slot="{ id }"
-        >
-            <FormTextarea
-                :id="id"
-                v-model="form.message"
-                placeholder="Ceritakan yang sudah kamu coba dan bagian yang membingungkan."
-            />
+        </div>
+        <FormField :label="copy.skill" v-slot="{ id }"><FormChoice :id="id" v-model="form.skill" :options="skillNames" /></FormField>
+        <FormField :label="copy.message" :error="fieldErrors.description" v-slot="{ id }">
+            <FormTextarea :id="id" v-model="form.message" :min="20" :max="1000" :placeholder="copy.placeholder" />
         </FormField>
-        <FormField label="Waktu yang diharapkan" optional v-slot="{ id }"
-            ><FormInput
-                :id="id"
-                v-model="form.time"
-                placeholder="Contoh: Selasa 16.00 WITA"
-        /></FormField>
-        <UiCallout title="Lanjutkan percakapan di WhatsApp" tone="info"
-            >Berlaku {{ limits.requestDays }} hari. Nomor terbuka setelah
-            permintaan diterima.</UiCallout
-        >
-        <template #footer>
-            <UiButton icon="check" :loading="pending" :disabled="tooShort" @click="send"
-                >Kirim permintaan</UiButton
-            >
-            <UiButton variant="link" @click="emit('close')">Batal</UiButton>
-        </template>
+        <FormField :label="copy.time" optional :error="fieldErrors.preferredTime" v-slot="{ id }">
+            <div class="flex flex-col gap-2">
+                <FormChoice :model-value="modals.quickTimes.includes(form.time) ? form.time : ''" :options="modals.quickTimes" @update:model-value="form.time = $event" />
+                <FormInput :id="id" v-model="form.time" :placeholder="copy.timePlaceholder" icon-start="clock" />
+            </div>
+        </FormField>
+        <p class="t-mono-s text-ink-2 m-0 flex items-center gap-2"><UiIcon name="lock" />{{ copy.note.replace("{days}", limits.requestDays) }}</p>
     </UiModal>
 </template>

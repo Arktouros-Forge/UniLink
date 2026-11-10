@@ -26,11 +26,11 @@ const extraRequests = computed(() => data.value.pendingRequests.slice(1).map((it
         <UiButton icon="plus" to="/student/help-board/new">{{ copy.post }}</UiButton>
     </PageHeading>
     <AutoSkeleton :loading="pending" id="dashboard-stats">
-        <div class="grid gap-4 md:grid-cols-3 md:gap-6">
+        <div class="grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-3 md:gap-6">
             <StatCard v-for="item in stats" :key="item.label" :label="item.label" :value="item.value" :trend="item.trend" />
         </div>
     </AutoSkeleton>
-    <div class="grid gap-6 md:grid-cols-2 md:items-stretch">
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2 md:items-stretch">
         <div class="flex flex-col gap-6">
             <AutoSkeleton :loading="pending" id="dashboard-requests">
                 <UiCard class="flex flex-col gap-4">

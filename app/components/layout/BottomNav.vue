@@ -7,7 +7,7 @@ const isActive = (to) => route.path === to || route.path.startsWith(`${to}/`);
 
 <template>
     <nav
-        class="md:hidden fixed bottom-0 inset-x-0 z-40 grid grid-cols-5 bg-card border-t border-hairline safe-bottom"
+        class="lg:hidden fixed bottom-0 inset-x-0 z-40 grid grid-cols-5 bg-card border-t border-hairline safe-bottom"
         aria-label="Navigasi utama"
     >
         <NuxtLink

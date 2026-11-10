@@ -1,7 +1,6 @@
-import { useToastStore } from "@app/stores/toast";
+import { notifyError, notifySuccess } from "@app/utils/notify";
 
 export const useAction = (handler, { success, silent = false } = {}) => {
-  const toast = useToastStore();
   const pending = ref(false);
   const error = ref(null);
   const fieldErrors = ref({});
@@ -13,12 +12,12 @@ export const useAction = (handler, { success, silent = false } = {}) => {
 
     try {
       const result = await handler(...args);
-      if (success) toast.push(typeof success === "function" ? success(result) : success, "success");
+      if (success) notifySuccess(typeof success === "function" ? success(result) : success);
       return result;
     } catch (failure) {
       error.value = failure;
       fieldErrors.value = failure.fieldErrors?.() ?? {};
-      if (!silent) toast.push(failure.message, "error");
+      if (!silent) notifyError(failure);
       return undefined;
     } finally {
       pending.value = false;

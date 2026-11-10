@@ -16,7 +16,7 @@ const { run, pending, fieldErrors } = useAction(async () => {
 <template>
   <AuthFrame>
     <div class="flex flex-col gap-2">
-      <h1 class="t-d2 text-ink m-0 !text-[36px] !leading-[44px] md:!text-[40px] md:!leading-[48px]">{{ copy.title }}</h1>
+      <h1 class="t-d2 text-ink m-0">{{ copy.title }}</h1>
       <p class="t-body-s text-ink-2 m-0">{{ copy.text }}</p>
     </div>
     <UiCallout v-if="sent" :title="copy.sentTitle" tone="info">{{ copy.sentText }}</UiCallout>

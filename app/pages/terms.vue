@@ -3,6 +3,8 @@ import { legal } from "@app/constants/legal.json";
 
 const route = useRoute();
 const page = computed(() => legal[route.path.slice(1)] || legal.privacy);
+
+usePageSeo("terms");
 </script>
 
 <template>

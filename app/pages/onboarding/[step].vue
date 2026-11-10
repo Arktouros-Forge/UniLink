@@ -50,7 +50,7 @@ const next = () => (last.value ? run() : navigateTo(`/onboarding/${step.value + 
   <div class="w-full max-w-[640px] self-start flex flex-col gap-8 md:mt-8">
     <UiStepper :steps="onboarding" :current="step" />
     <div class="flex flex-col gap-2">
-      <h1 class="t-d2 text-ink m-0 !text-[36px] !leading-[44px]">{{ current.title }}</h1>
+      <h1 class="t-d2 text-ink m-0">{{ current.title }}</h1>
       <p class="t-body-m text-ink-2 m-0">{{ current.text }}</p>
     </div>
     <UiCard class="flex flex-col gap-5">

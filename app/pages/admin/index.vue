@@ -21,12 +21,12 @@ const statuses = computed(() => data.value.requestStatus.map((row) => ({ label: 
 <template>
   <PageHeading :title="copy.title" :text="copy.text" />
   <AutoSkeleton :loading="pending" id="admin-stats">
-    <div class="grid gap-4 md:grid-cols-3 md:gap-6">
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-3 md:gap-6">
       <StatCard v-for="item in stats" :key="item.label" v-bind="item" />
     </div>
   </AutoSkeleton>
   <AutoSkeleton :loading="pending" id="admin-charts">
-    <div class="grid gap-6 md:grid-cols-2">
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2">
       <UiCard class="flex flex-col gap-6">
         <h2 class="t-d4 text-ink m-0">{{ copy.signups }}</h2>
         <ChartBars v-if="signups.length" :rows="signups" />

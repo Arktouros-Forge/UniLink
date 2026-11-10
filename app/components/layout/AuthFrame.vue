@@ -4,13 +4,13 @@ import { aside } from "@app/constants/auth.json";
 
 <template>
     <div
-        class="w-full max-w-[1200px] grid gap-12 md:grid-cols-[400px_1fr] md:gap-24 md:items-center"
+        class="w-full max-w-[1200px] grid gap-12 lg:grid-cols-[400px_1fr] lg:gap-20 lg:items-center"
     >
         <section class="flex flex-col gap-6"><slot /></section>
-        <aside class="hidden md:flex flex-col gap-6">
+        <aside class="hidden lg:flex flex-col gap-6">
             <ArtBlocks variant="auth" />
             <h2
-                class="t-d4 text-ink m-0 whitespace-pre-line !text-[22px] !leading-8"
+                class="t-d4 text-ink m-0 whitespace-pre-line"
             >
                 {{ aside.title }}
             </h2>

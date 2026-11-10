@@ -2,7 +2,7 @@ import { firebase as copy } from "@app/constants/auth.json";
 
 const LOCAL_FALLBACK = ["auth/user-not-found", "auth/invalid-credential", "auth/wrong-password", "auth/invalid-login-credentials"];
 
-export class FirebaseAuthError extends Error {
+class FirebaseAuthError extends Error {
   constructor(code) {
     super(copy.errors[code] ?? copy.errors.fallback);
     this.code = code;

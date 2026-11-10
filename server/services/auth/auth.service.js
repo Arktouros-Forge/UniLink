@@ -134,11 +134,6 @@ export async function resetPassword(token, password) {
   return { reset: true };
 }
 
-export async function notifyWelcome(userId) {
-  const [user] = await db.select({ email: users.email, fullName: users.fullName }).from(users).where(eq(users.id, userId)).limit(1);
-  if (user) sendMailSafely(composeMail("welcome", user.email, { name: user.fullName }));
-}
-
 export async function firebaseLogin({ idToken, name }, ip) {
   rateLimit("firebase", ip, { max: 30, windowMs: 15 * 60_000 });
   const identity = await verifyFirebaseToken(idToken);

@@ -17,7 +17,7 @@ const signOut = async () => {
 
 <template>
     <aside
-        class="flex flex-col w-[270px] shrink-0 h-dvh sticky top-0 bg-card border-r border-hairline"
+        class="flex flex-col w-[270px] shrink-0 h-full bg-card border-r border-hairline"
     >
         <NuxtLink
             :to="admin ? '/admin' : '/student/dashboard'"

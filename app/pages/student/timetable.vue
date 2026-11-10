@@ -118,36 +118,32 @@ const lecturerOptions = computed(() => [{ value: "", label: copy.lecturerNone },
     <UiEmpty v-if="!events.length" :title="copy.emptyTitle" :text="copy.emptyText" icon="calendar" />
   </AutoSkeleton>
   <div class="flex flex-wrap gap-3"><UiChip v-for="type in eventTypes" :key="type.value" :tone="type.value === 'kuliah' ? 'neutral' : toneOf[type.tone]" size="md">{{ type.label }}</UiChip></div>
-  <UiModal :open="!!detail" :title="detail?.title || ''" @close="detail = null">
-    <p class="t-mono-s text-ink m-0">{{ detail?.label }}{{ detail?.code ? ` · ${detail.code}` : "" }}</p>
-    <p v-if="detail?.room" class="t-body-s text-ink m-0">{{ copy.roomPrefix }} {{ detail.room }}</p>
-    <p v-if="detail?.lecturer" class="t-body-s text-ink-2 m-0">{{ detail.lecturer }}</p>
+  <UiModal :open="!!detail" :eyebrow="detail?.label" :title="detail?.title || ''" @close="detail = null">
+    <dl class="m-0 flex flex-col gap-3">
+      <div v-if="detail?.code" class="flex items-center gap-3"><UiIcon name="book" class="text-ink-2" /><dd class="t-mono-m text-ink m-0">{{ detail.code }}</dd></div>
+      <div v-if="detail?.room" class="flex items-center gap-3"><UiIcon name="flag" class="text-ink-2" /><dd class="t-body-s text-ink m-0">{{ copy.roomPrefix }} {{ detail.room }}</dd></div>
+      <div v-if="detail?.lecturer" class="flex items-center gap-3"><UiIcon name="user" class="text-ink-2" /><dd class="t-body-s text-ink m-0">{{ detail.lecturer }}</dd></div>
+    </dl>
     <template #footer>
-      <UiButton variant="dangerLink" :loading="remove.pending.value" @click="remove.run()">{{ copy.delete }}</UiButton>
-      <UiButton variant="secondary" @click="detail = null">{{ copy.close }}</UiButton>
+      <UiButton variant="secondary" class="flex-1 sm:flex-none" @click="detail = null">{{ copy.close }}</UiButton>
+      <UiButton variant="dangerLink" :loading="remove.pending.value" class="mr-auto" @click="remove.run()">{{ copy.delete }}</UiButton>
     </template>
   </UiModal>
-  <UiModal :open="addOpen" :title="copy.add" @close="addOpen = false">
-    <FormField :label="copy.eventName" :error="add.fieldErrors.value.title" v-slot="{ id }"><FormInput :id="id" v-model="form.title" /></FormField>
-    <FormField :label="copy.code" optional v-slot="{ id }"><FormInput :id="id" v-model="form.courseCode" /></FormField>
-    <FormField :label="copy.day" v-slot="{ id }"><FormSelect :id="id" v-model="form.day" :options="dayOptions" /></FormField>
+  <UiModal :open="addOpen" eyebrow="Jadwal" :title="copy.add" :submit="copy.save" :pending="add.pending.value" :disabled="!form.title" @close="addOpen = false" @submit="add.run()">
+    <FormField :label="copy.eventName" :error="add.fieldErrors.value.title" v-slot="{ id }"><FormInput :id="id" v-model="form.title" icon-start="calendar" /></FormField>
+    <FormField :label="copy.day"><FormChoice v-model="form.day" :options="dayOptions" cols="grid-cols-4 sm:grid-cols-7" center /></FormField>
     <div class="grid grid-cols-2 gap-3">
       <FormField :label="copy.start" :error="add.fieldErrors.value.startTime" v-slot="{ id }"><FormInput :id="id" v-model="form.start" type="time" /></FormField>
       <FormField :label="copy.end" :error="add.fieldErrors.value.endTime" v-slot="{ id }"><FormInput :id="id" v-model="form.end" type="time" /></FormField>
     </div>
-    <FormField :label="copy.room" optional v-slot="{ id }"><FormInput :id="id" v-model="form.room" /></FormField>
+    <div class="grid grid-cols-2 gap-3">
+      <FormField :label="copy.code" optional v-slot="{ id }"><FormInput :id="id" v-model="form.courseCode" icon-start="book" /></FormField>
+      <FormField :label="copy.room" optional v-slot="{ id }"><FormInput :id="id" v-model="form.room" icon-start="flag" /></FormField>
+    </div>
     <FormField :label="copy.lecturer" optional v-slot="{ id }"><FormSelect :id="id" v-model="form.lecturerId" :options="lecturerOptions" /></FormField>
-    <template #footer>
-      <UiButton :loading="add.pending.value" :disabled="!form.title" @click="add.run()">{{ copy.save }}</UiButton>
-      <UiButton variant="link" @click="addOpen = false">{{ copy.cancel }}</UiButton>
-    </template>
   </UiModal>
-  <UiModal :open="importOpen" :title="copy.importTitle" @close="importOpen = false">
-    <FormField :label="copy.importHint" v-slot="{ id }"><input :id="id" type="file" accept=".ics,text/calendar" class="t-body-s" @change="readFile"></FormField>
+  <UiModal :open="importOpen" eyebrow="Jadwal" :title="copy.importTitle" :submit="copy.importSubmit" :pending="doImport.pending.value" :disabled="!importForm.content" submit-icon="upload" @close="importOpen = false" @submit="doImport.run()">
+    <FormField :label="copy.importHint" v-slot="{ id }"><input :id="id" type="file" accept=".ics,text/calendar" class="t-body-s w-full p-3 rounded-md border border-dashed border-ink-3 bg-card" @change="readFile"></FormField>
     <UiCheckbox v-model="importForm.replace" :label="copy.importReplace" />
-    <template #footer>
-      <UiButton :loading="doImport.pending.value" :disabled="!importForm.content" @click="doImport.run()">{{ copy.importSubmit }}</UiButton>
-      <UiButton variant="link" @click="importOpen = false">{{ copy.cancel }}</UiButton>
-    </template>
   </UiModal>
 </template>

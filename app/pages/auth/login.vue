@@ -25,13 +25,15 @@ const { run, pending, error } = useAction(
     { silent: true },
 );
 const submit = () => run();
+
+usePageSeo("login");
 </script>
 
 <template>
     <AuthFrame>
         <div class="flex flex-col gap-2">
             <h1
-                class="t-d2 text-ink m-0 !text-[36px] !leading-[44px] md:!text-[40px] md:!leading-[48px]"
+                class="t-d2 text-ink m-0"
             >
                 {{ copy.title }}
             </h1>

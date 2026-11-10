@@ -15,7 +15,6 @@ function keySet() {
   return jwks;
 }
 
-export const firebaseEnabled = () => Boolean(firebaseProjectId());
 
 export async function verifyFirebaseToken(idToken) {
   const projectId = firebaseProjectId();

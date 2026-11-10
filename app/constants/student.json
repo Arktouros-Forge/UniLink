@@ -179,7 +179,6 @@
     "prize": "Hadiah",
     "site": "Situs resmi",
     "teamCreated": "Tim berhasil dibuat.",
-    "joinSent": "Permintaan bergabung terkirim.",
     "pending": "Menunggu",
     "member": "Anggota",
     "noLimit": "Bebas",
@@ -258,7 +257,6 @@
     "name": "Nama tim",
     "namePlaceholder": "Contoh: Tim Garuda",
     "description": "Deskripsi tim",
-    "descriptionHint": "Minimal 10 karakter.",
     "descriptionPlaceholder": "Ceritakan ide dan peran yang dibutuhkan.",
     "capacity": "Jumlah anggota maksimal",
     "save": "Simpan",
@@ -369,7 +367,6 @@
   "admin": {
     "pageSize": 8,
     "noteTitle": "Catatan admin",
-    "skillsTitle": "Keahlian",
     "skillsFooterTitle": "Keahlian yang digunakan tidak dapat dihapus.",
     "skillsFooterText": "Pindahkan referensi profil dan tim terlebih dahulu. Mengedit nama tidak menghapus hubungan yang sudah ada.",
     "saved": "Perubahan disimpan.",
@@ -441,6 +438,67 @@
       "emptyTeams": "Belum tergabung di tim mana pun.",
       "emptyRequests": "Belum ada permintaan.",
       "editTitle": "Ubah pengguna"
+    }
+  },
+  "modals": {
+    "quickTimes": [
+      "Hari ini",
+      "Besok",
+      "Akhir pekan",
+      "Fleksibel"
+    ],
+    "request": {
+      "eyebrow": "Study Match",
+      "title": "Minta bantuan",
+      "text": "Ceritakan kebutuhanmu. Penolong akan menanggapi lewat UniLink.",
+      "skill": "Keahlian yang dibutuhkan",
+      "message": "Apa yang ingin kamu pahami?",
+      "placeholder": "Ceritakan yang sudah kamu coba dan bagian yang membingungkan.",
+      "time": "Waktu yang diharapkan",
+      "timePlaceholder": "Tambahkan detail, contoh: Selasa 16.00 WITA",
+      "note": "Berlaku {days} hari · nomor WhatsApp terbuka setelah diterima",
+      "submit": "Kirim permintaan"
+    },
+    "offer": {
+      "eyebrow": "Papan bantuan",
+      "text": "Jelaskan singkat bagaimana kamu bisa membantu.",
+      "placeholder": "Contoh: Aku sudah mengambil mata kuliah ini, bisa jelaskan lewat contoh soal.",
+      "timePlaceholder": "Tambahkan detail, contoh: Rabu 16.00 WITA"
+    },
+    "join": {
+      "eyebrow": "Tim",
+      "text": "Pemilik tim meninjau permintaanmu sebelum kamu masuk.",
+      "spots": "{count} slot tersisa",
+      "full": "Tim penuh",
+      "steps": [
+        "Kirim permintaan",
+        "Pemilik menanggapi",
+        "Nomor WhatsApp terbuka"
+      ]
+    },
+    "team": {
+      "eyebrow": "Tim",
+      "text": "Ajak teman sekampus untuk lomba yang kamu incar.",
+      "unit": "orang",
+      "capacityHint": "Termasuk kamu sebagai pemilik."
+    },
+    "result": {
+      "eyebrow": "Hasil lomba",
+      "text": "Bantu timmu mencatat hasil akhir kompetisi.",
+      "note": "Semua anggota yang diterima bisa memperbarui laporan ini.",
+      "label": "Hasil kompetisi"
+    },
+    "reason": {
+      "presets": [
+        "Spam",
+        "Tidak pantas",
+        "Melanggar aturan",
+        "Data palsu"
+      ],
+      "presetLabel": "Pilihan cepat"
+    },
+    "confirm": {
+      "eyebrow": "Konfirmasi"
     }
   }
 }
