@@ -4,7 +4,6 @@ A small web app for Universitas Udayana students: find someone to study with, po
 
 ![Landing page](docs/screens/landing.png)
 
-The one rule that shapes everything: **phone numbers stay hidden until a request is accepted.** After that, the other person gets your number and a WhatsApp link. There is no chat inside the app on purpose.
 
 ## Run it
 
@@ -81,6 +80,14 @@ docs/       screenshots
 ```
 
 Stack: Nuxt 4, UnoCSS, Pinia, Drizzle, PostgreSQL, zod, jose, vue-sonner. The visual design is a De Stijl take from Figma: flat colour blocks, thick outlines, nothing glossy.
+
+### Design file
+
+The full De Stijl design lives in Figma — colours, type scale, spacing, and every screen side by side.
+
+[![Figma design file](https://img.shields.io/badge/Figma-UniLink%20Design%20File-F24E1E?logo=figma&logoColor=white)](https://www.figma.com/design/cHIZSLnr7xjhSCfHojQg0M/UniLink---TecFest-2026?node-id=0-1&t=b8fmiaUEH7HvyLXl-1)
+
+<iframe style="border:1px solid #1a1a1a; border-radius:0;" width="100%" height="480" src="https://www.figma.com/embed?embed_host=share&url=https://www.figma.com/file/YOUR_FILE_ID/UniLink?node-id=0%3A1" allowfullscreen></iframe>
 
 ## API
 
