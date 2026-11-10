@@ -87,7 +87,6 @@ The full De Stijl design lives in Figma — colours, type scale, spacing, and ev
 
 [![Figma design file](https://img.shields.io/badge/Figma-UniLink%20Design%20File-F24E1E?logo=figma&logoColor=white)](https://www.figma.com/design/cHIZSLnr7xjhSCfHojQg0M/UniLink---TecFest-2026?node-id=0-1&t=b8fmiaUEH7HvyLXl-1)
 
-<iframe style="border:1px solid #1a1a1a; border-radius:0;" width="100%" height="480" src="https://www.figma.com/embed?embed_host=share&url=https://www.figma.com/file/YOUR_FILE_ID/UniLink?node-id=0%3A1" allowfullscreen></iframe>
 
 ## API
 

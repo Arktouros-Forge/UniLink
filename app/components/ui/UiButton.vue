@@ -23,19 +23,19 @@ const attrs = computed(() => {
 });
 
 const variants = {
-    primary: "border-transparent bg-blue text-onblue hover:opacity-90",
+    primary: ":uno: border-transparent bg-blue text-onblue hover:opacity-90",
     secondary:
-        "border-hairline bg-card text-blue shadow-rest hover:shadow-hover",
-    ghost: "border-transparent bg-transparent text-blue hover:bg-blue-soft",
-    link: "border-transparent bg-transparent text-blue !px-1 hover:underline",
-    danger: "border-transparent bg-danger text-onblue hover:opacity-90",
+        ":uno: border-hairline bg-card text-blue shadow-rest hover:shadow-hover",
+    ghost: ":uno: border-transparent bg-transparent text-blue hover:bg-blue-soft",
+    link: ":uno: border-transparent bg-transparent text-blue !px-1 hover:underline",
+    danger: ":uno: border-transparent bg-danger text-onblue hover:opacity-90",
     dangerLink:
-        "border-transparent bg-transparent text-danger !px-1 hover:underline",
+        ":uno: border-transparent bg-transparent text-danger !px-1 hover:underline",
 };
 const sizes = {
-    sm: "h-9 px-4 text-sm",
-    md: "h-11 px-6",
-    lg: "h-12 px-7",
+    sm: ":uno: h-9 px-4 text-sm",
+    md: ":uno: h-11 px-6",
+    lg: ":uno: h-12 px-7",
 };
 </script>
 
@@ -43,15 +43,15 @@ const sizes = {
     <component
         :is="tag"
         v-bind="attrs"
-        class="inline-flex items-center justify-center gap-2 rounded-md border t-button whitespace-nowrap cursor-pointer transition-all focus-ring disabled:opacity-50 disabled:cursor-not-allowed"
+        class=":uno: inline-flex items-center justify-center gap-2 rounded-md border t-button whitespace-nowrap cursor-pointer transition-all focus-ring disabled:opacity-50 disabled:cursor-not-allowed"
         :class="[variants[variant], sizes[size], block && 'w-full']"
     >
         <span
             v-if="loading"
-            class="size-4 rounded-full border-2 border-current border-t-transparent animate-spin"
+            class=":uno: size-4 rounded-full border-2 border-current border-t-transparent animate-spin"
         />
-        <UiIcon v-else-if="icon" :name="icon" :size="size === 'sm' ? 'text-lg' : 'text-xl'" />
+        <UiIcon v-else-if="icon" :name="icon" :size="size === 'sm' ? ':uno: text-lg' : ':uno: text-xl'" />
         <slot />
-        <UiIcon v-if="iconEnd" :name="iconEnd" :size="size === 'sm' ? 'text-lg' : 'text-xl'" />
+        <UiIcon v-if="iconEnd" :name="iconEnd" :size="size === 'sm' ? ':uno: text-lg' : ':uno: text-xl'" />
     </component>
 </template>

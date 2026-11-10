@@ -6,7 +6,6 @@ import {
     steps,
     cta,
 } from "@app/constants/landing.json";
-import { university } from "@app/constants/site.json";
 
 const toneBlock = { blue: "bg-blue", red: "bg-red", yellow: "bg-yellow" };
 
@@ -63,7 +62,7 @@ useSchemaOrg([
                     v-for="(section, index) in sections"
                     :key="section.numeral"
                     class="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[240px_1fr_280px] lg:gap-12 lg:items-start"
-                    :class="index % 2 && 'lg:[&>:last-child]:order-first'"
+
                 >
                     <div class="flex items-end gap-4 lg:gap-6">
                         <span class="t-serif-step text-ink shrink-0 whitespace-nowrap">{{
