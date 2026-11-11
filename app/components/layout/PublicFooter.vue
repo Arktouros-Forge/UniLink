@@ -11,7 +11,7 @@ defineProps({
 </script>
 
 <template>
-    <footer :class="['bg-paper', variant === 'default' ? 'border-t border-hairline' : '']">
+    <footer :class="[':uno: bg-paper', variant === 'default' ? ':uno: border-t border-hairline' : '']">
         <div
             class="container-wide flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
             :class="variant === 'default' ? 'py-8' : 'py-5'"

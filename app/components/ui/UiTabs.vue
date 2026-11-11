@@ -5,7 +5,7 @@ const model = defineModel({ type: String, required: true });
 
 <template>
     <div
-        class="flex gap-6 border-b border-hairline overflow-x-auto overflow-hidden"
+        class=":uno: flex gap-6 border-b border-hairline overflow-x-auto overflow-hidden"
         role="tablist"
     >
         <button
@@ -14,9 +14,9 @@ const model = defineModel({ type: String, required: true });
             type="button"
             role="tab"
             :aria-selected="model === item.value"
-            class="relative h-10 shrink-0 bg-transparent cursor-pointer t-label"
+            class=":uno: relative h-10 shrink-0 bg-transparent cursor-pointer t-label"
             :class="
-                model === item.value ? 'text-blue' : 'text-ink-2 hover:text-ink'
+                model === item.value ? ':uno: text-blue' : ':uno: text-ink-2 hover:text-ink'
             "
             @click="model = item.value"
         >
@@ -26,7 +26,7 @@ const model = defineModel({ type: String, required: true });
             >
             <span
                 v-if="model === item.value"
-                class="absolute inset-x-0 -bottom-px h-0.5 bg-blue"
+                class=":uno: absolute inset-x-0 -bottom-px h-0.5 bg-blue"
             />
         </button>
     </div>

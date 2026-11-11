@@ -82,8 +82,8 @@ export default defineConfig({
     "t-serif-stat":
       "font-serif text-[56px] leading-[56px] md:text-[64px] md:leading-[64px]",
     "t-serif-small": "font-serif text-[56px] leading-[56px]",
-    "t-body-l": "font-sans text-lg leading-7",
-    "t-body-m": "font-sans text-base leading-[26px]",
+    "t-body-l": "font-sans text-md leading-7",
+    "t-body-m": "font-sans text-sm md:text-base leading-[26px]",
     "t-body-s": "font-sans text-sm leading-[22px]",
     "t-body-xs": "font-sans text-xs leading-5",
     "t-label": "font-sans font-medium text-sm leading-5",

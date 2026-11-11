@@ -10,8 +10,8 @@ defineProps({
 
 <template>
   <span
-    class="inline-flex items-center justify-center shrink-0 rounded-full font-sans font-semibold"
-    :class="tone === 'neutral' ? 'bg-hairline text-blue' : 'bg-blue-soft text-blue'"
+    class=":uno: inline-flex items-center justify-center shrink-0 rounded-full font-sans font-semibold"
+    :class="tone === 'neutral' ? ':uno: bg-hairline text-blue' : ':uno: bg-blue-soft text-blue'"
     :style="{ width: `${size}px`, height: `${size}px`, fontSize: `${Math.max(11, Math.round(size * 0.3))}px` }"
   >{{ initialsOf(name) }}</span>
 </template>

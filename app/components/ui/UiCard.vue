@@ -15,10 +15,10 @@ defineProps({
     <component
         :is="as"
         v-bind="$attrs"
-        class="surface"
+        class=":uno: surface"
         :class="[
             padding,
-            hover && 'transition-shadow hover:shadow-hover',
+            hover && ':uno: transition-shadow hover:shadow-hover',
             tint,
         ]"
     >

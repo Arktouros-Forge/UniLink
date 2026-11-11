@@ -14,7 +14,10 @@ const home = () => clearError({ redirect: "/" });
         <p class=":uno: t-serif-display text-ink m-0">{{ state.code }}</p>
         <h1 class=":uno: t-d2 text-ink m-0">{{ state.title }}</h1>
         <p class=":uno: t-body-m text-ink-2 m-0">{{ state.text }}</p>
-        <div class=":uno: flex gap-3"><UiButton icon="home" @click="home">Kembali ke beranda</UiButton><UiButton variant="secondary" icon="refresh" @click="reloadNuxtApp()">Muat ulang</UiButton></div>
+        <div class=":uno: flex gap-3">
+            <UiButton size="md" icon="home" @click="home">Kembali ke beranda</UiButton>
+            <UiButton size="md" variant="secondary" icon="refresh" @click="reloadNuxtApp()">Muat ulang</UiButton>
+        </div>
       </div>
     </main>
   </div>
