@@ -25,7 +25,10 @@ export const tokenBody = z.object({ token: z.string().min(20).max(100) });
 
 export const forgotBody = z.object({ email });
 
-export const resetBody = z.object({ token: z.string().min(20).max(100), password: newPassword });
+export const resetBody = z.object({
+  token: z.string().min(20).max(100),
+  password: newPassword,
+});
 
 export const firebaseBody = z.object({
   idToken: z.string().min(100).max(4000),
