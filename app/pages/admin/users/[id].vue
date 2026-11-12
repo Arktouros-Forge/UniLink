@@ -171,12 +171,14 @@ const remove = useAction(
                     }}</UiChip>
                     <template #actions>
                         <UiButton
+                            size="sm"
                             variant="secondary"
                             icon="edit"
                             @click="editOpen = true"
                             >{{ copy.edit }}</UiButton
                         >
                         <UiButton
+                            size="sm"
                             v-if="blocked"
                             variant="secondary"
                             icon="check"
@@ -184,6 +186,7 @@ const remove = useAction(
                             >Buka blokir</UiButton
                         >
                         <UiButton
+                            size="sm"
                             v-else
                             variant="danger"
                             icon="ban"
@@ -206,7 +209,7 @@ const remove = useAction(
                 <template v-if="tab === 'overview'">
                     <h2 class=":uno: t-d4 text-ink m-0">{{ copy.skills }}</h2>
                     <SkillPicker v-model="skills" />
-                    <div class=":uno: flex">
+                    <div class=":uno: flex justify-end">
                         <UiButton
                             icon="check"
                             size="sm"
@@ -241,6 +244,7 @@ const remove = useAction(
                     <UiButton
                         variant="dangerLink"
                         icon="trash"
+                        size="sm"
                         class=":uno: self-start"
                         @click="deleteOpen = true"
                         >{{ copy.delete }}</UiButton

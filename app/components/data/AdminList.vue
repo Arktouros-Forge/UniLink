@@ -27,7 +27,7 @@ const cols = computed(() => [
 
 <template>
     <PageHeading :title="title" :text="text">
-        <UiButton v-if="addLabel" icon="plus" @click="emit('add')">{{
+        <UiButton size="sm" v-if="addLabel" icon="plus" @click="emit('add')">{{
             addLabel
         }}</UiButton>
     </PageHeading>

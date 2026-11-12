@@ -46,11 +46,6 @@ await crud.request;
                 formatDate(value)
             }}</span></template
         >
-        <template #footer
-            ><UiCallout :title="copy.skillsFooterTitle">{{
-                copy.skillsFooterText
-            }}</UiCallout></template
-        >
     </AdminList>
     <EntityModal
         :open="crud.modalOpen.value"

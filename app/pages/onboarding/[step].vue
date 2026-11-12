@@ -151,6 +151,7 @@ const next = () =>
         <div class=":uno: flex items-center justify-between">
             <UiButton
                 v-if="step > 1"
+                size="sm"
                 :to="`/onboarding/${step - 1}`"
                 variant="link"
                 icon="arrowLeft"
@@ -158,6 +159,7 @@ const next = () =>
             >
             <span v-else />
             <UiButton
+                size="sm"
                 icon-end="arrowRight"
                 :loading="pending"
                 :disabled="!stepReady"

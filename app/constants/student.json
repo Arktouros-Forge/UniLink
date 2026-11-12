@@ -310,8 +310,6 @@
   "admin": {
     "pageSize": 8,
     "noteTitle": "Catatan admin",
-    "skillsFooterTitle": "Keahlian yang digunakan tidak dapat dihapus.",
-    "skillsFooterText": "Pindahkan referensi profil dan tim terlebih dahulu. Mengedit nama tidak menghapus hubungan yang sudah ada.",
     "saved": "Perubahan disimpan.",
     "created": "Data ditambahkan.",
     "removed": "Data dihapus.",

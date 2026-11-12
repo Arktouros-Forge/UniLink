@@ -5,7 +5,7 @@ import { university } from "@app/constants/site.json";
 <template>
     <div class=":uno: min-h-dvh bg-paper flex flex-col">
         <header
-            class=":uno: flex items-center justify-between h-16 md:h-[72px] px-5 md:px-8 lg:px-16"
+            class=":uno: flex container-wide items-center justify-between h-16 md:h-[72px] px-5 md:px-8 lg:px-16"
         >
             <NuxtLink to="/" class=":uno: focus-ring"><UiLogo /></NuxtLink>
             <span class=":uno: hidden lg:inline t-mono-s text-ink">{{

@@ -72,7 +72,7 @@ const statuses = computed(() =>
         <h2 class=":uno: t-d4 text-ink m-0">{{ copy.reviewTitle }}</h2>
         <p class=":uno: t-body-s text-ink m-0">{{ copy.reviewText }}</p>
         <UiButton
-            variant="link"
+            size="sm"
             icon-end="arrowRight"
             to="/admin/competitions"
             class=":uno: self-start"

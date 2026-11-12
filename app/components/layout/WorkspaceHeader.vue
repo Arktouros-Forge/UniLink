@@ -1,5 +1,4 @@
 <script setup>
-import { semester } from "@app/constants/site.json";
 import { formatToday } from "@app/utils/format";
 
 defineProps({
@@ -15,7 +14,6 @@ defineProps({
         <p class=":uno: t-body-s text-ink-2 m-0">{{ root }} / {{ page }}</p>
         <div class=":uno: flex items-center gap-3">
             <span class=":uno: t-mono-s text-ink">{{ formatToday() }}</span>
-            <UiChip tone="neutral" size="md">{{ semester }}</UiChip>
         </div>
     </header>
 </template>

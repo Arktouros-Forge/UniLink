@@ -60,7 +60,21 @@ usePageSeo("register");
                     type="password"
                     icon="lock"
             /></FormField>
-            <UiCheckbox v-model="form.agree" :label="copy.terms" />
+            <div class=":uno: flex items-start gap-2">
+                <UiCheckbox v-model="form.agree" />
+
+                <p class="text-sm">
+                    {{ copy.termsPrefix }}
+                    <NuxtLink to="/terms" class=":uno: text-blue underline">
+                        {{ copy.termsLink }}
+                    </NuxtLink>
+                    {{ copy.termsAnd }}
+                    <NuxtLink to="/privacy" class=":uno: text-blue underline">
+                        {{ copy.privacyLink }}
+                    </NuxtLink>
+                    {{ copy.termsSuffix }}
+                </p>
+            </div>
             <UiCallout
                 v-if="error && !Object.keys(fieldErrors).length"
                 tone="danger"
