@@ -22,15 +22,15 @@ usePageSeo("register");
 
 <template>
     <AuthFrame>
-        <div class="flex flex-col gap-2">
+        <div class=":uno: flex flex-col gap-2">
             <h1
-                class="t-d2 text-ink m-0"
+                class=":uno: t-d2 text-ink m-0"
             >
                 {{ copy.title }}
             </h1>
-            <p class="t-body-s text-ink-2 m-0">{{ copy.text }}</p>
+            <p class=":uno: t-body-s text-ink-2 m-0">{{ copy.text }}</p>
         </div>
-        <form class="flex flex-col gap-4" @submit.prevent="submit">
+        <form class=":uno: flex flex-col gap-4" @submit.prevent="submit">
             <FormField :label="copy.name" :error="fieldErrors.name" v-slot="{ id }"
                 ><FormInput :id="id" v-model="form.name" icon="user"
             /></FormField>
@@ -63,9 +63,9 @@ usePageSeo("register");
             >
         </form>
         <GoogleButton />
-        <p class="t-body-s text-ink-2 m-0">
+        <p class=":uno: t-body-s text-ink-2 m-0">
             {{ copy.prompt }}
-            <NuxtLink to="/auth/login" class="text-ink"
+            <NuxtLink to="/auth/login" class=":uno: text-ink"
                 >{{ copy.switch }} →</NuxtLink
             >
         </p>

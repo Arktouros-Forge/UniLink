@@ -31,16 +31,16 @@ usePageSeo("login");
 
 <template>
     <AuthFrame>
-        <div class="flex flex-col gap-2">
+        <div class=":uno: flex flex-col gap-2">
             <h1
-                class="t-d2 text-ink m-0"
+                class=":uno: t-d2 text-ink m-0"
             >
                 {{ copy.title }}
             </h1>
-            <p class="t-body-s text-ink-2 m-0">{{ copy.text }}</p>
+            <p class=":uno: t-body-s text-ink-2 m-0">{{ copy.text }}</p>
         </div>
-        <div class="gap-4 flex flex-col">
-            <form class="flex flex-col gap-4 pb-0" @submit.prevent="submit">
+        <div class=":uno: gap-4 flex flex-col">
+            <form class=":uno: flex flex-col gap-4 pb-0" @submit.prevent="submit">
                 <FormField :label="copy.email" v-slot="{ id }"
                     ><FormInput
                         :id="id"
@@ -56,12 +56,12 @@ usePageSeo("login");
                         :icon="show ? 'eye' : 'eyeOff'"
                         @icon="show = !show"
                 /></FormField>
-                <div class="flex items-center justify-between">
+                <div class=":uno: flex items-center justify-between">
                     <UiCheckbox
                         v-model="form.remember"
                         :label="copy.remember"
                     />
-                    <NuxtLink to="/auth/forgot" class="t-body-s text-blue">{{
+                    <NuxtLink to="/auth/forgot" class=":uno: t-body-s text-blue">{{
                         copy.forgot
                     }}</NuxtLink>
                 </div>
@@ -71,9 +71,9 @@ usePageSeo("login");
                 }}</UiButton>
             </form>
             <GoogleButton />
-            <p class="t-body-s text-ink-2 m-0">
+            <p class=":uno: t-body-s text-ink-2 m-0">
                 {{ copy.prompt }}
-                <NuxtLink to="/auth/register" class="text-ink"
+                <NuxtLink to="/auth/register" class=":uno: text-ink"
                     >{{ copy.switch }} →</NuxtLink
                 >
             </p>

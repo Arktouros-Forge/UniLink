@@ -20,16 +20,16 @@ const submit = () => !mismatch.value && run();
 
 <template>
     <AuthFrame>
-        <div class="flex flex-col gap-2">
+        <div class=":uno: flex flex-col gap-2">
             <h1
-                class="t-d2 text-ink m-0"
+                class=":uno: t-d2 text-ink m-0"
             >
                 {{ copy.title }}
             </h1>
-            <p class="t-body-s text-ink-2 m-0">{{ copy.text }}</p>
+            <p class=":uno: t-body-s text-ink-2 m-0">{{ copy.text }}</p>
         </div>
         <form
-            class="flex flex-col gap-4"
+            class=":uno: flex flex-col gap-4"
             @submit.prevent="submit"
         >
             <FormField
@@ -54,11 +54,11 @@ const submit = () => !mismatch.value && run();
                     :type="show ? 'text' : 'password'"
                     :invalid="invalid"
             /></FormField>
-            <UiCallout v-if="error && !fieldErrors.password" tone="danger" :title="copy.invalidTitle">{{ error.message }} <NuxtLink to="/auth/forgot" class="text-ink">{{ copy.requestNew }} →</NuxtLink></UiCallout>
+            <UiCallout v-if="error && !fieldErrors.password" tone="danger" :title="copy.invalidTitle">{{ error.message }} <NuxtLink to="/auth/forgot" class=":uno: text-ink">{{ copy.requestNew }} →</NuxtLink></UiCallout>
             <UiButton type="submit" icon="check" block :loading="pending" :disabled="!token">{{
                 copy.submit
             }}</UiButton>
         </form>
-        <p class="t-body-xs text-ink-2 m-0">{{ copy.note }}</p>
+        <p class=":uno: t-body-xs text-ink-2 m-0">{{ copy.note }}</p>
     </AuthFrame>
 </template>

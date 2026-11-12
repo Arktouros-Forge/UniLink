@@ -18,4 +18,5 @@ import { aside } from "@app/constants/auth.json";
             <p class=":uno: t-mono-s text-ink m-0">{{ aside.meta }}</p>
         </aside>
     </div>
+
 </template>

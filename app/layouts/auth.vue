@@ -3,7 +3,7 @@ import { university } from "@app/constants/site.json";
 </script>
 
 <template>
-    <div class="min-h-dvh bg-paper flex flex-col">
+    <div class="min-h-dvh  bg-paper flex flex-col">
         <header
             class="flex items-center justify-between h-16 md:h-[72px] px-5 md:px-8 lg:px-16"
         >

@@ -15,15 +15,15 @@ const { run, pending, fieldErrors } = useAction(async () => {
 
 <template>
   <AuthFrame>
-    <div class="flex flex-col gap-2">
-      <h1 class="t-d2 text-ink m-0">{{ copy.title }}</h1>
-      <p class="t-body-s text-ink-2 m-0">{{ copy.text }}</p>
+    <div class=":uno: flex flex-col gap-2">
+      <h1 class=":uno: t-d2 text-ink m-0">{{ copy.title }}</h1>
+      <p class=":uno: t-body-s text-ink-2 m-0">{{ copy.text }}</p>
     </div>
     <UiCallout v-if="sent" :title="copy.sentTitle" tone="info">{{ copy.sentText }}</UiCallout>
-    <form class="flex flex-col gap-4" @submit.prevent="run()">
+    <form class=":uno: flex flex-col gap-4" @submit.prevent="run()">
       <FormField :label="copy.email" :error="fieldErrors.email" v-slot="{ id }"><FormInput :id="id" v-model="email" type="email" icon="mail" /></FormField>
       <UiButton type="submit" icon="arrowRight" block :loading="pending">{{ copy.submit }}</UiButton>
     </form>
-    <UiButton to="/auth/login" variant="link" icon="arrowLeft" class="self-start">{{ copy.back }}</UiButton>
+    <UiButton to="/auth/login" variant="link" icon="arrowLeft" class=":uno: self-start">{{ copy.back }}</UiButton>
   </AuthFrame>
 </template>
