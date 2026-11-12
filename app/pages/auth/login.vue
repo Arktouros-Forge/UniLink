@@ -12,7 +12,10 @@ const { run, pending, error } = useAction(
         try {
             await auth.login({ ...form });
         } catch (failure) {
-            if (failure.statusCode === 403 && /blocked/i.test(failure.message)) {
+            if (
+                failure.statusCode === 403 &&
+                /blocked/i.test(failure.message)
+            ) {
                 auth.setBlocked(failure.errors?.[0]?.message);
                 await navigateTo("/auth/blocked");
                 return;
@@ -31,15 +34,16 @@ usePageSeo("login");
 <template>
     <AuthFrame>
         <div class=":uno: flex flex-col gap-2">
-            <h1
-                class=":uno: t-d2 text-ink m-0"
-            >
+            <h1 class=":uno: t-d2 text-ink m-0">
                 {{ copy.title }}
             </h1>
             <p class=":uno: t-body-s text-ink-2 m-0">{{ copy.text }}</p>
         </div>
         <div class=":uno: gap-4 flex flex-col">
-            <form class=":uno: flex flex-col gap-4 pb-0" @submit.prevent="submit">
+            <form
+                class=":uno: flex flex-col gap-4 pb-0"
+                @submit.prevent="submit"
+            >
                 <FormField :label="copy.email" v-slot="{ id }"
                     ><FormInput
                         :id="id"
@@ -60,14 +64,22 @@ usePageSeo("login");
                         v-model="form.remember"
                         :label="copy.remember"
                     />
-                    <NuxtLink to="/auth/forgot" class=":uno: t-body-s text-blue">{{
-                        copy.forgot
-                    }}</NuxtLink>
+                    <NuxtLink
+                        to="/auth/forgot"
+                        class=":uno: t-body-s text-blue"
+                        >{{ copy.forgot }}</NuxtLink
+                    >
                 </div>
-                <UiCallout v-if="error" tone="danger">{{ error.message }}</UiCallout>
-                <UiButton type="submit" icon="arrowRight" block :loading="pending">{{
-                    copy.submit
-                }}</UiButton>
+                <UiCallout v-if="error" tone="danger">{{
+                    error.message
+                }}</UiCallout>
+                <UiButton
+                    type="submit"
+                    icon="arrowRight"
+                    block
+                    :loading="pending"
+                    >{{ copy.submit }}</UiButton
+                >
             </form>
             <GoogleButton />
             <p class=":uno: t-body-s text-ink-2 m-0">

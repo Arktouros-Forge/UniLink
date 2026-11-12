@@ -7,12 +7,19 @@ import {
     cta,
 } from "@app/constants/landing.json";
 
-const toneBlock = { blue: ":uno: bg-blue", red: ":uno: bg-red", yellow: ":uno: bg-yellow" };
+const toneBlock = {
+    blue: ":uno: bg-blue",
+    red: ":uno: bg-red",
+    yellow: ":uno: bg-yellow",
+};
 
 usePageSeo("home");
 useSchemaOrg([
     defineWebSite({ name: "UniLink", inLanguage: "id-ID" }),
-    defineWebPage({ name: "UniLink", about: "Platform kolaborasi mahasiswa Universitas Udayana" }),
+    defineWebPage({
+        name: "UniLink",
+        about: "Platform kolaborasi mahasiswa Universitas Udayana",
+    }),
 ]);
 </script>
 
@@ -60,20 +67,18 @@ useSchemaOrg([
                     v-for="(section, index) in sections"
                     :key="section.numeral"
                     class=":uno: grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[240px_1fr_280px] lg:gap-12 lg:items-start"
-
                 >
                     <div class=":uno: flex items-end gap-4 lg:gap-6">
-                        <span class=":uno: t-serif-step text-ink shrink-0 whitespace-nowrap">{{
-                            section.numeral
-                        }}</span>
+                        <span
+                            class=":uno: t-serif-step text-ink shrink-0 whitespace-nowrap"
+                            >{{ section.numeral }}</span
+                        >
                         <h2 class=":uno: t-d3 text-ink m-0 pb-2 lg:hidden">
                             {{ section.title }}
                         </h2>
                     </div>
                     <div class=":uno: flex flex-col gap-4">
-                        <h2
-                            class=":uno: t-d3 text-ink m-0 hidden lg:block"
-                        >
+                        <h2 class=":uno: t-d3 text-ink m-0 hidden lg:block">
                             {{ section.title }}
                         </h2>
                         <p class=":uno: t-body-l text-ink-2 m-0">
@@ -85,9 +90,10 @@ useSchemaOrg([
                                 :key="point"
                                 class=":uno: flex gap-3 t-body-m text-ink"
                             >
-                                <UiIcon name="check" class=":uno: text-blue mt-1" />{{
-                                    point
-                                }}
+                                <UiIcon
+                                    name="check"
+                                    class=":uno: text-blue mt-1"
+                                />{{ point }}
                             </li>
                         </ul>
                     </div>
@@ -107,7 +113,9 @@ useSchemaOrg([
             class=":uno: container-wide py-16 md:py-20 lg:py-24 flex flex-col gap-10"
         >
             <h2 class=":uno: t-d2 text-ink m-0">{{ stepsTitle }}</h2>
-            <ol class=":uno: grid gap-6 m-0 p-0 list-none sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+            <ol
+                class=":uno: grid gap-6 m-0 p-0 list-none sm:grid-cols-2 lg:grid-cols-4 lg:gap-8"
+            >
                 <li
                     v-for="(step, index) in steps"
                     :key="step.title"

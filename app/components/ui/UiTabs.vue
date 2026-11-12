@@ -16,7 +16,9 @@ const model = defineModel({ type: String, required: true });
             :aria-selected="model === item.value"
             class=":uno: relative h-10 shrink-0 bg-transparent cursor-pointer t-label"
             :class="
-                model === item.value ? ':uno: text-blue' : ':uno: text-ink-2 hover:text-ink'
+                model === item.value
+                    ? ':uno: text-blue'
+                    : ':uno: text-ink-2 hover:text-ink'
             "
             @click="model = item.value"
         >

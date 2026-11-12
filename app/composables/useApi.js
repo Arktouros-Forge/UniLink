@@ -9,7 +9,9 @@ export class ApiRequestError extends Error {
   }
 
   fieldErrors() {
-    return Object.fromEntries(this.errors.map((item) => [item.field, item.message]));
+    return Object.fromEntries(
+      this.errors.map((item) => [item.field, item.message]),
+    );
   }
 }
 
@@ -23,13 +25,24 @@ const toError = (error) => {
 };
 
 export const useApi = () => {
-  const headers = import.meta.server ? useRequestHeaders(["cookie"]) : undefined;
+  const headers = import.meta.server
+    ? useRequestHeaders(["cookie"])
+    : undefined;
 
   const request = async (path, options = {}) => {
     try {
-      const send = () => $fetch(`/api/v1${path}`, { ...options, headers: { ...headers, ...options.headers } });
+      const send = () =>
+        $fetch(`/api/v1${path}`, {
+          ...options,
+          headers: { ...headers, ...options.headers },
+        });
       const read = !options.method || options.method === "GET";
-      const response = read ? await shareRequest(`${path}?${JSON.stringify(options.query ?? "")}`, send) : await send();
+      const response = read
+        ? await shareRequest(
+            `${path}?${JSON.stringify(options.query ?? "")}`,
+            send,
+          )
+        : await send();
       if (!read) invalidateFor(path);
       return response.data;
     } catch (error) {

@@ -8,7 +8,14 @@ const props = defineProps({ admin: { type: Boolean, default: false } });
 const auth = useAuthStore();
 const route = useRoute();
 const sections = computed(() => (props.admin ? adminNav : studentNav));
-const activeTo = computed(() => activeNavTo(route.path, sections.value.flatMap((section) => section.items.map((item) => item.to))));
+const activeTo = computed(() =>
+    activeNavTo(
+        route.path,
+        sections.value.flatMap((section) =>
+            section.items.map((item) => item.to),
+        ),
+    ),
+);
 const isActive = (to) => activeTo.value === to;
 const signOut = async () => {
     await auth.logout();

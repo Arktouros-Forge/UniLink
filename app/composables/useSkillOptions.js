@@ -6,7 +6,8 @@ export const useSkillOptions = () => {
 
   return useApiData("skill-options", path, {
     query: auth.isAdmin ? { limit: 100 } : undefined,
-    transform: (data) => (data.items ?? data).map(({ id, name }) => ({ id, name })),
+    transform: (data) =>
+      (data.items ?? data).map(({ id, name }) => ({ id, name })),
     default: () => [],
   });
 };

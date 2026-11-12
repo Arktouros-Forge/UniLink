@@ -3,12 +3,17 @@ defineProps({ item: { type: Object, required: true } });
 </script>
 
 <template>
-  <div class=":uno: flex gap-4">
-    <UiAvatar :name="item.fullName" :size="40" />
-    <div class=":uno: flex flex-col gap-0.5">
-      <p class=":uno: t-body-s text-ink m-0">{{ item.fullName }}</p>
-      <p class=":uno: t-body-s text-ink-2 m-0">{{ item.role }} · Angkatan {{ item.year }}<template v-if="item.you"> · Kamu</template></p>
-      <p v-if="item.skills?.length" class=":uno: t-body-s text-ink m-0">{{ item.skills.map((skill) => skill.name).join(" · ") }}</p>
+    <div class=":uno: flex gap-4">
+        <UiAvatar :name="item.fullName" :size="40" />
+        <div class=":uno: flex flex-col gap-0.5">
+            <p class=":uno: t-body-s text-ink m-0">{{ item.fullName }}</p>
+            <p class=":uno: t-body-s text-ink-2 m-0">
+                {{ item.role }} · Angkatan {{ item.year
+                }}<template v-if="item.you"> · Kamu</template>
+            </p>
+            <p v-if="item.skills?.length" class=":uno: t-body-s text-ink m-0">
+                {{ item.skills.map((skill) => skill.name).join(" · ") }}
+            </p>
+        </div>
     </div>
-  </div>
 </template>

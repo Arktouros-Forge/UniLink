@@ -12,7 +12,10 @@ export const useAction = (handler, { success, silent = false } = {}) => {
 
     try {
       const result = await handler(...args);
-      if (success) notifySuccess(typeof success === "function" ? success(result) : success);
+      if (success)
+        notifySuccess(
+          typeof success === "function" ? success(result) : success,
+        );
       return result;
     } catch (failure) {
       error.value = failure;

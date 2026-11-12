@@ -3,7 +3,12 @@ import { studentTabs } from "@app/constants/navigation.json";
 import { activeNavTo } from "@app/utils/nav";
 
 const route = useRoute();
-const activeTo = computed(() => activeNavTo(route.path, studentTabs.map((item) => item.to)));
+const activeTo = computed(() =>
+    activeNavTo(
+        route.path,
+        studentTabs.map((item) => item.to),
+    ),
+);
 const isActive = (to) => activeTo.value === to;
 </script>
 

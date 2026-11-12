@@ -1,6 +1,14 @@
 import { admin } from "@app/constants/student.json";
 
-export const useAdminCrud = (key, endpoint, { listKey = "items", toPayload = (values) => values, toRow = (row) => row } = {}) => {
+export const useAdminCrud = (
+  key,
+  endpoint,
+  {
+    listKey = "items",
+    toPayload = (values) => values,
+    toRow = (row) => row,
+  } = {},
+) => {
   const api = useApi();
   const { query: search, debounced, page } = useSearchPage();
   const editing = ref(null);
@@ -8,7 +16,11 @@ export const useAdminCrud = (key, endpoint, { listKey = "items", toPayload = (va
   const removing = ref(null);
 
   const request = useApiData(key, endpoint, {
-    query: () => ({ q: debounced.value || undefined, page: page.value, limit: admin.pageSize }),
+    query: () => ({
+      q: debounced.value || undefined,
+      page: page.value,
+      limit: admin.pageSize,
+    }),
     default: () => ({ [listKey]: [], pagination: { total: 0 } }),
     watch: [debounced, page],
   });

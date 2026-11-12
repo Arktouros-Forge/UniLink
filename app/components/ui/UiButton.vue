@@ -50,8 +50,16 @@ const sizes = {
             v-if="loading"
             class=":uno: size-4 rounded-full border-2 border-current border-t-transparent animate-spin"
         />
-        <UiIcon v-else-if="icon" :name="icon" :size="size === 'sm' ? ':uno: text-lg' : ':uno: text-xl'" />
+        <UiIcon
+            v-else-if="icon"
+            :name="icon"
+            :size="size === 'sm' ? ':uno: text-lg' : ':uno: text-xl'"
+        />
         <slot />
-        <UiIcon v-if="iconEnd" :name="iconEnd" :size="size === 'sm' ? ':uno: text-lg' : ':uno: text-xl'" />
+        <UiIcon
+            v-if="iconEnd"
+            :name="iconEnd"
+            :size="size === 'sm' ? ':uno: text-lg' : ':uno: text-xl'"
+        />
     </component>
 </template>

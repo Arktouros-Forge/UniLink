@@ -11,7 +11,10 @@ const auth = useAuthStore();
         <NuxtLink to="/student/dashboard"><UiLogo /></NuxtLink>
         <div class=":uno: flex items-center gap-2">
             <NuxtLink to="/student/settings"
-                ><UiAvatar :name="auth.user?.name ?? ''" :size="32" tone="neutral"
+                ><UiAvatar
+                    :name="auth.user?.name ?? ''"
+                    :size="32"
+                    tone="neutral"
             /></NuxtLink>
         </div>
     </header>

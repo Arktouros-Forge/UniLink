@@ -62,17 +62,16 @@ const password = useAction(
         ]"
     />
     <AutoSkeleton :loading="pending" id="settings-body">
-        <div
-            v-if="tab === 'profile'"
-            class=":uno: grid md:items-start"
-        >
+        <div v-if="tab === 'profile'" class=":uno: grid md:items-start">
             <UiCard class=":uno: flex flex-col gap-5">
-
-                <div class=":uno: grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2">
-                    <FormField label="Nama lengkap" :error="profile.fieldErrors.value.fullName" v-slot="{ id }"
-                        ><FormInput
-                            :id="id"
-                            v-model="form.name"
+                <div
+                    class=":uno: grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2"
+                >
+                    <FormField
+                        label="Nama lengkap"
+                        :error="profile.fieldErrors.value.fullName"
+                        v-slot="{ id }"
+                        ><FormInput :id="id" v-model="form.name"
                     /></FormField>
                     <FormField label="Angkatan" v-slot="{ id }"
                         ><FormSelect
@@ -106,7 +105,13 @@ const password = useAction(
                                 : "Semua perubahan tersimpan."
                         }}
                     </p>
-                    <UiButton size="sm" :loading="profile.pending.value" :disabled="!dirty" @click="profile.run()">Simpan perubahan</UiButton>
+                    <UiButton
+                        size="sm"
+                        :loading="profile.pending.value"
+                        :disabled="!dirty"
+                        @click="profile.run()"
+                        >Simpan perubahan</UiButton
+                    >
                 </div>
             </UiCard>
         </div>
@@ -125,7 +130,12 @@ const password = useAction(
                     <div>
                         <p class=":uno: t-label text-ink m-0">Mode gelap</p>
                         <p class=":uno: t-body-s text-ink-2 m-0">
-                            Ubah tema untuk mengaktifkan {{ ui.theme === 'dark' ? 'mode terang' : 'mode gelap' }}.
+                            Ubah tema untuk mengaktifkan
+                            {{
+                                ui.theme === "dark"
+                                    ? "mode terang"
+                                    : "mode gelap"
+                            }}.
                         </p>
                     </div>
                     <UiToggle

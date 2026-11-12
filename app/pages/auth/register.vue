@@ -10,7 +10,11 @@ const valid = computed(
 );
 const { run, pending, fieldErrors, error } = useAction(
     async () => {
-        await auth.register({ name: form.name, email: form.email, password: form.password });
+        await auth.register({
+            name: form.name,
+            email: form.email,
+            password: form.password,
+        });
         await navigateTo(auth.destination);
     },
     { success: copy.created, silent: true },
@@ -23,18 +27,22 @@ usePageSeo("register");
 <template>
     <AuthFrame>
         <div class=":uno: flex flex-col gap-2">
-            <h1
-                class=":uno: t-d2 text-ink m-0"
-            >
+            <h1 class=":uno: t-d2 text-ink m-0">
                 {{ copy.title }}
             </h1>
             <p class=":uno: t-body-s text-ink-2 m-0">{{ copy.text }}</p>
         </div>
         <form class=":uno: flex flex-col gap-4" @submit.prevent="submit">
-            <FormField :label="copy.name" :error="fieldErrors.name" v-slot="{ id }"
+            <FormField
+                :label="copy.name"
+                :error="fieldErrors.name"
+                v-slot="{ id }"
                 ><FormInput :id="id" v-model="form.name" icon="user"
             /></FormField>
-            <FormField :label="copy.email" :error="fieldErrors.email" v-slot="{ id }"
+            <FormField
+                :label="copy.email"
+                :error="fieldErrors.email"
+                v-slot="{ id }"
                 ><FormInput
                     :id="id"
                     v-model="form.email"
@@ -53,12 +61,17 @@ usePageSeo("register");
                     icon="lock"
             /></FormField>
             <UiCheckbox v-model="form.agree" :label="copy.terms" />
-            <UiCallout v-if="error && !Object.keys(fieldErrors).length" tone="danger">{{ error.message }}</UiCallout>
+            <UiCallout
+                v-if="error && !Object.keys(fieldErrors).length"
+                tone="danger"
+                >{{ error.message }}</UiCallout
+            >
             <UiButton
                 type="submit"
                 icon="arrowRight"
                 :disabled="!valid"
-                :loading="pending" block
+                :loading="pending"
+                block
                 >{{ copy.submit }}</UiButton
             >
         </form>

@@ -3,7 +3,13 @@ import { useOnboardingStore } from "@app/stores/onboarding";
 
 const HOME = { student: "/student/dashboard", admin: "/admin" };
 
-const shape = (data) => ({ ...data, skillIds: (data.skills ?? []).map((skill) => skill.id), name: data.fullName, cohort: data.year, website: data.personalWebsite });
+const shape = (data) => ({
+  ...data,
+  skillIds: (data.skills ?? []).map((skill) => skill.id),
+  name: data.fullName,
+  cohort: data.year,
+  website: data.personalWebsite,
+});
 
 export const useAuthStore = defineStore("auth", () => {
   const user = ref(null);
@@ -15,7 +21,9 @@ export const useAuthStore = defineStore("auth", () => {
   const isAuthed = computed(() => Boolean(user.value));
   const isAdmin = computed(() => user.value?.role === "admin");
   const isVerified = computed(() => Boolean(user.value?.emailVerifiedAt));
-  const isOnboarded = computed(() => isAdmin.value || Boolean(user.value?.onboardedAt));
+  const isOnboarded = computed(
+    () => isAdmin.value || Boolean(user.value?.onboardedAt),
+  );
   const home = computed(() => HOME[user.value?.role] ?? "/student/dashboard");
   const destination = computed(() => {
     if (blocked.value) return "/auth/blocked";
@@ -27,8 +35,13 @@ export const useAuthStore = defineStore("auth", () => {
 
   const landing = (redirect) => {
     const target = String(redirect ?? "");
-    const safe = target.startsWith("/") && !target.startsWith("//") && !target.startsWith("/auth/");
-    return safe && destination.value === home.value ? target : destination.value;
+    const safe =
+      target.startsWith("/") &&
+      !target.startsWith("//") &&
+      !target.startsWith("/auth/");
+    return safe && destination.value === home.value
+      ? target
+      : destination.value;
   };
 
   const fetchMe = async ({ force = false } = {}) => {
@@ -38,21 +51,28 @@ export const useAuthStore = defineStore("auth", () => {
       blocked.value = null;
     } catch (error) {
       user.value = null;
-      if (error.statusCode === 403 && /blocked/i.test(error.message)) blocked.value = error.errors?.[0]?.message ?? true;
+      if (error.statusCode === 403 && /blocked/i.test(error.message))
+        blocked.value = error.errors?.[0]?.message ?? true;
     }
     loaded.value = true;
     return user.value;
   };
 
   const exchange = async (firebaseUser, extra = {}) => {
-    await api.post("/auth/firebase", { idToken: await firebaseUser.getIdToken(), ...extra });
+    await api.post("/auth/firebase", {
+      idToken: await firebaseUser.getIdToken(),
+      ...extra,
+    });
     return fetchMe({ force: true });
   };
 
   const login = async (payload) => {
     if (firebase.enabled) {
       try {
-        const firebaseUser = await firebase.signInWithPassword(payload.email, payload.password);
+        const firebaseUser = await firebase.signInWithPassword(
+          payload.email,
+          payload.password,
+        );
         return await exchange(firebaseUser, { remember: payload.remember });
       } catch (error) {
         if (!firebase.canFallback(error.cause ?? error)) throw error;
@@ -62,10 +82,12 @@ export const useAuthStore = defineStore("auth", () => {
     return fetchMe({ force: true });
   };
 
-  const loginWithGoogle = async () => exchange(await firebase.signInWithGoogle());
+  const loginWithGoogle = async () =>
+    exchange(await firebase.signInWithGoogle());
 
   const register = async (payload) => {
-    if (firebase.enabled) return exchange(await firebase.signUp(payload), { name: payload.name });
+    if (firebase.enabled)
+      return exchange(await firebase.signUp(payload), { name: payload.name });
     await api.post("/auth/register", payload);
     return fetchMe({ force: true });
   };
@@ -95,5 +117,24 @@ export const useAuthStore = defineStore("auth", () => {
     user.value = shape({ ...user.value, ...payload });
   };
 
-  return { user, loaded, blocked, isAuthed, isAdmin, isVerified, isOnboarded, home, destination, landing, fetchMe, setBlocked, login, loginWithGoogle, register, syncVerification, logout, update };
+  return {
+    user,
+    loaded,
+    blocked,
+    isAuthed,
+    isAdmin,
+    isVerified,
+    isOnboarded,
+    home,
+    destination,
+    landing,
+    fetchMe,
+    setBlocked,
+    login,
+    loginWithGoogle,
+    register,
+    syncVerification,
+    logout,
+    update,
+  };
 });

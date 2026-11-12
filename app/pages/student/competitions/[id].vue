@@ -97,7 +97,9 @@ const sendJoin = async () => {
                         class=":uno: absolute inset-0 size-full object-cover"
                     />
                     <template v-else>
-                        <p class=":uno: t-mono-s text-ink m-0">{{ item.host }}</p>
+                        <p class=":uno: t-mono-s text-ink m-0">
+                            {{ item.host }}
+                        </p>
                         <h1 class=":uno: t-d2 text-ink m-0 max-w-[60%]">
                             {{ item.title }}
                         </h1>
@@ -119,7 +121,9 @@ const sendJoin = async () => {
                             >{{ category.name }}</UiChip
                         >
                     </div>
-                    <p class=":uno: t-body-m text-ink m-0">{{ item.description }}</p>
+                    <p class=":uno: t-body-m text-ink m-0">
+                        {{ item.description }}
+                    </p>
                     <div class=":uno: flex flex-wrap gap-3">
                         <UiButton
                             v-if="item.sourceUrl"
@@ -140,7 +144,9 @@ const sendJoin = async () => {
 
             <UiCard class=":uno: flex flex-col gap-4">
                 <div class=":uno: flex items-center justify-between gap-3">
-                    <h2 class=":uno: t-d4 text-ink m-0">{{ copy.teamsTitle }}</h2>
+                    <h2 class=":uno: t-d4 text-ink m-0">
+                        {{ copy.teamsTitle }}
+                    </h2>
                     <UiChip tone="yellow" filled
                         >{{ list.length }} {{ copy.teamsCount }}</UiChip
                     >
