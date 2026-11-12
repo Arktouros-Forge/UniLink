@@ -12,7 +12,7 @@ const model = defineModel({ type: [String, Number], default: "" });
         <select
             :id="id"
             v-model="model"
-            class=":uno: w-full h-11 appearance-none rounded-md border border-hairline bg-card text-ink t-body-s pl-3 pr-10 outline-none focus:border-blue"
+            class=":uno: w-full h-10 appearance-none rounded-md border border-hairline bg-card text-ink t-body-s pl-3 pr-10 outline-none focus:border-blue"
         >
             <option v-if="placeholder" value="" disabled>
                 {{ placeholder }}

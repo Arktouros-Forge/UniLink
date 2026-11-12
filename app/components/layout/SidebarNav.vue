@@ -61,7 +61,7 @@ const signOut = async () => {
                 </NuxtLink>
             </section>
         </nav>
-        <div class=":uno: px-5 pb-6 flex flex-col gap-4">
+        <div class=":uno: px-5 pb-6 pt-2 flex flex-col gap-4">
             <div class=":uno: flex items-center gap-3">
                 <UiAvatar :name="auth.user?.name ?? ''" :size="32" />
                 <div class=":uno: min-w-0">
@@ -75,6 +75,7 @@ const signOut = async () => {
             </div>
             <button
                 type="button"
+                size="sm"
                 class=":uno: inline-flex items-center gap-3 px-3 bg-transparent border-0 text-blue t-button cursor-pointer h-10"
                 @click="signOut"
             >

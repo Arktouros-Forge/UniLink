@@ -70,7 +70,9 @@ const save = useAction(
 
 <template>
     <PageHeading :title="copy.title" :text="copy.text">
-        <UiButton icon="plus" @click="openModal()">{{ copy.add }}</UiButton>
+        <UiButton size="sm" icon="plus" @click="openModal()">{{
+            copy.add
+        }}</UiButton>
     </PageHeading>
     <UiTabs v-model="status" :items="tabs" />
     <AutoSkeleton :loading="pending" id="task-list">

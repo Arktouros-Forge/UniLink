@@ -45,7 +45,7 @@ const { data: teams, pending } = await useApiData("teams", "/student/teams", {
             </UiCard>
         </div>
         <UiEmpty v-if="!teams.length" :title="copy.emptyTitle" icon="users"
-            ><UiButton to="/student/competitions">{{
+            ><UiButton size="sm" to="/student/competitions">{{
                 copy.explore
             }}</UiButton></UiEmpty
         >

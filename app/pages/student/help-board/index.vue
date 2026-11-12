@@ -32,10 +32,10 @@ const { data, pending } = await useApiData(
 
 <template>
     <PageHeading :title="copy.title" :text="copy.text">
-        <UiButton variant="secondary" to="/student/help-board/mine">{{
+        <UiButton size="sm" variant="secondary" to="/student/help-board/mine">{{
             copy.mine
         }}</UiButton>
-        <UiButton icon="plus" to="/student/help-board/new">{{
+        <UiButton size="sm" icon="plus" to="/student/help-board/new">{{
             copy.post
         }}</UiButton>
     </PageHeading>

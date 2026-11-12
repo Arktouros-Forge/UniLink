@@ -25,7 +25,7 @@ const label = (option) => option.label ?? option;
             type="button"
             role="radio"
             :aria-checked="model === value(option)"
-            class=":uno: min-h-10 px-3 py-1.5 rounded-md border t-label cursor-pointer transition-colors focus-ring flex flex-col justify-center"
+            class=":uno: min-h-5 px-3 py-1.5 rounded-md border t-label cursor-pointer transition-colors focus-ring flex flex-col justify-center"
             :class="[
                 center ? ':uno: text-center items-center' : ':uno: text-left',
                 model === value(option)

@@ -46,7 +46,7 @@ const extraRequests = computed(() =>
 
 <template>
     <PageHeading :title="`${copy.greeting}, ${firstName}.`" :text="copy.text">
-        <UiButton icon="plus" to="/student/help-board/new">{{
+        <UiButton size="sm" icon="plus" to="/student/help-board/new">{{
             copy.post
         }}</UiButton>
     </PageHeading>

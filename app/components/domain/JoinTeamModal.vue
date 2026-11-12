@@ -52,17 +52,5 @@ const { run, pending } = useAction(async () => {
                 :size="32"
             />
         </div>
-        <ol class=":uno: m-0 p-0 list-none flex flex-col gap-2">
-            <li
-                v-for="(step, index) in text.steps"
-                :key="step"
-                class=":uno: flex items-center gap-3 t-body-s text-ink"
-            >
-                <span
-                    class=":uno: size-6 inline-flex items-center justify-center border border-outline t-mono-s shrink-0"
-                    >{{ index + 1 }}</span
-                >{{ step }}
-            </li>
-        </ol>
     </UiModal>
 </template>

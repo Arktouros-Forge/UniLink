@@ -91,9 +91,6 @@ const remove = useAction(
 <template>
     <PageBack to="/student/teams">{{ copy.back }}</PageBack>
     <PageHeading :title="team.name" :text="team.competitionTitle">
-        <UiChip size="md" tone="success">{{
-            isOwner ? copy.youOwner : copy.youMember
-        }}</UiChip>
         <UiButton
             v-if="isOwner"
             variant="secondary"
@@ -152,6 +149,7 @@ const remove = useAction(
                 <UiButton
                     variant="secondary"
                     icon="flag"
+                    size="sm"
                     :disabled="!finished"
                     @click="reportOpen = true"
                     >{{ copy.report }}</UiButton
@@ -210,20 +208,19 @@ const remove = useAction(
                         icon="trophy"
                         :to="`/student/competitions/${team.competitionId}`"
                         class=":uno: self-start"
+                        size="sm"
                         >{{ copy.viewCompetition }}</UiButton
                     >
                     <UiButton
                         v-if="!isOwner"
                         variant="dangerLink"
                         icon="logout"
+                        size="sm"
                         class=":uno: self-start"
                         @click="leaveOpen = true"
                         >{{ copy.leave }}</UiButton
                     >
                 </UiCard>
-                <UiCallout :title="copy.whatsappTitle">{{
-                    copy.whatsappText
-                }}</UiCallout>
             </template>
         </DetailLayout>
     </AutoSkeleton>

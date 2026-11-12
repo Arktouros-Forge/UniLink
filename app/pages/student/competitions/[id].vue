@@ -126,12 +126,14 @@ const sendJoin = async () => {
                     </p>
                     <div class=":uno: flex flex-wrap gap-3">
                         <UiButton
+                            size="sm"
                             v-if="item.sourceUrl"
                             icon="external"
                             :href="item.sourceUrl"
                             >{{ copy.official }}</UiButton
                         >
                         <UiButton
+                            size="sm"
                             v-if="item.isOpen"
                             variant="secondary"
                             icon="users"
@@ -193,21 +195,8 @@ const sendJoin = async () => {
                 </UiEmpty>
             </UiCard>
 
-            <UiCard class=":uno: flex flex-col gap-3">
-                <h2 class=":uno: t-d4 text-ink m-0">{{ copy.before }}</h2>
-                <ul class=":uno: m-0 pl-5 flex flex-col gap-2">
-                    <li
-                        v-for="tip in extras.tips"
-                        :key="tip"
-                        class=":uno: t-body-s text-ink-2"
-                    >
-                        {{ tip }}
-                    </li>
-                </ul>
-            </UiCard>
-
             <template #aside>
-                <UiCard class=":uno: flex flex-col gap-4"
+                <UiCard class=":uno: flex flex-col gap-2"
                     ><h2 class=":uno: t-d4 text-ink m-0">{{ copy.summary }}</h2>
                     <MetaList :items="meta"
                 /></UiCard>

@@ -11,10 +11,12 @@ defineProps({
 <template>
     <UiCard as="article" class=":uno: flex flex-col gap-3" hover>
         <div class=":uno: flex items-center justify-between gap-2">
-            <UiChip tone="blue">{{ item.skill.name }}</UiChip>
-            <UiChip :tone="item.status === 'open' ? 'success' : 'neutral'">{{
-                copy[item.status]
-            }}</UiChip>
+            <UiChip size="sm" tone="blue">{{ item.skill.name }}</UiChip>
+            <UiChip
+                size="sm"
+                :tone="item.status === 'open' ? 'success' : 'neutral'"
+                >{{ copy[item.status] }}</UiChip
+            >
         </div>
         <h3 class=":uno: t-d4 text-ink m-0 line-clamp-2">{{ item.title }}</h3>
         <p class=":uno: t-body-s text-ink-2 m-0 line-clamp-3">

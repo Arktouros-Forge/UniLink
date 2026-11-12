@@ -50,9 +50,7 @@ const { run, pending, fieldErrors } = useAction(
 
 <template>
     <PageHeading :title="copy.title" :text="copy.text" />
-    <div
-        class=":uno: grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-[minmax(0,1fr)_320px] md:items-start"
-    >
+    <div class=":uno: grid gap-6 md:items-start">
         <UiCard class=":uno: flex flex-col gap-5">
             <FormField
                 :label="copy.name"
@@ -134,18 +132,16 @@ const { run, pending, fieldErrors } = useAction(
             </FormField>
             <div class=":uno: flex gap-3">
                 <UiButton
+                    size="sm"
                     :loading="pending"
                     :disabled="!valid"
                     @click="run()"
                     >{{ copy.submit }}</UiButton
                 >
-                <UiButton variant="link" to="/student/competitions">{{
+                <UiButton size="sm" variant="link" to="/student/competitions">{{
                     copy.cancel
                 }}</UiButton>
             </div>
         </UiCard>
-        <UiCallout :title="copy.reviewTitle" tone="info">{{
-            copy.reviewText
-        }}</UiCallout>
     </div>
 </template>

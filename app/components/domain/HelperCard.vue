@@ -31,10 +31,11 @@ defineEmits(["request"]);
         </div>
         <p class=":uno: t-body-s text-ink m-0">{{ item.bio }}</p>
         <div class=":uno: flex items-center gap-4">
-            <UiButton icon="userPlus" @click="$emit('request', item)"
+            <UiButton size="sm" icon="userPlus" @click="$emit('request', item)"
                 >Minta bantuan</UiButton
             >
             <UiButton
+                size="sm"
                 variant="link"
                 icon-end="external"
                 :to="`/student/study-match/helpers/${item.id}`"

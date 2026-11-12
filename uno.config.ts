@@ -82,7 +82,7 @@ export default defineConfig({
     "t-serif-stat":
       "font-serif text-[56px] leading-[56px] md:text-[64px] md:leading-[64px]",
     "t-serif-small": "font-serif text-[56px] leading-[56px]",
-    "t-body-l": "font-sans text-md leading-7",
+    "t-body-l": "font-sans text-base leading-7",
     "t-body-m": "font-sans text-sm md:text-base leading-[26px]",
     "t-body-s": "font-sans text-sm leading-[22px]",
     "t-body-xs": "font-sans text-xs leading-5",
@@ -91,7 +91,8 @@ export default defineConfig({
     "t-mono-s": "font-mono font-medium text-xs leading-4 tracking-[0.02em]",
     "t-mono-m": "font-mono font-medium text-sm leading-5 tracking-[0.02em]",
     "container-app": "mx-auto w-full max-w-[1240px] px-5 md:px-8 lg:px-12",
-    "container-wide": "mx-auto w-full max-w-[1440px] px-5 md:px-8 lg:px-12 xl:px-20",
+    "container-wide":
+      "mx-auto w-full max-w-[1440px] px-5 md:px-8 lg:px-12 xl:px-20",
     "focus-ring":
       "outline-none focus-visible:shadow-[0_0_0_2px_var(--canvas-paper),0_0_0_4px_var(--brand-blue)]",
     surface: "bg-card border border-hairline rounded-md shadow-rest",

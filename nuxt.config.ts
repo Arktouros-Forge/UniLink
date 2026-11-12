@@ -21,26 +21,55 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: "2025-07-15",
-  devtools: { enabled: true },
+  devtools: {
+    enabled: true,
 
-  css: ["vue-sonner/style.css", "~/assets/css/tokens.css", "~/assets/css/base.css"],
+    timeline: {
+      enabled: true,
+    },
+  },
+
+  css: [
+    "vue-sonner/style.css",
+    "~/assets/css/tokens.css",
+    "~/assets/css/base.css",
+  ],
 
   components: [{ path: "~/components", pathPrefix: false }],
 
   site: {
     url: process.env.NUXT_PUBLIC_SITE_URL || undefined,
     name: "UniLink",
-    description: "Platform mahasiswa Universitas Udayana untuk mencari teman belajar, membentuk tim kompetisi, dan merapikan jadwal kuliah.",
+    description:
+      "Platform mahasiswa Universitas Udayana untuk mencari teman belajar, membentuk tim kompetisi, dan merapikan jadwal kuliah.",
     defaultLocale: "id",
   },
 
   robots: {
-    disallow: ["/student", "/admin", "/onboarding", "/auth/verify-email", "/auth/reset", "/auth/blocked", "/auth/forgot"],
+    disallow: [
+      "/student",
+      "/admin",
+      "/onboarding",
+      "/auth/verify-email",
+      "/auth/reset",
+      "/auth/blocked",
+      "/auth/forgot",
+    ],
     blockAiBots: false,
   },
 
   sitemap: {
-    exclude: ["/student/**", "/admin/**", "/onboarding/**", "/auth/verify-email", "/auth/reset", "/auth/blocked", "/auth/forgot", "/maintenance", "/offline"],
+    exclude: [
+      "/student/**",
+      "/admin/**",
+      "/onboarding/**",
+      "/auth/verify-email",
+      "/auth/reset",
+      "/auth/blocked",
+      "/auth/forgot",
+      "/maintenance",
+      "/offline",
+    ],
     defaults: { changefreq: "monthly" },
   },
 
@@ -53,7 +82,7 @@ export default defineNuxtConfig({
     },
   },
 
-  seo: { redirectTitleTemplate: false },
+  seo: {},
 
   routeRules: {
     "/student/**": { robots: false },

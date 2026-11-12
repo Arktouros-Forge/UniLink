@@ -47,9 +47,7 @@
     "incoming": "Masuk",
     "outgoing": "Keluar",
     "history": "Riwayat",
-    "emptyTitle": "Belum ada permintaan",
-    "noteTitle": "Tidak ada chat di UniLink.",
-    "noteText": "Setelah diterima, diskusikan kebutuhan dan waktu belajar melalui WhatsApp. Nomor tidak dibuka untuk permintaan yang ditolak."
+    "emptyTitle": "Belum ada permintaan"
   },
   "history": {
     "title": "Riwayat belajar",
@@ -155,8 +153,6 @@
     "categories": "Kategori",
     "submit": "Simpan kompetisi",
     "cancel": "Batal",
-    "reviewTitle": "Ditinjau admin",
-    "reviewText": "Kompetisi mahasiswa ditandai sampai admin memverifikasi tautan resmi.",
     "created": "Kompetisi dibagikan."
   },
   "competitionDetail": {
@@ -217,7 +213,6 @@
     "viewCompetition": "Lihat kompetisi",
     "leave": "Keluar dari tim",
     "whatsappTitle": "Koordinasi di WhatsApp",
-    "whatsappText": "UniLink tidak menyediakan chat tim. Sepakati pembagian peran langsung bersama anggota.",
     "lockedText": "WhatsApp terbuka bagi anggota yang diterima.",
     "resultSaved": "Hasil kompetisi tersimpan.",
     "updated": "Tim diperbarui.",
@@ -388,12 +383,7 @@
     }
   },
   "modals": {
-    "quickTimes": [
-      "Hari ini",
-      "Besok",
-      "Akhir pekan",
-      "Fleksibel"
-    ],
+    "quickTimes": ["Hari ini", "Besok", "Akhir pekan", "Fleksibel"],
     "request": {
       "eyebrow": "Study Match",
       "title": "Minta bantuan",
@@ -416,12 +406,7 @@
       "eyebrow": "Tim",
       "text": "Pemilik tim meninjau permintaanmu sebelum kamu masuk.",
       "spots": "{count} slot tersisa",
-      "full": "Tim penuh",
-      "steps": [
-        "Kirim permintaan",
-        "Pemilik menanggapi",
-        "Nomor WhatsApp terbuka"
-      ]
+      "full": "Tim penuh"
     },
     "team": {
       "eyebrow": "Tim",
@@ -436,12 +421,7 @@
       "label": "Hasil kompetisi"
     },
     "reason": {
-      "presets": [
-        "Spam",
-        "Tidak pantas",
-        "Melanggar aturan",
-        "Data palsu"
-      ],
+      "presets": ["Spam", "Tidak pantas", "Melanggar aturan", "Data palsu"],
       "presetLabel": "Pilihan cepat"
     },
     "confirm": {

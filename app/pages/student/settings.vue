@@ -47,6 +47,11 @@ const password = useAction(
     },
     { success: "Kata sandi diperbarui." },
 );
+
+const signOut = async () => {
+    await auth.logout();
+    await navigateTo("/auth/login");
+};
 </script>
 
 <template>
@@ -144,6 +149,21 @@ const password = useAction(
                             ui.setTheme($event ? 'dark' : 'light')
                         "
                     />
+                </div>
+                <UiDivider />
+                <div class=":uno: flex items-center justify-between gap-4">
+                    <div>
+                        <p class=":uno: t-label text-ink m-0">Keluar</p>
+                        <p class=":uno: t-body-s text-ink-2 m-0">
+                            Klik tombol di bawah untuk keluar dari akun Anda.
+                        </p>
+                    </div>
+                    <UiButton
+                        size="sm"
+                        variant="danger"
+                        icon="logout"
+                        @click="signOut"
+                    ></UiButton>
                 </div>
             </UiCard>
         </div>

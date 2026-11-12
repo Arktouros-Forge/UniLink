@@ -93,12 +93,14 @@ onBeforeUnmount(() => {
                                 :icon="danger ? '' : submitIcon"
                                 :loading="pending"
                                 :disabled="disabled"
+                                size="sm"
                                 class=":uno: flex-1 sm:flex-none"
                                 @click="emit('submit')"
                                 >{{ submit }}</UiButton
                             >
                             <UiButton
                                 variant="secondary"
+                                size="sm"
                                 class=":uno: flex-1 sm:flex-none"
                                 @click="emit('close')"
                                 >{{ cancel }}</UiButton

@@ -18,9 +18,12 @@ const { data, pending } = await useApiData(
 
 <template>
     <PageHeading :title="copy.title" :text="copy.text">
-        <UiButton variant="secondary" to="/student/study-match/requests">{{
-            copy.back
-        }}</UiButton>
+        <UiButton
+            size="sm"
+            variant="secondary"
+            to="/student/study-match/requests"
+            >{{ copy.back }}</UiButton
+        >
     </PageHeading>
     <AutoSkeleton :loading="pending" id="history-list">
         <div class=":uno: flex flex-col gap-4">

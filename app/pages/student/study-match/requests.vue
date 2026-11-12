@@ -28,12 +28,12 @@ const tabs = computed(() => [
         label: copy.outgoing,
         count: data.value.counts.pendingOutgoing,
     },
-    { value: "history", label: copy.history },
 ]);
 watch(
     tab,
     (value) =>
         value === "history" && navigateTo("/student/study-match/history"),
+    { immediate: true },
 );
 
 const respond = (action, message) =>
@@ -53,9 +53,12 @@ const cancel = respond("cancel", studyMatch.cancelled);
 
 <template>
     <PageHeading :title="copy.title" :text="copy.text">
-        <UiButton variant="secondary" to="/student/study-match/history">{{
-            copy.viewHistory
-        }}</UiButton>
+        <UiButton
+            size="sm"
+            variant="secondary"
+            to="/student/study-match/history"
+            >{{ copy.viewHistory }}</UiButton
+        >
     </PageHeading>
     <UiTabs v-model="tab" :items="tabs" />
     <AutoSkeleton :loading="pending" id="requests-list">
@@ -76,5 +79,4 @@ const cancel = respond("cancel", studyMatch.cancelled);
             />
         </div>
     </AutoSkeleton>
-    <UiCallout :title="copy.noteTitle">{{ copy.noteText }}</UiCallout>
 </template>

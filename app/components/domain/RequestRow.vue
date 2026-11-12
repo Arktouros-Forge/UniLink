@@ -48,13 +48,19 @@ defineEmits(["accept", "decline", "cancel"]);
                 "
                 class=":uno: flex gap-3"
             >
-                <UiButton variant="secondary" @click="$emit('decline', item)"
+                <UiButton
+                    size="sm"
+                    variant="secondary"
+                    @click="$emit('decline', item)"
                     >Tolak</UiButton
                 >
-                <UiButton @click="$emit('accept', item)">Terima</UiButton>
+                <UiButton size="sm" @click="$emit('accept', item)"
+                    >Terima</UiButton
+                >
             </div>
             <UiButton
                 v-else-if="item.status === 'pending' && actions"
+                size="sm"
                 variant="secondary"
                 @click="$emit('cancel', item)"
                 >Batalkan</UiButton
@@ -69,6 +75,7 @@ defineEmits(["accept", "decline", "cancel"]);
                     formatPhone(item.contact.phone)
                 }}</span
                 ><UiButton
+                    size="sm"
                     variant="secondary"
                     icon="external"
                     :href="item.contact.whatsappUrl"

@@ -71,9 +71,12 @@ const { run: cancel } = useAction(
                             >Minta bantuan</UiButton
                         >
                         <template v-else-if="status === 'pending'"
-                            ><UiChip tone="yellow" size="md"
+                            ><UiChip tone="yellow" size="sm"
                                 >Menunggu jawaban</UiChip
-                            ><UiButton variant="dangerLink" @click="cancel()"
+                            ><UiButton
+                                size="sm"
+                                variant="dangerLink"
+                                @click="cancel()"
                                 >Batalkan</UiButton
                             ></template
                         >
