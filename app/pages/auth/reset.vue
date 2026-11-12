@@ -1,7 +1,7 @@
 <script setup>
 import { reset as copy } from "@app/constants/auth.json";
 
-definePageMeta({ layout: "auth", middleware: "guest" });
+definePageMeta({ layout: "auth", access: "guest" });
 const route = useRoute();
 const api = useApi();
 const token = computed(() => String(route.query.token ?? ""));

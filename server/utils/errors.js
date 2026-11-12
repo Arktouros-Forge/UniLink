@@ -8,7 +8,6 @@ export const ERRORS = {
   USER_NOT_FOUND: [404, "User not found"],
   SKILL_NOT_FOUND: [400, "One or more skills were not found"],
   CATEGORY_NOT_FOUND: [400, "One or more categories were not found"],
-  LECTURER_NOT_FOUND: [400, "Lecturer not found"],
   COMPETITION_NOT_FOUND: [404, "Competition not found"],
   DUPLICATE_COMPETITION: [
     409,
@@ -46,7 +45,6 @@ export const ERRORS = {
     "Team size is below the current member count",
   ],
   TASK_NOT_FOUND: [404, "Task not found"],
-  EVENT_NOT_FOUND: [404, "Timetable event not found"],
   EVENT_OVERLAP: [
     409,
     "This event overlaps with another event on the same day",
@@ -64,6 +62,8 @@ export const ERRORS = {
   ],
   INVALID_CURRENT_PASSWORD: [400, "Current password is incorrect"],
   EMAIL_ALREADY_IN_USE: [409, "Email is already in use"],
+  NIM_ALREADY_IN_USE: [409, "NIM is already registered to another account"],
+  NIM_LOCKED: [409, "NIM can only be set once. Contact an admin to change it"],
   CANNOT_MODIFY_SELF: [409, "You cannot do this to your own account"],
   CANNOT_MODIFY_ADMIN: [409, "Admin accounts cannot be modified here"],
   IN_USE: [409, "This item is still in use and cannot be deleted"],
@@ -101,16 +101,12 @@ export const assert = (condition, code, errors) => {
 
 const PG_CONSTRAINTS = {
   users_email_lower_unique: ["EMAIL_ALREADY_IN_USE"],
+  users_nim_unique: ["NIM_ALREADY_IN_USE"],
   competitions_title_host_unique: ["DUPLICATE_COMPETITION"],
   teams_competition_creator_unique: ["TEAM_ALREADY_CREATED"],
   team_members_team_user_unique: ["ALREADY_TEAM_MEMBER"],
   team_members_one_accepted_per_competition: ["ALREADY_IN_TEAM"],
   study_requests_one_pending_per_pair: ["DUPLICATE_REQUEST"],
-  timetable_events_time_check: [
-    "VALIDATION",
-    null,
-    "End time must be after start time",
-  ],
 };
 
 export function fromDatabaseError(error) {

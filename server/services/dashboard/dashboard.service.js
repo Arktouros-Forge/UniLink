@@ -5,7 +5,7 @@ import { db } from "@database/index";
 const rows = async (query) => [...(await db.execute(query))];
 
 export async function getStudentDashboard(userId) {
-  const [[counts], pending, teamsActive, tasksDue, today, activity] =
+  const [[counts], pending, teamsActive, tasksDue, activity] =
     await Promise.all([
       db.execute(sql`
       select
@@ -41,13 +41,6 @@ export async function getStudentDashboard(userId) {
       where user_id = ${userId} and not completed order by due_date asc nulls last, priority desc limit 5
     `),
       rows(sql`
-      select e.id, e.title, e.course_code as "courseCode", e.room, to_char(e.start_time, 'HH24:MI') as "startTime", to_char(e.end_time, 'HH24:MI') as "endTime",
-        coalesce(l.name, e.lecturer_name_free_text) as "lecturerName"
-      from timetable_events e left join lecturers l on l.id = e.lecturer_id
-      where e.user_id = ${userId} and e.day_of_week = extract(isodow from (now() at time zone 'Asia/Makassar'))::int
-      order by e.start_time
-    `),
-      rows(sql`
       (select 'request-accepted' as type, r.subject as label, r.responded_at as at from study_requests r
         where r.deleted_at is null and r.status = 'accepted' and (r.requester_id = ${userId} or r.helper_id = ${userId}) and r.responded_at is not null)
       union all
@@ -63,7 +56,6 @@ export async function getStudentDashboard(userId) {
     pendingRequests: pending,
     teams: teamsActive,
     tasks: tasksDue,
-    today,
     activity,
   };
 }

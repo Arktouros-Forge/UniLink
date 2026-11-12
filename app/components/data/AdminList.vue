@@ -26,9 +26,9 @@ const cols = computed(() => [...props.columns, { key: "actions", label: "Tindaka
   <PageHeading :title="title" :text="text">
     <UiButton v-if="addLabel" icon="plus" @click="emit('add')">{{ addLabel }}</UiButton>
   </PageHeading>
-  <div class="flex flex-col gap-2">
-    <p class="t-label text-ink m-0">Pencarian</p>
-    <div class="flex flex-col gap-3 md:flex-row md:items-center">
+  <div class=":uno: flex flex-col gap-2">
+    <p class=":uno: t-label text-ink m-0">Pencarian</p>
+    <div class=":uno: flex flex-col gap-3 md:flex-row md:items-center">
       <SearchBar :model-value="search" :placeholder="`Cari ${noun}...`" @update:model-value="emit('update:search', $event)" />
       <slot name="filters" />
     </div>
@@ -42,9 +42,9 @@ const cols = computed(() => [...props.columns, { key: "actions", label: "Tindaka
         <slot :name="`cell-${column.key}`" :row="row" :value="value">{{ value }}</slot>
       </template>
       <template #cell-actions="{ row }">
-        <span class="inline-flex gap-4 t-body-xs">
-          <button type="button" class="bg-transparent border-0 p-0 text-blue cursor-pointer" @click="emit('edit', row)">Edit</button>
-          <button type="button" class="bg-transparent border-0 p-0 text-danger cursor-pointer" @click="emit('remove', row)">{{ removeLabel }}</button>
+        <span class=":uno: inline-flex gap-4 t-body-xs">
+          <button type="button" class=":uno: bg-transparent border-0 p-0 text-blue cursor-pointer" @click="emit('edit', row)">Edit</button>
+          <button type="button" class=":uno: bg-transparent border-0 p-0 text-danger cursor-pointer" @click="emit('remove', row)">{{ removeLabel }}</button>
         </span>
       </template>
       <template #empty>

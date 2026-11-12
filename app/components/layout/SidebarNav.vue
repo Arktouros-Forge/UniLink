@@ -2,13 +2,14 @@
 import { studentNav, adminNav } from "@app/constants/navigation.json";
 import { roles, university, logout } from "@app/constants/site.json";
 import { useAuthStore } from "@app/stores/auth";
+import { activeNavTo } from "@app/utils/nav";
 
 const props = defineProps({ admin: { type: Boolean, default: false } });
 const auth = useAuthStore();
 const route = useRoute();
 const sections = computed(() => (props.admin ? adminNav : studentNav));
-const isActive = (to) =>
-    route.path === to || (to !== "/admin" && route.path.startsWith(`${to}/`));
+const activeTo = computed(() => activeNavTo(route.path, sections.value.flatMap((section) => section.items.map((item) => item.to))));
+const isActive = (to) => activeTo.value === to;
 const signOut = async () => {
     await auth.logout();
     await navigateTo("/auth/login");

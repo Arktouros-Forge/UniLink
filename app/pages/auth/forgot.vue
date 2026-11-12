@@ -1,7 +1,7 @@
 <script setup>
 import { forgot as copy } from "@app/constants/auth.json";
 
-definePageMeta({ layout: "auth", middleware: "guest" });
+definePageMeta({ layout: "auth", access: "guest" });
 const api = useApi();
 const firebase = useFirebaseAuth();
 const email = ref("");

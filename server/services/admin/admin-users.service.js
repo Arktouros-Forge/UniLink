@@ -75,7 +75,6 @@ export async function getUser(id) {
   const [activity] = await db.execute(sql`
     select
       (select count(*)::int from tasks where user_id = ${id}) as tasks,
-      (select count(*)::int from timetable_events where user_id = ${id}) as events,
       (select count(*)::int from team_members where user_id = ${id} and status = 'accepted') as teams,
       (select count(*)::int from help_signs where user_id = ${id}) as signs,
       (select count(*)::int from study_requests where (requester_id = ${id} or helper_id = ${id}) and deleted_at is null) as requests

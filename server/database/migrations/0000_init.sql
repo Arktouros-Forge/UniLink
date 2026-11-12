@@ -1,5 +1,4 @@
-CREATE EXTENSION IF NOT EXISTS pg_trgm;
---> statement-breakpoint
+CREATE EXTENSION IF NOT EXISTS pg_trgm;--> statement-breakpoint
 CREATE TYPE "public"."cohort_year" AS ENUM('2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030');--> statement-breakpoint
 CREATE TYPE "public"."user_role" AS ENUM('student', 'admin');--> statement-breakpoint
 CREATE TYPE "public"."user_status" AS ENUM('active', 'blocked');--> statement-breakpoint
@@ -10,8 +9,6 @@ CREATE TYPE "public"."team_result" AS ENUM('unknown', 'won', 'lost');--> stateme
 CREATE TYPE "public"."help_sign_status" AS ENUM('open', 'fulfilled', 'closed', 'expired');--> statement-breakpoint
 CREATE TYPE "public"."study_request_initiator" AS ENUM('requester', 'helper');--> statement-breakpoint
 CREATE TYPE "public"."study_request_status" AS ENUM('pending', 'accepted', 'declined', 'expired', 'cancelled');--> statement-breakpoint
-CREATE TYPE "public"."timetable_recurrence" AS ENUM('none', 'weekly');--> statement-breakpoint
-CREATE TYPE "public"."timetable_source" AS ENUM('manual', 'ics_import', 'json_import');--> statement-breakpoint
 CREATE TYPE "public"."task_priority" AS ENUM('low', 'medium', 'high');--> statement-breakpoint
 CREATE TYPE "public"."auth_token_type" AS ENUM('verify_email', 'reset_password');--> statement-breakpoint
 CREATE TABLE "users" (
@@ -30,6 +27,7 @@ CREATE TABLE "users" (
 	"profile_photo_url" text,
 	"status" "user_status" DEFAULT 'active' NOT NULL,
 	"blocked_reason" text,
+	"firebase_uid" text,
 	"email_verified_at" timestamp with time zone,
 	"session_version" integer DEFAULT 0 NOT NULL,
 	"onboarded_at" timestamp with time zone,
@@ -37,7 +35,8 @@ CREATE TABLE "users" (
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "users_username_unique" UNIQUE("username"),
-	CONSTRAINT "users_nim_unique" UNIQUE("nim")
+	CONSTRAINT "users_nim_unique" UNIQUE("nim"),
+	CONSTRAINT "users_firebase_uid_unique" UNIQUE("firebase_uid")
 );
 --> statement-breakpoint
 CREATE TABLE "skills" (
@@ -68,19 +67,6 @@ CREATE TABLE "categories" (
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "categories_name_unique" UNIQUE("name"),
 	CONSTRAINT "categories_slug_unique" UNIQUE("slug")
-);
---> statement-breakpoint
-CREATE TABLE "lecturers" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"name" text NOT NULL,
-	"email" text NOT NULL,
-	"phone" text,
-	"profile_photo_url" text,
-	"bio" text,
-	"nidn" text,
-	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
-	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
-	CONSTRAINT "lecturers_nidn_unique" UNIQUE("nidn")
 );
 --> statement-breakpoint
 CREATE TABLE "competition_categories" (
@@ -160,24 +146,6 @@ CREATE TABLE "study_requests" (
 	"deleted_at" timestamp with time zone
 );
 --> statement-breakpoint
-CREATE TABLE "timetable_events" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"user_id" uuid NOT NULL,
-	"course_code" text,
-	"title" text NOT NULL,
-	"day_of_week" integer NOT NULL,
-	"start_time" time NOT NULL,
-	"end_time" time NOT NULL,
-	"room" text,
-	"lecturer_id" uuid,
-	"lecturer_name_free_text" text,
-	"recurrence" timetable_recurrence DEFAULT 'weekly' NOT NULL,
-	"source" timetable_source DEFAULT 'manual' NOT NULL,
-	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
-	CONSTRAINT "timetable_events_day_check" CHECK ("timetable_events"."day_of_week" between 1 and 7),
-	CONSTRAINT "timetable_events_time_check" CHECK ("timetable_events"."end_time" > "timetable_events"."start_time")
-);
---> statement-breakpoint
 CREATE TABLE "tasks" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid NOT NULL,
@@ -218,8 +186,6 @@ ALTER TABLE "help_signs" ADD CONSTRAINT "help_signs_skill_id_skills_id_fk" FOREI
 ALTER TABLE "study_requests" ADD CONSTRAINT "study_requests_requester_id_users_id_fk" FOREIGN KEY ("requester_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "study_requests" ADD CONSTRAINT "study_requests_helper_id_users_id_fk" FOREIGN KEY ("helper_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "study_requests" ADD CONSTRAINT "study_requests_sign_id_help_signs_id_fk" FOREIGN KEY ("sign_id") REFERENCES "public"."help_signs"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "timetable_events" ADD CONSTRAINT "timetable_events_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "timetable_events" ADD CONSTRAINT "timetable_events_lecturer_id_lecturers_id_fk" FOREIGN KEY ("lecturer_id") REFERENCES "public"."lecturers"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "tasks_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "auth_tokens" ADD CONSTRAINT "auth_tokens_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE UNIQUE INDEX "users_email_lower_unique" ON "users" USING btree (lower("email"));--> statement-breakpoint
@@ -227,7 +193,6 @@ CREATE INDEX "users_role_status_idx" ON "users" USING btree ("role","status");--
 CREATE INDEX "users_year_idx" ON "users" USING btree ("year");--> statement-breakpoint
 CREATE INDEX "users_full_name_trgm_idx" ON "users" USING gin ("full_name" gin_trgm_ops);--> statement-breakpoint
 CREATE INDEX "user_skills_skill_id_idx" ON "user_skills" USING btree ("skill_id");--> statement-breakpoint
-CREATE UNIQUE INDEX "lecturers_email_lower_unique" ON "lecturers" USING btree (lower("email"));--> statement-breakpoint
 CREATE INDEX "competition_categories_category_idx" ON "competition_categories" USING btree ("category_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "competitions_title_host_unique" ON "competitions" USING btree (lower(btrim("title")),lower(btrim("host")));--> statement-breakpoint
 CREATE INDEX "competitions_status_deadline_idx" ON "competitions" USING btree ("status","deadline");--> statement-breakpoint
@@ -247,8 +212,6 @@ CREATE INDEX "study_requests_requester_idx" ON "study_requests" USING btree ("re
 CREATE INDEX "study_requests_helper_idx" ON "study_requests" USING btree ("helper_id","status","created_at");--> statement-breakpoint
 CREATE INDEX "study_requests_sign_id_idx" ON "study_requests" USING btree ("sign_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "study_requests_one_pending_per_pair" ON "study_requests" USING btree ("requester_id","helper_id",lower(btrim("subject"))) WHERE "study_requests"."status" = 'pending' and "study_requests"."deleted_at" is null;--> statement-breakpoint
-CREATE INDEX "timetable_events_user_day_idx" ON "timetable_events" USING btree ("user_id","day_of_week","start_time");--> statement-breakpoint
-CREATE INDEX "timetable_events_lecturer_id_idx" ON "timetable_events" USING btree ("lecturer_id");--> statement-breakpoint
 CREATE INDEX "tasks_user_open_due_idx" ON "tasks" USING btree ("user_id","completed","due_date");--> statement-breakpoint
 CREATE UNIQUE INDEX "auth_tokens_hash_unique" ON "auth_tokens" USING btree ("token_hash");--> statement-breakpoint
 CREATE INDEX "auth_tokens_user_type_idx" ON "auth_tokens" USING btree ("user_id","type");

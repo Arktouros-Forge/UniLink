@@ -1,8 +1,10 @@
 <script setup>
 import { studentTabs } from "@app/constants/navigation.json";
+import { activeNavTo } from "@app/utils/nav";
 
 const route = useRoute();
-const isActive = (to) => route.path === to || route.path.startsWith(`${to}/`);
+const activeTo = computed(() => activeNavTo(route.path, studentTabs.map((item) => item.to)));
+const isActive = (to) => activeTo.value === to;
 </script>
 
 <template>

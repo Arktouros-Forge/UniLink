@@ -14,7 +14,7 @@ const emit = defineEmits(["icon"]);
 </script>
 
 <template>
-  <div class="relative">
+  <div class=":uno: relative">
     <UiIcon v-if="iconStart" :name="iconStart" class=":uno: absolute left-3 top-1/2 -translate-y-1/2 text-ink-2 pointer-events-none" />
     <input
       :id="id"

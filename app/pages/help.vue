@@ -15,7 +15,7 @@ usePageSeo("help");
         <UiButton
             :href="`mailto:${blocked.adminEmail}`"
             icon="mail"
-            class="self-start"
+            class=":uno: self-start"
             >Hubungi admin</UiButton
         >
     </article>

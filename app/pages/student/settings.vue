@@ -5,7 +5,7 @@ import { useUiStore } from "@app/stores/ui";
 
 definePageMeta({
     layout: "student",
-    middleware: "auth",
+    access: "student",
     title: "Pengaturan profil",
 });
 const auth = useAuthStore();
@@ -64,11 +64,11 @@ const password = useAction(
     <AutoSkeleton :loading="pending" id="settings-body">
         <div
             v-if="tab === 'profile'"
-            class="grid md:items-start"
+            class=":uno: grid md:items-start"
         >
-            <UiCard class="flex flex-col gap-5">
+            <UiCard class=":uno: flex flex-col gap-5">
 
-                <div class="grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2">
+                <div class=":uno: grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2">
                     <FormField label="Nama lengkap" :error="profile.fieldErrors.value.fullName" v-slot="{ id }"
                         ><FormInput
                             :id="id"
@@ -83,7 +83,7 @@ const password = useAction(
                     <FormField label="NIM " v-slot="{ id }"
                         ><FormInput
                             :id="id"
-                            :model-value="auth.user.nim"
+                            :model-value="auth.user?.nim"
                             icon="lock"
                             locked
                             disabled
@@ -98,8 +98,8 @@ const password = useAction(
                 <FormField label="Website / portofolio" v-slot="{ id }"
                     ><FormInput :id="id" v-model="form.website" icon="external"
                 /></FormField>
-                <div class="flex items-center justify-between gap-4">
-                    <p class="t-body-s text-ink-2 m-0">
+                <div class=":uno: flex items-center justify-between gap-4">
+                    <p class=":uno: t-body-s text-ink-2 m-0">
                         {{
                             dirty
                                 ? "Perubahan belum disimpan."
@@ -110,21 +110,21 @@ const password = useAction(
                 </div>
             </UiCard>
         </div>
-        <div v-else class="grid gap-6 md:items-start">
-            <UiCard class="flex flex-col gap-5">
+        <div v-else class=":uno: grid gap-6 md:items-start">
+            <UiCard class=":uno: flex flex-col gap-5">
                 <FormField label="Email" v-slot="{ id }"
                     ><FormInput
                         :id="id"
-                        :model-value="auth.user.email"
+                        :model-value="auth.user?.email"
                         icon="mail"
                         disabled
                         locked
                 /></FormField>
                 <UiDivider />
-                <div class="flex items-center justify-between gap-4">
+                <div class=":uno: flex items-center justify-between gap-4">
                     <div>
-                        <p class="t-label text-ink m-0">Mode gelap</p>
-                        <p class="t-body-s text-ink-2 m-0">
+                        <p class=":uno: t-label text-ink m-0">Mode gelap</p>
+                        <p class=":uno: t-body-s text-ink-2 m-0">
                             Ubah tema untuk mengaktifkan {{ ui.theme === 'dark' ? 'mode terang' : 'mode gelap' }}.
                         </p>
                     </div>

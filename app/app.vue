@@ -32,10 +32,10 @@ const classes = {
     </NuxtLayout>
     <ClientOnly>
         <Toaster position="top-right" close-button :visible-toasts="3" :gap="10" :offset="16" :mobile-offset="12" :toast-options="{ unstyled: true, classes }" :close-button-aria-label="copy.close">
-            <template #success-icon><UiIcon name="checkCircle" size="text-xl" class="text-success" /></template>
-            <template #error-icon><UiIcon name="alert" size="text-xl" class="text-danger" /></template>
-            <template #info-icon><UiIcon name="info" size="text-xl" class="text-blue" /></template>
-            <template #warning-icon><UiIcon name="alert" size="text-xl" class="text-warning" /></template>
+            <template #success-icon><UiIcon name="checkCircle" size="text-xl" class=":uno: text-success" /></template>
+            <template #error-icon><UiIcon name="alert" size="text-xl" class=":uno: text-danger" /></template>
+            <template #info-icon><UiIcon name="info" size="text-xl" class=":uno: text-blue" /></template>
+            <template #warning-icon><UiIcon name="alert" size="text-xl" class=":uno: text-warning" /></template>
             <template #close-icon><UiIcon name="close" size="text-base" /></template>
         </Toaster>
     </ClientOnly>

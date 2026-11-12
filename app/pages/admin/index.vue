@@ -2,7 +2,7 @@
 import { admin } from "@app/constants/student.json";
 
 const copy = admin.dash;
-definePageMeta({ layout: "admin", middleware: "auth", title: "Dasbor admin" });
+definePageMeta({ layout: "admin", access: "admin", title: "Dasbor admin" });
 const { data, pending } = await useApiData("admin-dashboard", "/admin/dashboard", {
   default: () => ({ totals: {}, signups: [], requestStatus: [] }),
 });
@@ -21,25 +21,25 @@ const statuses = computed(() => data.value.requestStatus.map((row) => ({ label: 
 <template>
   <PageHeading :title="copy.title" :text="copy.text" />
   <AutoSkeleton :loading="pending" id="admin-stats">
-    <div class="grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-3 md:gap-6">
+    <div class=":uno: grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-3 md:gap-6">
       <StatCard v-for="item in stats" :key="item.label" v-bind="item" />
     </div>
   </AutoSkeleton>
   <AutoSkeleton :loading="pending" id="admin-charts">
-    <div class="grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2">
-      <UiCard class="flex flex-col gap-6">
-        <h2 class="t-d4 text-ink m-0">{{ copy.signups }}</h2>
+    <div class=":uno: grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2">
+      <UiCard class=":uno: flex flex-col gap-6">
+        <h2 class=":uno: t-d4 text-ink m-0">{{ copy.signups }}</h2>
         <ChartBars v-if="signups.length" :rows="signups" />
       </UiCard>
-      <UiCard class="flex flex-col gap-6">
-        <h2 class="t-d4 text-ink m-0">{{ copy.status }}</h2>
+      <UiCard class=":uno: flex flex-col gap-6">
+        <h2 class=":uno: t-d4 text-ink m-0">{{ copy.status }}</h2>
         <ChartBars v-if="statuses.length" :rows="statuses" />
       </UiCard>
     </div>
   </AutoSkeleton>
-  <UiCard class="flex flex-col gap-4">
-    <h2 class="t-d4 text-ink m-0">{{ copy.reviewTitle }}</h2>
-    <p class="t-body-s text-ink m-0">{{ copy.reviewText }}</p>
-    <UiButton variant="link" icon-end="arrowRight" to="/admin/competitions" class="self-start">{{ copy.reviewAction }}</UiButton>
+  <UiCard class=":uno: flex flex-col gap-4">
+    <h2 class=":uno: t-d4 text-ink m-0">{{ copy.reviewTitle }}</h2>
+    <p class=":uno: t-body-s text-ink m-0">{{ copy.reviewText }}</p>
+    <UiButton variant="link" icon-end="arrowRight" to="/admin/competitions" class=":uno: self-start">{{ copy.reviewAction }}</UiButton>
   </UiCard>
 </template>

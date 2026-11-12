@@ -8,7 +8,7 @@ const props = defineProps({
 });
 
 const percent = computed(() => (props.max ? Math.min(100, Math.round((props.value / props.max) * 100)) : 0));
-const tones = { blue: ":uno: bg-blue", success: ":uno: bg-success", warning: ":uno: bg-warning", danger: "bg-danger", yellow: "bg-yellow" };
+const tones = { blue: ":uno: bg-blue", success: ":uno: bg-success", warning: ":uno: bg-warning", danger: ":uno: bg-danger", yellow: ":uno: bg-yellow" };
 </script>
 
 <template>

@@ -21,7 +21,7 @@ const { run, pending, fieldErrors } = useAction(
   <UiModal :open="open" :eyebrow="modals.offer.eyebrow" :title="copy.title" :text="modals.offer.text" :submit="copy.submit" :pending="pending" :disabled="tooShort" @close="emit('close')" @submit="run()">
     <FormField :label="copy.message" :error="fieldErrors.description" v-slot="{ id }"><FormTextarea :id="id" v-model="form.description" :min="10" :max="1000" :placeholder="modals.offer.placeholder" /></FormField>
     <FormField :label="copy.time" optional :error="fieldErrors.preferredTime" v-slot="{ id }">
-      <div class="flex flex-col gap-2">
+      <div class=":uno: flex flex-col gap-2">
         <FormChoice :model-value="modals.quickTimes.includes(form.time) ? form.time : ''" :options="modals.quickTimes" @update:model-value="form.time = $event" />
         <FormInput :id="id" v-model="form.time" :placeholder="modals.offer.timePlaceholder" icon-start="clock" />
       </div>

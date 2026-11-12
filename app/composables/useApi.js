@@ -1,4 +1,5 @@
 import copy from "@app/constants/toast.json";
+import { invalidateFor, shareRequest } from "@app/utils/apiCache";
 
 export class ApiRequestError extends Error {
   constructor(message, statusCode, errors) {
@@ -26,7 +27,10 @@ export const useApi = () => {
 
   const request = async (path, options = {}) => {
     try {
-      const response = await $fetch(`/api/v1${path}`, { ...options, headers: { ...headers, ...options.headers } });
+      const send = () => $fetch(`/api/v1${path}`, { ...options, headers: { ...headers, ...options.headers } });
+      const read = !options.method || options.method === "GET";
+      const response = read ? await shareRequest(`${path}?${JSON.stringify(options.query ?? "")}`, send) : await send();
+      if (!read) invalidateFor(path);
       return response.data;
     } catch (error) {
       throw toError(error);

@@ -19,11 +19,10 @@
     "members": "anggota",
     "noTeams": "Kamu belum bergabung ke tim.",
     "findFriend": "Cari teman",
-    "addSchedule": "Tambah jadwal",
-    "weekTitle": "Jadwal pekan ini",
-    "today": "Hari ini",
-    "noEvents": "Tidak ada jadwal hari ini.",
-    "task": "Tugas"
+    "task": "Tugas",
+    "weekTitle": "Tugas terdekat",
+    "noTasks": "Tidak ada tugas yang menunggu.",
+    "allTasks": "Semua tugas"
   },
   "studyMatch": {
     "title": "Study Match",
@@ -264,30 +263,8 @@
   },
   "tasks": {
     "title": "Tugas kuliah",
-    "text": "Satu per satu, selesaikan yang paling penting hari ini.",
+    "text": "Satu per satu, selesaikan yang paling penting.",
     "add": "Tambah tugas",
-    "statuses": [
-      {
-        "value": "all",
-        "label": "Semua status"
-      },
-      {
-        "value": "open",
-        "label": "Aktif"
-      },
-      {
-        "value": "done",
-        "label": "Selesai"
-      },
-      {
-        "value": "overdue",
-        "label": "Terlambat"
-      },
-      {
-        "value": "today",
-        "label": "Hari ini"
-      }
-    ],
     "priorities": [
       {
         "value": "low",
@@ -312,57 +289,28 @@
     "save": "Simpan",
     "create": "Tambah",
     "cancel": "Batal",
-    "private": "Tugas hanya terlihat olehmu.",
     "emptyTitle": "Tidak ada tugas",
     "emptyText": "Tambahkan tugas pertamamu.",
     "clearDone": "Hapus yang selesai",
     "saved": "Tugas disimpan.",
-    "added": "Tugas ditambahkan.",
     "removed": "Tugas dihapus.",
     "cleared": "Tugas selesai dihapus.",
     "noDue": "Tanpa tenggat",
-    "overdue": "Terlambat",
     "today": "Hari ini",
-    "done": "Selesai",
-    "summary": {
+    "tabs": {
       "open": "Aktif",
       "overdue": "Terlambat",
-      "done": "Selesai"
+      "done": "Selesai",
+      "all": "Semua"
     },
-    "groupOverdue": "Terlambat",
-    "groupToday": "Hari ini",
-    "groupUpcoming": "Mendatang",
-    "groupDone": "Selesai",
-    "groupNone": "Tanpa tenggat"
-  },
-  "timetable": {
-    "title": "Jadwal mingguan",
-    "add": "Tambah acara",
-    "today": "Hari ini",
-    "import": "Impor",
-    "export": "Ekspor",
-    "eventName": "Nama acara",
-    "code": "Kode mata kuliah",
-    "day": "Hari",
-    "start": "Mulai",
-    "end": "Selesai",
-    "room": "Ruang",
-    "lecturer": "Dosen",
-    "lecturerNone": "Tanpa dosen",
-    "save": "Simpan",
-    "cancel": "Batal",
-    "close": "Tutup",
-    "delete": "Hapus",
-    "roomPrefix": "Ruang",
-    "added": "Acara ditambahkan.",
-    "removed": "Acara dihapus.",
-    "imported": "Jadwal diimpor.",
-    "importTitle": "Impor jadwal",
-    "importHint": "Pilih file .ics dari kalender kampus.",
-    "importReplace": "Ganti seluruh jadwal",
-    "importSubmit": "Impor",
-    "emptyTitle": "Belum ada jadwal",
-    "emptyText": "Tambah acara atau impor file .ics."
+    "modal": {
+      "eyebrow": "Tugas",
+      "text": "Hanya kamu yang bisa melihat tugas ini.",
+      "titlePlaceholder": "Contoh: Latihan soal join SQL",
+      "coursePlaceholder": "Basis Data",
+      "notesPlaceholder": "Bab, halaman, atau hal yang perlu diingat",
+      "removeTitle": "Hapus tugas ini?"
+    }
   },
   "admin": {
     "pageSize": 8,
@@ -416,7 +364,6 @@
       },
       "stats": {
         "tasks": "Tugas",
-        "events": "Jadwal",
         "teams": "Tim",
         "requests": "Permintaan"
       },
@@ -429,7 +376,7 @@
       "year": "Angkatan",
       "lastLogin": "Login terakhir",
       "danger": "Zona berbahaya",
-      "dangerText": "Menghapus pengguna juga menghapus tugas, jadwal, dan keanggotaan timnya.",
+      "dangerText": "Menghapus pengguna juga menghapus tugas dan keanggotaan timnya.",
       "delete": "Hapus pengguna",
       "deleteTitle": "Hapus pengguna?",
       "deleteText": "Tindakan ini tidak dapat dibatalkan.",

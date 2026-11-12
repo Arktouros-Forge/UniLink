@@ -6,7 +6,6 @@ export type SeedContext = {
   ids: {
     skills: Map<string, string>;
     categories: Map<string, string>;
-    lecturers: string[];
     students: string[];
     competitions: Map<string, string>;
   };
@@ -29,8 +28,8 @@ export const SEED_USER_IDS = {
 } as const;
 
 export const SEED_CREDENTIALS = {
-  student: { email: "ayu.pramesti@unilink.test", password: "Student123!" },
-  admin: { email: "admin@unilink.test", password: "Admin123!" },
+  student: { email: "alviro.malvin@unilink.test", password: "Student123!" },
+  admin: { email: "lyni@unilink.test", password: "Admin123!" },
 } as const;
 
 export const seedUuid = (kind: number, n: number) =>
@@ -43,7 +42,6 @@ export function createContext(): SeedContext {
     ids: {
       skills: new Map(),
       categories: new Map(),
-      lecturers: [],
       students: [],
       competitions: new Map(),
     },

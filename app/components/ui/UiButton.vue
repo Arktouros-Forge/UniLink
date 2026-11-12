@@ -44,7 +44,7 @@ const sizes = {
         :is="tag"
         v-bind="attrs"
         class=":uno: inline-flex items-center justify-center gap-2 rounded-md border t-button whitespace-nowrap cursor-pointer transition-all focus-ring disabled:opacity-50 disabled:cursor-not-allowed"
-        :class="[variants[variant], sizes[size], block && 'w-full']"
+        :class="[variants[variant], sizes[size], block && ':uno: w-full']"
     >
         <span
             v-if="loading"

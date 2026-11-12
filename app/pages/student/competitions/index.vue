@@ -2,7 +2,7 @@
 import { competitionSort } from "@app/constants/options.json";
 import { competitions as copy } from "@app/constants/student.json";
 
-definePageMeta({ layout: "student", middleware: "auth", title: "Kompetisi" });
+definePageMeta({ layout: "student", access: "student", title: "Kompetisi" });
 const { data: categories } = await useCategoryOptions();
 const category = ref("all");
 const sort = ref("deadline");
@@ -35,7 +35,7 @@ const { data, pending } = await useApiData(
             copy.create
         }}</UiButton>
     </PageHeading>
-    <div class="flex flex-col gap-3 md:flex-row md:items-center">
+    <div class=":uno: flex flex-col gap-3 md:flex-row md:items-center">
         <SearchBar v-model="query" :placeholder="copy.search" />
         <FilterSelect
             v-model="category"
@@ -49,7 +49,7 @@ const { data, pending } = await useApiData(
         />
     </div>
     <AutoSkeleton :loading="pending" id="competition-list">
-        <div class="grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2">
+        <div class=":uno: grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2">
             <CompetitionCard
                 v-for="item in data.competitions"
                 :key="item.id"

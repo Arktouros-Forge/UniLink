@@ -3,7 +3,7 @@ import { helper as extras } from "@app/constants/guidance.json";
 import { university } from "@app/constants/site.json";
 import { helperDetail as copy } from "@app/constants/student.json";
 
-definePageMeta({ layout: "student", middleware: "auth", title: "Profil teman belajar" });
+definePageMeta({ layout: "student", access: "student", title: "Profil teman belajar" });
 
 const route = useRoute();
 const api = useApi();
@@ -37,25 +37,25 @@ const { run: cancel } = useAction(
   <PageBack to="/student/study-match">Study Match</PageBack>
   <AutoSkeleton :loading="pending" id="helper-profile">
     <DetailLayout>
-      <UiCard class="flex flex-col gap-5">
+      <UiCard class=":uno: flex flex-col gap-5">
         <ProfileHeader :name="helper.fullName" :meta="`${helper.major ?? ''} · Angkatan ${helper.year} · ${university}`">
           <template #actions>
             <UiButton v-if="!['pending', 'accepted'].includes(status)" icon="userPlus" @click="open = true">Minta bantuan</UiButton>
             <template v-else-if="status === 'pending'"><UiChip tone="yellow" size="md">Menunggu jawaban</UiChip><UiButton variant="dangerLink" @click="cancel()">Batalkan</UiButton></template>
           </template>
         </ProfileHeader>
-        <p class="t-body-m text-ink m-0">{{ helper.bio }}</p>
+        <p class=":uno: t-body-m text-ink m-0">{{ helper.bio }}</p>
         <StatStrip :items="stats" />
-        <div class="flex flex-col gap-2">
-          <h2 class="t-d4 text-ink m-0">Keahlian</h2>
-          <div class="flex flex-wrap gap-2"><UiChip v-for="skill in helper.skills" :key="skill.id" size="md">{{ skill.name }}</UiChip></div>
+        <div class=":uno: flex flex-col gap-2">
+          <h2 class=":uno: t-d4 text-ink m-0">Keahlian</h2>
+          <div class=":uno: flex flex-wrap gap-2"><UiChip v-for="skill in helper.skills" :key="skill.id" size="md">{{ skill.name }}</UiChip></div>
                   </div>
       </UiCard>
 
       
       <template #aside>
         <ContactCard :name="helper.fullName" :url="helper.contact?.whatsappUrl" :phone="helper.contact?.phone" />
-        <UiCallout title="Etika meminta bantuan" tone="info"><ul class="m-0 pl-4 flex flex-col gap-1"><li v-for="rule in extras.guidelines" :key="rule">{{ rule }}</li></ul></UiCallout>
+        <UiCallout title="Etika meminta bantuan" tone="info"><ul class=":uno: m-0 pl-4 flex flex-col gap-1"><li v-for="rule in extras.guidelines" :key="rule">{{ rule }}</li></ul></UiCallout>
       </template>
     </DetailLayout>
   </AutoSkeleton>

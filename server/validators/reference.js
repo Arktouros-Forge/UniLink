@@ -38,18 +38,3 @@ export const categoryBody = z.object({
   color: z.string().regex(/^#[0-9a-fA-F]{6}$/, "Use a hex color like #1E3FA6"),
 });
 export const categoryPatch = partialOf(categoryBody);
-
-export const lecturerBody = z.object({
-  name: trimmed(3, 120),
-  email: z.email().max(200),
-  phone: phone.nullable().optional(),
-  nidn: z
-    .string()
-    .trim()
-    .regex(/^\d{8,12}$/, "NIDN must be 8-12 digits")
-    .nullable()
-    .optional(),
-  bio: nullableText(500),
-  profilePhotoUrl: optionalUrl,
-});
-export const lecturerPatch = partialOf(lecturerBody);

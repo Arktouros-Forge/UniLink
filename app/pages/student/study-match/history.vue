@@ -1,7 +1,7 @@
 <script setup>
 import { history as copy } from "@app/constants/student.json";
 
-definePageMeta({ layout: "student", middleware: "auth", title: "Riwayat belajar" });
+definePageMeta({ layout: "student", access: "student", title: "Riwayat belajar" });
 const { data, pending } = await useApiData("study-history", "/student/study-match/history", {
   query: { limit: 50 },
   default: () => ({ history: [] }),
@@ -13,7 +13,7 @@ const { data, pending } = await useApiData("study-history", "/student/study-matc
     <UiButton variant="secondary" to="/student/study-match/requests">{{ copy.back }}</UiButton>
   </PageHeading>
   <AutoSkeleton :loading="pending" id="history-list">
-    <div class="flex flex-col gap-4">
+    <div class=":uno: flex flex-col gap-4">
       <RequestRow v-for="item in data.history" :key="item.id" :item="item" />
       <UiEmpty v-if="!data.history.length" :title="copy.emptyTitle" icon="clock" />
     </div>

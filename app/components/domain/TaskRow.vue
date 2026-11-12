@@ -4,20 +4,30 @@ import { formatDate } from "@app/utils/format";
 
 const props = defineProps({ item: { type: Object, required: true } });
 defineEmits(["toggle", "edit", "remove"]);
+
 const today = new Date().toISOString().slice(0, 10);
-const overdue = computed(() => !props.item.completed && props.item.dueDate && props.item.dueDate < today);
-const label = computed(() => (props.item.dueDate ? formatDate(props.item.dueDate, { day: "2-digit", month: "short" }) : copy.noDue));
+const state = computed(() => {
+  if (props.item.completed || !props.item.dueDate) return "none";
+  if (props.item.dueDate < today) return "overdue";
+  return props.item.dueDate === today ? "today" : "later";
+});
+const due = computed(() => (props.item.dueDate ? formatDate(props.item.dueDate, { day: "2-digit", month: "short" }) : copy.noDue));
+const bar = { high: ":uno: bg-red", medium: ":uno: bg-yellow", low: ":uno: bg-hairline" };
 </script>
 
 <template>
-  <UiCard as="article" padding="p-4" class="flex items-center gap-4">
+  <li class=":uno: group relative flex items-center gap-3 px-4 py-3 pl-5">
+    <span class=":uno: absolute left-0 inset-y-0 w-1" :class="item.completed ? ':uno: bg-transparent' : bar[item.priority]" />
     <UiCheckbox :model-value="item.completed" @update:model-value="$emit('toggle', item)" />
-    <div class="flex-1 min-w-0 flex flex-col gap-1">
-      <p class="t-body-s m-0 truncate" :class="item.completed ? 'text-ink-2 line-through' : 'text-ink'">{{ item.title }}</p>
-      <p v-if="item.course" class="t-body-xs text-blue m-0 truncate">{{ item.course }}</p>
+    <div class=":uno: flex-1 min-w-0 flex flex-col">
+      <p class=":uno: t-body-s m-0 truncate" :class="item.completed ? ':uno: text-ink-3 line-through' : ':uno: text-ink'">{{ item.title }}</p>
+      <p class=":uno: t-mono-s m-0 truncate" :class="state === 'overdue' ? ':uno: text-danger' : ':uno: text-ink-2'">
+        <template v-if="item.course">{{ item.course }} · </template>{{ state === "today" ? copy.today : due }}
+      </p>
     </div>
-    <UiChip :tone="overdue ? 'danger' : item.priority === 'high' ? 'yellow' : 'neutral'" :filled="item.priority === 'high' && !item.completed" size="md">{{ label }}</UiChip>
-    <UiButton variant="link" size="sm" @click="$emit('edit', item)">Edit</UiButton>
-    <UiButton variant="link" size="sm" @click="$emit('remove', item)">Hapus</UiButton>
-  </UiCard>
+    <div class=":uno: flex items-center shrink-0 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-opacity">
+      <UiIconButton icon="edit" label="Edit" class=":uno: !size-8" @click="$emit('edit', item)" />
+      <UiIconButton icon="trash" label="Hapus" class=":uno: !size-8" @click="$emit('remove', item)" />
+    </div>
+  </li>
 </template>

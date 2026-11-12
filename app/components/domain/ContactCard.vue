@@ -14,12 +14,12 @@ const href = computed(() => props.url || whatsappUrl(whatsappBase, props.phone))
 </script>
 
 <template>
-  <UiCard class="flex flex-col gap-3">
-    <h2 class="t-d4 text-ink m-0 flex items-center gap-2"><UiIcon :name="open ? 'phone' : 'lock'" size="text-xl" />Kontak</h2>
+  <UiCard class=":uno: flex flex-col gap-3">
+    <h2 class=":uno: t-d4 text-ink m-0 flex items-center gap-2"><UiIcon :name="open ? 'phone' : 'lock'" size="text-xl" />Kontak</h2>
     <template v-if="open">
-      <p v-if="phone" class="t-mono-m text-ink m-0">{{ formatPhone(phone) }}</p>
-      <UiButton icon="external" :href="href" class="self-start">WhatsApp {{ name.split(" ")[0] }}</UiButton>
+      <p v-if="phone" class=":uno: t-mono-m text-ink m-0">{{ formatPhone(phone) }}</p>
+      <UiButton icon="external" :href="href" class=":uno: self-start">WhatsApp {{ name.split(" ")[0] }}</UiButton>
     </template>
-    <p v-else class="t-body-s text-ink-2 m-0">{{ lockedText }}</p>
+    <p v-else class=":uno: t-body-s text-ink-2 m-0">{{ lockedText }}</p>
   </UiCard>
 </template>

@@ -1,7 +1,7 @@
 import { asc, count, eq, getTableColumns, ilike, or, sql } from "drizzle-orm";
 
 import { db } from "@database/index";
-import { categories, lecturers, skills } from "@database/schema/index";
+import { categories, skills } from "@database/schema/index";
 
 import { fail } from "../../utils/errors.js";
 import { likePattern } from "../../utils/pagination.js";
@@ -108,14 +108,6 @@ export const categoryRef = createReference({
   usage: sql`(select count(*) from competition_categories cc where cc.category_id = ${ref(categories.id)})`,
 });
 
-export const lecturerRef = createReference({
-  key: "lecturers",
-  table: lecturers,
-  search: [lecturers.name, lecturers.email, lecturers.nidn],
-  slugged: false,
-  usage: sql`(select count(*) from timetable_events e where e.lecturer_id = ${ref(lecturers.id)})`,
-});
-
 export const listSkills = () =>
   skillRef.all({
     id: skills.id,
@@ -131,16 +123,6 @@ export const listCategories = () =>
     slug: categories.slug,
     description: categories.description,
     color: categories.color,
-  });
-
-export const listLecturers = () =>
-  lecturerRef.all({
-    id: lecturers.id,
-    name: lecturers.name,
-    email: lecturers.email,
-    phone: lecturers.phone,
-    profilePhotoUrl: lecturers.profilePhotoUrl,
-    nidn: lecturers.nidn,
   });
 
 export async function getSkillWithHolders(id) {

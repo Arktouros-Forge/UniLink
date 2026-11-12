@@ -17,6 +17,19 @@ export const useAuthStore = defineStore("auth", () => {
   const isVerified = computed(() => Boolean(user.value?.emailVerifiedAt));
   const isOnboarded = computed(() => isAdmin.value || Boolean(user.value?.onboardedAt));
   const home = computed(() => HOME[user.value?.role] ?? "/student/dashboard");
+  const destination = computed(() => {
+    if (blocked.value) return "/auth/blocked";
+    if (!isAuthed.value) return "/auth/login";
+    if (!isVerified.value) return "/auth/verify-email";
+    if (!isOnboarded.value) return "/onboarding/1";
+    return home.value;
+  });
+
+  const landing = (redirect) => {
+    const target = String(redirect ?? "");
+    const safe = target.startsWith("/") && !target.startsWith("//") && !target.startsWith("/auth/");
+    return safe && destination.value === home.value ? target : destination.value;
+  };
 
   const fetchMe = async ({ force = false } = {}) => {
     if (loaded.value && !force) return user.value;
@@ -82,5 +95,5 @@ export const useAuthStore = defineStore("auth", () => {
     user.value = shape({ ...user.value, ...payload });
   };
 
-  return { user, loaded, blocked, isAuthed, isAdmin, isVerified, isOnboarded, home, fetchMe, setBlocked, login, loginWithGoogle, register, syncVerification, logout, update };
+  return { user, loaded, blocked, isAuthed, isAdmin, isVerified, isOnboarded, home, destination, landing, fetchMe, setBlocked, login, loginWithGoogle, register, syncVerification, logout, update };
 });

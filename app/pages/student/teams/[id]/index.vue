@@ -4,7 +4,7 @@ import { teamDetail as copy, teams as teamCopy } from "@app/constants/student.js
 import { useAuthStore } from "@app/stores/auth";
 import { formatDate } from "@app/utils/format";
 
-definePageMeta({ layout: "student", middleware: "auth", title: "Detail tim" });
+definePageMeta({ layout: "student", access: "student", title: "Detail tim" });
 
 const route = useRoute();
 const api = useApi();
@@ -13,7 +13,7 @@ const { data: team, pending, refresh } = await useApiData(`team-${route.params.i
   default: () => ({ name: "", members: [], maxMembers: 1 }),
 });
 
-const isOwner = computed(() => team.value.creatorId === auth.user.id);
+const isOwner = computed(() => team.value.creatorId === auth.user?.id);
 const reportOpen = ref(false);
 const finished = computed(() => Boolean(team.value) && Boolean(team.value.competitionDeadline) && new Date(team.value.competitionDeadline) <= new Date());
 const editOpen = ref(false);
@@ -24,7 +24,7 @@ const accepted = computed(() => team.value.members.filter((member) => member.sta
 const capacity = computed(() => team.value.maxMembers ?? accepted.value.length);
 const slotsLeft = computed(() => capacity.value - accepted.value.length);
 const members = computed(() =>
-  accepted.value.map((member) => ({ ...member, id: member.userId, role: member.isCreator ? teamCopy.owner : teamCopy.memberRole, you: member.userId === auth.user.id })),
+  accepted.value.map((member) => ({ ...member, id: member.userId, role: member.isCreator ? teamCopy.owner : teamCopy.memberRole, you: member.userId === auth.user?.id })),
 );
 const owner = computed(() => members.value.find((member) => member.isCreator));
 const timeline = computed(() => extras.timeline);
@@ -71,40 +71,40 @@ const remove = useAction(
   </PageHeading>
   <AutoSkeleton :loading="pending" id="team-detail">
     <DetailLayout>
-      <UiCard class="flex flex-col gap-4">
-        <p class="t-body-m text-ink m-0">{{ team.description }}</p>
+      <UiCard class=":uno: flex flex-col gap-4">
+        <p class=":uno: t-body-m text-ink m-0">{{ team.description }}</p>
         <UiProgress :value="accepted.length" :max="capacity" :label="slotsLeft ? `${slotsLeft} ${copy.slots}` : copy.full" :tone="slotsLeft ? 'blue' : 'success'" />
         <UiDivider />
-        <div class="flex items-center justify-between"><h3 class="t-d4 text-ink m-0">{{ copy.membersTitle }}</h3><RosterSlots :members="members" :capacity="capacity" :size="28" /></div>
+        <div class=":uno: flex items-center justify-between"><h3 class=":uno: t-d4 text-ink m-0">{{ copy.membersTitle }}</h3><RosterSlots :members="members" :capacity="capacity" :size="28" /></div>
         <MemberRow v-for="member in members" :key="member.id" :item="member" />
       </UiCard>
 
-      <UiCard class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div class="flex flex-col gap-2">
-          <h2 class="t-d4 text-ink m-0">{{ copy.resultTitle }}</h2>
-          <p class="t-body-s text-ink-2 m-0">{{ team.result === "unknown" ? extras.resultNote : copy.resultLabels[team.result] }}</p>
+      <UiCard class=":uno: flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div class=":uno: flex flex-col gap-2">
+          <h2 class=":uno: t-d4 text-ink m-0">{{ copy.resultTitle }}</h2>
+          <p class=":uno: t-body-s text-ink-2 m-0">{{ team.result === "unknown" ? extras.resultNote : copy.resultLabels[team.result] }}</p>
         </div>
         <UiButton variant="secondary" icon="flag" :disabled="!finished" @click="reportOpen = true">{{ copy.report }}</UiButton>
       </UiCard>
 
-      <UiCard v-if="isOwner" class="flex flex-col gap-3">
-        <h2 class="t-d4 text-ink m-0">{{ copy.zone }}</h2>
-        <p class="t-body-s text-ink-2 m-0">{{ copy.zoneText }}</p>
-        <UiButton variant="dangerLink" icon="trash" class="self-start" @click="deleteOpen = true">{{ copy.delete }}</UiButton>
+      <UiCard v-if="isOwner" class=":uno: flex flex-col gap-3">
+        <h2 class=":uno: t-d4 text-ink m-0">{{ copy.zone }}</h2>
+        <p class=":uno: t-body-s text-ink-2 m-0">{{ copy.zoneText }}</p>
+        <UiButton variant="dangerLink" icon="trash" class=":uno: self-start" @click="deleteOpen = true">{{ copy.delete }}</UiButton>
       </UiCard>
 
       <template #aside>
         <ContactCard v-if="owner" :name="owner.fullName" :url="owner.contact?.whatsappUrl" :phone="owner.contact?.phone" :locked-text="copy.lockedText" />
-        <UiCard v-if="isOwner" class="flex flex-col gap-3">
-          <h2 class="t-d4 text-ink m-0">{{ copy.requestsTitle }}</h2>
-          <p class="t-body-s text-ink-2 m-0">{{ copy.requestsText }}</p>
-          <UiButton variant="secondary" icon-end="arrowRight" :to="`/student/teams/${team.id}/requests`" class="self-start">{{ copy.open }}{{ team.pendingCount ? ` (${team.pendingCount})` : "" }}</UiButton>
+        <UiCard v-if="isOwner" class=":uno: flex flex-col gap-3">
+          <h2 class=":uno: t-d4 text-ink m-0">{{ copy.requestsTitle }}</h2>
+          <p class=":uno: t-body-s text-ink-2 m-0">{{ copy.requestsText }}</p>
+          <UiButton variant="secondary" icon-end="arrowRight" :to="`/student/teams/${team.id}/requests`" class=":uno: self-start">{{ copy.open }}{{ team.pendingCount ? ` (${team.pendingCount})` : "" }}</UiButton>
         </UiCard>
-        <UiCard class="flex flex-col gap-2"><h2 class="t-d4 text-ink m-0">{{ copy.journey }}</h2><UiTimeline :items="timeline" /></UiCard>
-        <UiCard class="flex flex-col gap-3">
-          <p class="t-mono-s text-ink m-0">{{ copy.deadline }} · {{ formatDate(team.competitionDeadline) }}</p>
-          <UiButton variant="link" icon="trophy" :to="`/student/competitions/${team.competitionId}`" class="self-start">{{ copy.viewCompetition }}</UiButton>
-          <UiButton v-if="!isOwner" variant="dangerLink" icon="logout" class="self-start" @click="leaveOpen = true">{{ copy.leave }}</UiButton>
+        <UiCard class=":uno: flex flex-col gap-2"><h2 class=":uno: t-d4 text-ink m-0">{{ copy.journey }}</h2><UiTimeline :items="timeline" /></UiCard>
+        <UiCard class=":uno: flex flex-col gap-3">
+          <p class=":uno: t-mono-s text-ink m-0">{{ copy.deadline }} · {{ formatDate(team.competitionDeadline) }}</p>
+          <UiButton variant="link" icon="trophy" :to="`/student/competitions/${team.competitionId}`" class=":uno: self-start">{{ copy.viewCompetition }}</UiButton>
+          <UiButton v-if="!isOwner" variant="dangerLink" icon="logout" class=":uno: self-start" @click="leaveOpen = true">{{ copy.leave }}</UiButton>
         </UiCard>
         <UiCallout :title="copy.whatsappTitle">{{ copy.whatsappText }}</UiCallout>
       </template>

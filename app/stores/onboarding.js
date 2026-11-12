@@ -1,12 +1,14 @@
 import { defineStore } from "pinia";
 
 export const useOnboardingStore = defineStore("onboarding", () => {
-  const form = reactive({ name: "", cohort: "", skills: [], bio: "", phone: "", ready: false });
+  const form = reactive({ name: "", nim: "", cohort: "", skills: [], bio: "", phone: "", ready: false });
 
   const hydrate = (user) => {
+    if (!user) return;
     if (form.ready) return;
     Object.assign(form, {
       name: user.name,
+      nim: user.nim ?? "",
       cohort: user.cohort ? String(user.cohort) : "",
       skills: [...(user.skillIds ?? [])],
       bio: user.bio ?? "",

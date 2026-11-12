@@ -37,7 +37,7 @@ onBeforeUnmount(() => {
         </div>
     <ClientOnly><Teleport to="body">
         <div v-if="open" class=":uno: md:hidden fixed inset-0 z-50 bg-paper flex flex-col" role="dialog" aria-modal="true" aria-label="Menu">
-            <div class=":uno: grid grid-cols-3 h-1.5 shrink-0" aria-hidden="true"><span class="bg-red" /><span class="bg-blue" /><span class="bg-yellow" /></div>
+            <div class=":uno: grid grid-cols-3 h-1.5 shrink-0" aria-hidden="true"><span class=":uno: bg-red" /><span class=":uno: bg-blue" /><span class=":uno: bg-yellow" /></div>
             <div class=":uno: container-wide flex items-center justify-between h-16 shrink-0">
                 <NuxtLink to="/"><UiLogo /></NuxtLink>
                 <UiIconButton icon="close" label="Tutup menu" variant="outline" @click="open = false" />

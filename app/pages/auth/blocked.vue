@@ -2,7 +2,7 @@
 import { blocked as copy } from "@app/constants/auth.json";
 import { useAuthStore } from "@app/stores/auth";
 
-definePageMeta({ layout: "auth" });
+definePageMeta({ layout: "auth", access: "blocked" });
 const auth = useAuthStore();
 const reason = computed(() => (typeof auth.blocked === "string" ? auth.blocked : copy.reason));
 </script>

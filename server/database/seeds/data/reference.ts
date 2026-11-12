@@ -85,81 +85,6 @@ export const categorySeeds = [
   ],
 ] as const;
 
-export const lecturerSeeds = [
-  [
-    "Dr. I Gusti Ngurah Wirawan, S.Kom., M.T.",
-    "ngurah.wirawan",
-    "0801058801",
-    "Rekayasa perangkat lunak dan arsitektur sistem.",
-  ],
-  [
-    "Dr. Ni Luh Putu Sari Dewi, S.T., M.Kom.",
-    "sari.dewi",
-    "0812078602",
-    "Basis data, data mining, dan sistem informasi.",
-  ],
-  [
-    "I Made Arya Pratama, S.Kom., M.Cs.",
-    "arya.pratama",
-    "0825049003",
-    "Algoritma, kecerdasan buatan, dan pemrosesan bahasa alami.",
-  ],
-  [
-    "Prof. Dr. Ir. Anak Agung Bagus Mahendra, M.Sc.",
-    "bagus.mahendra",
-    "0819086504",
-    "Jaringan komputer, keamanan informasi, dan komputasi awan.",
-  ],
-  [
-    "Kadek Ayu Wulandari, S.Si., M.Stat.",
-    "ayu.wulandari",
-    "0803099205",
-    "Statistika terapan dan analisis data.",
-  ],
-  [
-    "Dr. Putu Gede Mahardika, S.T., M.T.",
-    "gede.mahardika",
-    "0822038606",
-    "Elektronika, sistem tertanam, dan Internet of Things.",
-  ],
-  [
-    "Komang Tri Handayani, S.Kom., M.Kom.",
-    "tri.handayani",
-    "0809129107",
-    "Interaksi manusia dan komputer serta desain antarmuka.",
-  ],
-  [
-    "Dr. Wayan Eka Putra, S.E., M.M.",
-    "eka.putra",
-    "0814067808",
-    "Kewirausahaan, manajemen strategis, dan pemasaran digital.",
-  ],
-  [
-    "Ir. Ketut Surya Darma, M.T.",
-    "surya.darma",
-    "0828118009",
-    "Sistem operasi dan pemrograman sistem.",
-  ],
-  [
-    "Ni Made Rani Anggraeni, S.S., M.Hum.",
-    "rani.anggraeni",
-    "0815059310",
-    "Penulisan ilmiah dan bahasa Indonesia akademik.",
-  ],
-  [
-    "Dr. Agus Budi Santoso, S.Si., M.Si.",
-    "budi.santoso",
-    "0811027711",
-    "Matematika diskrit, kalkulus, dan aljabar linear.",
-  ],
-  [
-    "Rina Kartika Sari, S.Kom., M.T.",
-    "rina.kartika",
-    "0826089412",
-    "Pengujian perangkat lunak dan manajemen proyek TI.",
-  ],
-] as const;
-
 export const courseSeeds = [
   [
     "IF1101",
@@ -187,25 +112,4 @@ export const courseSeeds = [
   ["UM1102", "Kewirausahaan", ["Business Plan", "Pitch & Public Speaking"]],
   ["UM1103", "Kalkulus", ["Kalkulus & Aljabar Linear"]],
   ["EL2101", "Sistem Tertanam", ["IoT & Elektronika"]],
-] as const;
-
-export const rooms = [
-  "IF-101",
-  "IF-102",
-  "IF-203",
-  "IF-204",
-  "Lab Komputer 1",
-  "Lab Komputer 2",
-  "Lab Jaringan",
-  "Gedung Agrokomplek R.12",
-  "FT-301",
-  "FT-305",
-];
-
-export const slotStarts = [
-  "07:30",
-  "09:40",
-  "12:30",
-  "14:20",
-  "16:10",
 ] as const;

@@ -1,9 +1,8 @@
 # UniLink
 
-A small web app for Universitas Udayana students: find someone to study with, post what you need help with, put a team together for a competition, and keep your week in order. Built for TecFest 2026.
+A small web app for Universitas Udayana students: find someone to study with, post what you need help with, put a team together for a competition, and keep track of coursework. Built for TecFest 2026.
 
 ![Landing page](docs/screens/landing.png)
-
 
 ## Run it
 
@@ -18,10 +17,12 @@ bun run dev               # http://localhost:3000
 
 Demo logins:
 
-| Role    | Email                       | Password       |
-| ------- | --------------------------- | -------------- |
-| Student | `ayu.pramesti@unilink.test` | `Student123!`  |
-| Admin   | `admin@unilink.test`        | `Admin123!`    |
+| Role    | Email                        | Password      |
+| ------- | ---------------------------- | ------------- |
+| Student | `alviro.malvin@unilink.test` | `Student123!` |
+| Admin   | `lyni@unilink.test`          | `Admin123!`   |
+
+New accounts finish a short onboarding (name, NIM, year, skills, WhatsApp). The NIM can be entered once and is locked afterwards.
 
 Emails (verification, password reset) are printed to the terminal and listed at `/api/v1/dev/outbox` until you add a `RESEND_API_KEY`. Google sign-in appears only when the Firebase variables in `.env.example` are filled in; without them the app uses its own email and password login.
 
@@ -45,26 +46,26 @@ The study-match flow, which is the heart of the app:
 
 ```mermaid
 sequenceDiagram
-  participant A as Ayu
+  participant A as Alviro
   participant U as UniLink
   participant G as Agus
   A->>U: Ask Agus for help with SQL
-  U-->>G: Pending request (Ayu's number hidden)
+  U-->>G: Pending request (Alviro's number hidden)
   G->>U: Accept
   U-->>A: Agus's number + WhatsApp link
-  U-->>G: Ayu's number + WhatsApp link
+  U-->>G: Alviro's number + WhatsApp link
 ```
 
 Teams work the same way: you ask to join, the owner accepts, and only then do members see each other's numbers.
 
 ## Screens
 
-| | |
-| --- | --- |
-| ![Dashboard](docs/screens/dashboard.png) | ![Study match](docs/screens/study-match.png) |
-| ![Request modal](docs/screens/modal.png) | ![Help board](docs/screens/help-board.png) |
-| ![Competitions](docs/screens/competitions.png) | ![Team](docs/screens/team.png) |
-| ![Timetable](docs/screens/timetable.png) | ![Admin](docs/screens/admin.png) |
+|                                                |                                              |
+| ---------------------------------------------- | -------------------------------------------- |
+| ![Dashboard](docs/screens/dashboard.png)       | ![Study match](docs/screens/study-match.png) |
+| ![Request modal](docs/screens/modal.png)       | ![Help board](docs/screens/help-board.png)   |
+| ![Competitions](docs/screens/competitions.png) | ![Team](docs/screens/team.png)               |
+| ![Tasks](docs/screens/tasks.png)               | ![Admin](docs/screens/admin.png)             |
 
 On a phone the sidebar becomes a bottom bar:
 
@@ -87,18 +88,15 @@ The full De Stijl design lives in Figma — colours, type scale, spacing, and ev
 
 [![Figma design file](https://img.shields.io/badge/Figma-UniLink%20Design%20File-F24E1E?logo=figma&logoColor=white)](https://www.figma.com/design/cHIZSLnr7xjhSCfHojQg0M/UniLink---TecFest-2026?node-id=0-1&t=b8fmiaUEH7HvyLXl-1)
 
-
 ## API
 
-Import `postman/UniLink.postman_collection.json` and `postman/UniLink.local.postman_environment.json` into Postman, pick the environment, and run **Auth → Login (student)** once. The cookie is stored for you and every other request just works. All routes are also listed in [API-TREE.md](API-TREE.md).
+Import `postman/UniLink.postman_collection.json` and `postman/UniLink.local.postman_environment.json` into Postman, pick the environment, and run **Auth → Login (student)** once. The cookie is stored for you and every other request just works. All routes are also listed in [API.md](API.md); the client is described in [APP.md](APP.md).
 
 ## Handy commands
 
-| Command            | What it does                                              |
-| ------------------ | --------------------------------------------------------- |
-| `bun run dev`      | start the app                                             |
-| `bun run db:reset` | wipe, migrate and reseed (needs `ALLOW_DB_RESET="true"`)  |
-| `bun run db:seed`  | reseed an already migrated database                       |
-| `bun run build`    | production build                                          |
-
-Before deploying: set `AUTH_SECRET` (32+ random characters), `APP_URL`, `NUXT_PUBLIC_SITE_URL`, a `RESEND_API_KEY`, and `ALLOWED_EMAIL_DOMAINS` if you want to limit sign-ups to campus addresses.
+| Command            | What it does                                             |
+| ------------------ | -------------------------------------------------------- |
+| `bun run dev`      | start the app                                            |
+| `bun run db:reset` | wipe, migrate and reseed (needs `ALLOW_DB_RESET="true"`) |
+| `bun run db:seed`  | reseed an already migrated database                      |
+| `bun run build`    | production build                                         |

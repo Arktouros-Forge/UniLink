@@ -2,7 +2,7 @@
 import { studyMatch as copy } from "@app/constants/student.json";
 import { years } from "@app/constants/options.json";
 
-definePageMeta({ layout: "student", middleware: "auth", title: "Study Match" });
+definePageMeta({ layout: "student", access: "student", title: "Study Match" });
 const { data: skillOptions } = await useSkillOptions();
 
 const year = ref("all");
@@ -34,15 +34,15 @@ const onSent = () => {
 
 <template>
     <PageHeading :title="copy.title" :text="copy.text" />
-    <div class="flex flex-col gap-3 md:flex-row md:items-center">
+    <div class=":uno: flex flex-col gap-3 md:flex-row md:items-center">
         <SearchBar v-model="query" :placeholder="copy.search" />
         <FilterSelect v-model="year" :options="yearOptions" icon="filter" />
         <FilterSelect v-model="skillId" :options="skillFilterOptions" variant="text" />
     </div>
-    <p class="t-body-s text-ink-2 m-0">{{ data.pagination.total }} {{ copy.matches }}</p>
+    <p class=":uno: t-body-s text-ink-2 m-0">{{ data.pagination.total }} {{ copy.matches }}</p>
     <UiCallout v-if="sent" :title="copy.sentTitle" tone="info">{{ copy.sentText }}</UiCallout>
     <AutoSkeleton :loading="pending" id="study-match-results">
-        <div class="grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2">
+        <div class=":uno: grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2">
             <HelperCard v-for="item in data.items" :key="item.id" :item="item" @request="target = $event" />
         </div>
         <UiEmpty v-if="!data.items.length" :title="copy.emptyTitle" :text="copy.emptyText" icon="search" />

@@ -2,7 +2,7 @@
 import { limits } from "@app/constants/options.json";
 import { newSign as copy } from "@app/constants/student.json";
 
-definePageMeta({ layout: "student", middleware: "auth", title: "Pasang tanda bantuan" });
+definePageMeta({ layout: "student", access: "student", title: "Pasang tanda bantuan" });
 const api = useApi();
 const { data: skillOptions } = await useSkillOptions();
 const form = reactive({ title: "", skillId: "", description: "", time: "" });
@@ -25,13 +25,13 @@ const { run, pending, fieldErrors } = useAction(
 
 <template>
   <PageHeading :title="copy.title" :text="copy.text" />
-  <div class="grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-[minmax(0,1fr)_320px] md:items-start">
-    <UiCard class="flex flex-col gap-5">
+  <div class=":uno: grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-[minmax(0,1fr)_320px] md:items-start">
+    <UiCard class=":uno: flex flex-col gap-5">
       <FormField :label="copy.name" :error="fieldErrors.title" v-slot="{ id }"><FormInput :id="id" v-model="form.title" :placeholder="copy.namePlaceholder" /></FormField>
       <FormField :label="copy.skill" :error="fieldErrors.skillId" v-slot="{ id }"><FormSelect :id="id" v-model="form.skillId" :options="options" :placeholder="copy.skillPlaceholder" /></FormField>
       <FormField :label="copy.detail" :error="fieldErrors.description" v-slot="{ id }"><FormTextarea :id="id" v-model="form.description" /></FormField>
       <FormField :label="copy.time" optional v-slot="{ id }"><FormInput :id="id" v-model="form.time" :placeholder="copy.timePlaceholder" /></FormField>
-      <div class="flex gap-3">
+      <div class=":uno: flex gap-3">
         <UiButton icon="flag" :loading="pending" :disabled="!valid" @click="run()">{{ copy.submit }}</UiButton>
         <UiButton variant="link" to="/student/help-board">{{ copy.cancel }}</UiButton>
       </div>

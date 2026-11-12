@@ -3,7 +3,7 @@ import { admin } from "@app/constants/student.json";
 import { formatDate } from "@app/utils/format";
 
 const copy = admin.users;
-definePageMeta({ layout: "admin", middleware: "auth", title: "Pengguna" });
+definePageMeta({ layout: "admin", access: "admin", title: "Pengguna" });
 const api = useApi();
 const status = ref("all");
 const statusOptions = [
@@ -47,7 +47,7 @@ const toggle = useAction(
   >
     <template #filters><FilterSelect v-model="status" :options="statusOptions" icon="filter" /></template>
     <template #cell-status="{ value }"><UiChip :tone="value === 'active' ? 'success' : 'danger'" size="md">{{ value === "active" ? copy.active : copy.blocked }}</UiChip></template>
-    <template #cell-createdAt="{ value }"><span class="t-mono-s">{{ formatDate(value) }}</span></template>
+    <template #cell-createdAt="{ value }"><span class=":uno: t-mono-s">{{ formatDate(value) }}</span></template>
     <template #cell-year="{ value }">{{ value ?? "-" }}</template>
   </AdminList>
   <ReasonModal :open="!!blockTarget" :title="copy.blockTitle" :label="copy.blockLabel" :action="copy.block" @close="blockTarget = null" @confirm="toggle.run({ user: blockTarget, body: { status: 'blocked', reason: $event } })" />

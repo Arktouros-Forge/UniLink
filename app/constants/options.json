@@ -14,15 +14,6 @@
     2029,
     2030
   ],
-  "dayLabels": [
-    "Sen",
-    "Sel",
-    "Rab",
-    "Kam",
-    "Jum",
-    "Sab",
-    "Min"
-  ],
   "eventTypes": [
     {
       "value": "kuliah",
@@ -48,7 +39,7 @@
   "onboarding": [
     {
       "title": "Identitas",
-      "text": "Kenalkan dirimu dengan nama dan angkatan."
+      "text": "Kenalkan dirimu dengan nama, NIM, dan angkatan."
     },
     {
       "title": "Keahlian",
@@ -97,23 +88,5 @@
       "value": "popular",
       "label": "Paling diminati"
     }
-  ],
-  "timetableHours": [
-    7,
-    9,
-    11,
-    13,
-    15,
-    17,
-    19
-  ],
-  "dayShort": [
-    "Sen",
-    "Sel",
-    "Rab",
-    "Kam",
-    "Jum",
-    "Sab",
-    "Min"
   ]
 }

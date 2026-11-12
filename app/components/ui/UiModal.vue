@@ -34,7 +34,7 @@ onBeforeUnmount(() => {
   <ClientOnly><Teleport to="body">
     <div v-if="open" class=":uno: fixed inset-0 z-50 flex items-end justify-center bg-backdrop sm:items-center sm:p-6" @click.self="emit('close')">
       <div class=":uno: relative w-full max-h-[92dvh] flex flex-col bg-elevated shadow-modal rounded-t-lg sm:rounded-lg border border-hairline overflow-hidden" :class="width" role="dialog" aria-modal="true">
-        <div class=":uno: grid grid-cols-[2fr_3fr_1fr] h-1.5 shrink-0" aria-hidden="true"><span class="bg-red" /><span class="bg-blue" /><span class="bg-yellow" /></div>
+        <div class=":uno: grid grid-cols-[2fr_3fr_1fr] h-1.5 shrink-0" aria-hidden="true"><span class=":uno: bg-red" /><span class=":uno: bg-blue" /><span class=":uno: bg-yellow" /></div>
         <header class=":uno: flex items-start justify-between gap-3 px-5 pt-4 pb-1">
           <div class=":uno: flex flex-col gap-1 min-w-0 flex-1">
             <p v-if="eyebrow" class=":uno: t-mono-s text-ink-3 m-0 uppercase">{{ eyebrow }}</p>
@@ -46,7 +46,7 @@ onBeforeUnmount(() => {
         <div class=":uno: px-5 py-4 overflow-y-auto flex flex-col gap-4"><slot /></div>
         <footer v-if="submit || $slots.footer" class=":uno: flex flex-row-reverse items-center gap-2 px-5 py-3 border-t border-hairline bg-paper/50">
           <slot name="footer">
-            <UiButton :variant="danger ? 'danger' : 'primary'" :icon="danger ? '' : submitIcon" :loading="pending" :disabled="disabled" class="flex-1 sm:flex-none" @click="emit('submit')">{{ submit }}</UiButton>
+            <UiButton :variant="danger ? 'danger' : 'primary'" :icon="danger ? '' : submitIcon" :loading="pending" :disabled="disabled" class=":uno: flex-1 sm:flex-none" @click="emit('submit')">{{ submit }}</UiButton>
             <UiButton variant="secondary" class=":uno: flex-1 sm:flex-none" @click="emit('close')">{{ cancel }}</UiButton>
           </slot>
         </footer>

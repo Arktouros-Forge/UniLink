@@ -4,7 +4,7 @@ import { admin } from "@app/constants/student.json";
 import { formatDate } from "@app/utils/format";
 
 const copy = admin.userDetail;
-definePageMeta({ layout: "admin", middleware: "auth", title: "Detail pengguna" });
+definePageMeta({ layout: "admin", access: "admin", title: "Detail pengguna" });
 
 const route = useRoute();
 const api = useApi();
@@ -82,7 +82,7 @@ const remove = useAction(
   <PageBack to="/admin/users">{{ copy.back }}</PageBack>
   <AutoSkeleton :loading="pending" id="admin-user-detail">
     <DetailLayout>
-      <UiCard class="flex flex-col gap-5">
+      <UiCard class=":uno: flex flex-col gap-5">
         <ProfileHeader :name="user.fullName" :meta="`${user.email} · Angkatan ${user.year ?? '-'}`" :size="56">
           <UiChip :tone="blocked ? 'danger' : 'success'" size="md">{{ blocked ? admin.users.blocked : admin.users.active }}</UiChip>
           <template #actions>
@@ -95,23 +95,23 @@ const remove = useAction(
         <StatStrip :items="stats" />
       </UiCard>
 
-      <UiCard class="flex flex-col gap-4">
+      <UiCard class=":uno: flex flex-col gap-4">
         <UiTabs v-model="tab" :items="tabs" />
         <template v-if="tab === 'overview'">
-          <h2 class="t-d4 text-ink m-0">{{ copy.skills }}</h2>
+          <h2 class=":uno: t-d4 text-ink m-0">{{ copy.skills }}</h2>
           <SkillPicker v-model="skills" />
-          <div class="flex"><UiButton icon="check" size="sm" :loading="saveSkills.pending.value" @click="saveSkills.run()">{{ copy.saveSkills }}</UiButton></div>
+          <div class=":uno: flex"><UiButton icon="check" size="sm" :loading="saveSkills.pending.value" @click="saveSkills.run()">{{ copy.saveSkills }}</UiButton></div>
         </template>
         <ActivityList v-else-if="tab === 'teams'" :items="teamItems" :empty="copy.emptyTeams" />
         <ActivityList v-else :items="requestItems" :empty="copy.emptyRequests" />
       </UiCard>
 
       <template #aside>
-        <UiCard class="flex flex-col gap-4"><h2 class="t-d4 text-ink m-0">{{ copy.info }}</h2><MetaList :items="meta" /></UiCard>
-        <UiCard class="flex flex-col gap-3">
-          <h2 class="t-d4 text-ink m-0">{{ copy.danger }}</h2>
-          <p class="t-body-s text-ink-2 m-0">{{ copy.dangerText }}</p>
-          <UiButton variant="dangerLink" icon="trash" class="self-start" @click="deleteOpen = true">{{ copy.delete }}</UiButton>
+        <UiCard class=":uno: flex flex-col gap-4"><h2 class=":uno: t-d4 text-ink m-0">{{ copy.info }}</h2><MetaList :items="meta" /></UiCard>
+        <UiCard class=":uno: flex flex-col gap-3">
+          <h2 class=":uno: t-d4 text-ink m-0">{{ copy.danger }}</h2>
+          <p class=":uno: t-body-s text-ink-2 m-0">{{ copy.dangerText }}</p>
+          <UiButton variant="dangerLink" icon="trash" class=":uno: self-start" @click="deleteOpen = true">{{ copy.delete }}</UiButton>
         </UiCard>
       </template>
     </DetailLayout>

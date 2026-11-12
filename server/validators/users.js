@@ -26,6 +26,11 @@ export const YEARS = [
   "2030",
 ];
 
+const nim = z
+  .string()
+  .trim()
+  .regex(/^\d{8,15}$/, "NIM must be 8-15 digits");
+
 const profileFields = {
   fullName: trimmed(2, 100),
   phone,
@@ -46,12 +51,12 @@ const profileFields = {
 const atLeastOne = (data) => Object.keys(data).length > 0;
 
 export const profileBody = z
-  .object({ ...profileFields, onboarded: z.boolean() })
+  .object({ ...profileFields, nim, onboarded: z.boolean() })
   .partial()
   .refine(atLeastOne, "Provide at least one field to update");
 
 export const adminUserBody = z
-  .object({ ...profileFields, nim: trimmed(5, 20) })
+  .object({ ...profileFields, nim })
   .partial()
   .refine(atLeastOne, "Provide at least one field to update");
 

@@ -2,7 +2,7 @@
 import { verify as copy, firebase as fb } from "@app/constants/auth.json";
 import { useAuthStore } from "@app/stores/auth";
 
-definePageMeta({ layout: "auth", middleware: "auth", allowIncomplete: true });
+definePageMeta({ layout: "auth", access: "verify" });
 const auth = useAuthStore();
 const route = useRoute();
 const api = useApi();
@@ -62,7 +62,7 @@ onBeforeUnmount(() => clearInterval(timer));
       <p class=":uno: t-body-s text-ink-2 m-0">{{ state === "done" ? copy.successText : state === "failed" ? copy.failedText : copy.text }}</p>
     </div>
     <template v-if="state === 'done' || auth.isVerified">
-      <UiButton :to="auth.isOnboarded ? auth.home : '/onboarding/1'" icon-end="arrowRight" block>{{ copy.continue }}</UiButton>
+      <UiButton :to="auth.isAuthed ? auth.destination : '/auth/login'" icon-end="arrowRight" block>{{ copy.continue }}</UiButton>
     </template>
     <template v-else-if="state !== 'checking'">
       <UiCard class=":uno: flex gap-4" padding="p-5">

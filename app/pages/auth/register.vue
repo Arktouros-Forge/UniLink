@@ -2,7 +2,7 @@
 import { register as copy } from "@app/constants/auth.json";
 import { useAuthStore } from "@app/stores/auth";
 
-definePageMeta({ layout: "auth", middleware: "guest" });
+definePageMeta({ layout: "auth", access: "guest" });
 const auth = useAuthStore();
 const form = reactive({ name: "", email: "", password: "", agree: false });
 const valid = computed(
@@ -11,7 +11,7 @@ const valid = computed(
 const { run, pending, fieldErrors, error } = useAction(
     async () => {
         await auth.register({ name: form.name, email: form.email, password: form.password });
-        await navigateTo("/auth/verify-email");
+        await navigateTo(auth.destination);
     },
     { success: copy.created, silent: true },
 );

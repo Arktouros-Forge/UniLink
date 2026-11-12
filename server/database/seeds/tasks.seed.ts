@@ -1,24 +1,17 @@
-import { tasks, timetableEvents } from "@database/schema";
+import { tasks } from "@database/schema";
 
-import { courseSeeds, rooms, slotStarts } from "./data/reference";
+import { courseSeeds } from "./data/reference";
 import { generalTasks, taskTemplates } from "./data/activity";
 import { SEED_USER_IDS, seedUuid, type SeedContext } from "./lib/context";
 import { insertMany } from "./lib/insert";
 import { daysFromNow } from "./lib/random";
 
-const addMinutes = (time: string, minutes: number) => {
-  const [h, m] = time.split(":").map(Number);
-  const total = h * 60 + m + minutes;
-  return `${String(Math.floor(total / 60)).padStart(2, "0")}:${String(total % 60).padStart(2, "0")}:00`;
-};
-
 const isoDate = (date: Date) => date.toISOString().slice(0, 10);
 
-export async function seedPlanner(ctx: SeedContext) {
+export async function seedTasks(ctx: SeedContext) {
   const { rng, now } = ctx;
   const active = ctx.students.filter((s) => s.status === "active");
 
-  const eventRows: (typeof timetableEvents.$inferInsert)[] = [];
   const taskRows: (typeof tasks.$inferInsert)[] = [];
 
   for (const student of active) {
@@ -37,34 +30,6 @@ export async function seedPlanner(ctx: SeedContext) {
       );
     });
     const courses = rng.sample(pool.length ? pool : courseSeeds, rng.int(4, 7));
-    const occupied = new Set<string>();
-
-    courses.forEach(([code, title]) => {
-      for (let attempt = 0; attempt < 12; attempt++) {
-        const day = rng.int(1, 5);
-        const start = rng.pick(slotStarts);
-        const key = `${day}-${start}`;
-        if (occupied.has(key)) continue;
-        occupied.add(key);
-
-        const freeText = rng.chance(0.12);
-        eventRows.push({
-          userId: student.id,
-          courseCode: code,
-          title,
-          dayOfWeek: day,
-          startTime: `${start}:00`,
-          endTime: addMinutes(start, rng.pick([100, 100, 150])),
-          room: rng.pick(rooms),
-          lecturerId: freeText ? null : rng.pick(ctx.ids.lecturers),
-          lecturerNameFreeText: freeText ? "Dosen tamu (nama menyusul)" : null,
-          recurrence: "weekly",
-          source: rng.chance(0.2) ? "ics_import" : "manual",
-        });
-        break;
-      }
-    });
-
     const taskCount = student.id === SEED_USER_IDS.student ? 9 : rng.int(3, 8);
     for (let i = 0; i < taskCount; i++) {
       const [code, course] = rng.pick(courses);
@@ -94,10 +59,9 @@ export async function seedPlanner(ctx: SeedContext) {
     }
   }
 
-  await insertMany(timetableEvents, eventRows);
   await insertMany(tasks, taskRows);
 
   console.log(
-    `✓ Planner: ${eventRows.length} timetable events, ${taskRows.length} tasks`,
+    `✓ Tasks: ${taskRows.length}`,
   );
 }

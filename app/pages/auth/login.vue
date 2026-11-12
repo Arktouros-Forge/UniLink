@@ -2,7 +2,7 @@
 import { login as copy } from "@app/constants/auth.json";
 import { useAuthStore } from "@app/stores/auth";
 
-definePageMeta({ layout: "auth", middleware: "guest" });
+definePageMeta({ layout: "auth", access: "guest" });
 const auth = useAuthStore();
 const route = useRoute();
 const form = reactive({ email: "", password: "", remember: false });
@@ -19,8 +19,7 @@ const { run, pending, error } = useAction(
             }
             throw failure;
         }
-        const target = String(route.query.redirect ?? "");
-        await navigateTo(target.startsWith("/") && !target.startsWith("//") ? target : auth.home);
+        await navigateTo(auth.landing(route.query.redirect));
     },
     { silent: true },
 );

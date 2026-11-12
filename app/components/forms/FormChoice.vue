@@ -11,7 +11,7 @@ const label = (option) => option.label ?? option;
 </script>
 
 <template>
-  <div role="radiogroup" class="gap-2" :class="[cols ? `:uno: grid ${cols}` : ':uno: flex flex-wrap', stacked && ':uno: !grid grid-cols-1']">
+  <div role="radiogroup" class=":uno: gap-2" :class="[cols ? `:uno: grid ${cols}` : ':uno: flex flex-wrap', stacked && ':uno: !grid grid-cols-1']">
     <button
       v-for="option in options"
       :key="value(option)"

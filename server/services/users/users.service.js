@@ -103,12 +103,18 @@ export async function updateProfile(
     await assertSkillsExist(tx, skillIds ?? []);
 
     const [current] = await tx
-      .select({ onboardedAt: users.onboardedAt })
+      .select({ onboardedAt: users.onboardedAt, nim: users.nim })
       .from(users)
       .where(eq(users.id, userId))
       .limit(1);
     if (!current) fail("USER_NOT_FOUND");
     if (fields.year && current.onboardedAt) delete fields.year;
+    if (fields.nim && current.nim) {
+      if (fields.nim !== current.nim) fail("NIM_LOCKED");
+      delete fields.nim;
+    }
+    if (onboarded && !current.onboardedAt && !(fields.nim || current.nim))
+      fail("VALIDATION", [{ field: "nim", message: "NIM is required" }]);
 
     const patch = {
       ...fields,

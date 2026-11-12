@@ -19,7 +19,6 @@
         { "label": "Papan bantuan", "to": "/student/help-board", "icon": "flag" },
         { "label": "Kompetisi", "to": "/student/competitions", "icon": "trophy" },
         { "label": "Tim saya", "to": "/student/teams", "icon": "users" },
-        { "label": "Jadwal mingguan", "to": "/student/timetable", "icon": "calendar" },
         { "label": "Tugas", "to": "/student/tasks", "icon": "checkCircle" }
       ]
     },
@@ -40,7 +39,6 @@
     {
       "label": "Komunitas",
       "items": [
-        { "label": "Dosen", "to": "/admin/lecturers", "icon": "graduation" },
         { "label": "Kompetisi", "to": "/admin/competitions", "icon": "trophy" },
         { "label": "Pengguna", "to": "/admin/users", "icon": "users" }
       ]
@@ -50,7 +48,7 @@
     { "label": "Dasbor", "to": "/student/dashboard", "icon": "home" },
     { "label": "Cari", "to": "/student/study-match", "icon": "search" },
     { "label": "Kompetisi", "to": "/student/competitions", "icon": "trophy" },
-    { "label": "Jadwal", "to": "/student/timetable", "icon": "calendar" },
+    { "label": "Tugas", "to": "/student/tasks", "icon": "checkCircle" },
     { "label": "Akun", "to": "/student/settings", "icon": "settings" }
   ]
 }

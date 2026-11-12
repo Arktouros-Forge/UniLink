@@ -3,7 +3,7 @@ import { helpBoard as copy } from "@app/constants/student.json";
 
 definePageMeta({
     layout: "student",
-    middleware: "auth",
+    access: "student",
     title: "Papan bantuan",
 });
 const { data: skillOptions } = await useSkillOptions();
@@ -39,12 +39,12 @@ const { data, pending } = await useApiData(
             copy.post
         }}</UiButton>
     </PageHeading>
-    <div class="flex flex-col gap-3 md:flex-row md:items-center">
+    <div class=":uno: flex flex-col gap-3 md:flex-row md:items-center">
         <SearchBar v-model="query" :placeholder="copy.search" />
         <FilterSelect v-model="skill" :options="skillFilter" icon="filter" />
     </div>
     <AutoSkeleton :loading="pending" id="help-board-list">
-        <div class="grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2">
+        <div class=":uno: grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2">
             <HelpSignCard
                 v-for="item in data.signs"
                 :key="item.id"

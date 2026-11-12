@@ -5,7 +5,7 @@ import { formatDate } from "@app/utils/format";
 
 definePageMeta({
     layout: "student",
-    middleware: "auth",
+    access: "student",
     title: "Detail kompetisi",
 });
 
@@ -86,31 +86,31 @@ const sendJoin = async () => {
     <PageBack to="/student/competitions">{{ copy.back }}</PageBack>
     <AutoSkeleton :loading="pending" id="competition-detail">
         <DetailLayout>
-            <UiCard padding="p-0" class="overflow-hidden">
+            <UiCard padding="p-0" class=":uno: overflow-hidden">
                 <div
-                    class="relative h-[200px] md:h-[256px] p-6 flex flex-col gap-2 overflow-hidden bg-blue-soft"
+                    class=":uno: relative h-[200px] md:h-[256px] p-6 flex flex-col gap-2 overflow-hidden bg-blue-soft"
                 >
                     <NuxtImg
                         v-if="item.imageUrl"
                         :src="item.imageUrl"
                         :alt="item.title"
-                        class="absolute inset-0 size-full object-cover"
+                        class=":uno: absolute inset-0 size-full object-cover"
                     />
                     <template v-else>
-                        <p class="t-mono-s text-ink m-0">{{ item.host }}</p>
-                        <h1 class="t-d2 text-ink m-0 max-w-[60%]">
+                        <p class=":uno: t-mono-s text-ink m-0">{{ item.host }}</p>
+                        <h1 class=":uno: t-d2 text-ink m-0 max-w-[60%]">
                             {{ item.title }}
                         </h1>
                         <span
-                            class="absolute right-0 top-0 w-[26%] h-[40%] border-2 border-outline bg-blue"
+                            class=":uno: absolute right-0 top-0 w-[26%] h-[40%] border-2 border-outline bg-blue"
                         />
                         <span
-                            class="absolute right-[10%] top-[52%] w-[20%] h-[26%] bg-red border-2 border-outline"
+                            class=":uno: absolute right-[10%] top-[52%] w-[20%] h-[26%] bg-red border-2 border-outline"
                         />
                     </template>
                 </div>
-                <div class="p-6 flex flex-col gap-4">
-                    <div class="flex flex-wrap items-center gap-2">
+                <div class=":uno: p-6 flex flex-col gap-4">
+                    <div class=":uno: flex flex-wrap items-center gap-2">
                         <DeadlineBadge :days="item.daysLeft" size="md" />
                         <UiChip
                             v-for="category in item.categories"
@@ -119,8 +119,8 @@ const sendJoin = async () => {
                             >{{ category.name }}</UiChip
                         >
                     </div>
-                    <p class="t-body-m text-ink m-0">{{ item.description }}</p>
-                    <div class="flex flex-wrap gap-3">
+                    <p class=":uno: t-body-m text-ink m-0">{{ item.description }}</p>
+                    <div class=":uno: flex flex-wrap gap-3">
                         <UiButton
                             v-if="item.sourceUrl"
                             icon="external"
@@ -138,16 +138,16 @@ const sendJoin = async () => {
                 </div>
             </UiCard>
 
-            <UiCard class="flex flex-col gap-4">
-                <div class="flex items-center justify-between gap-3">
-                    <h2 class="t-d4 text-ink m-0">{{ copy.teamsTitle }}</h2>
+            <UiCard class=":uno: flex flex-col gap-4">
+                <div class=":uno: flex items-center justify-between gap-3">
+                    <h2 class=":uno: t-d4 text-ink m-0">{{ copy.teamsTitle }}</h2>
                     <UiChip tone="yellow" filled
                         >{{ list.length }} {{ copy.teamsCount }}</UiChip
                     >
                 </div>
                 <div
                     v-if="list.length"
-                    class="grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2"
+                    class=":uno: grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2"
                 >
                     <TeamCard v-for="team in list" :key="team.id" :team="team">
                         <UiButton
@@ -187,13 +187,13 @@ const sendJoin = async () => {
                 </UiEmpty>
             </UiCard>
 
-            <UiCard class="flex flex-col gap-3">
-                <h2 class="t-d4 text-ink m-0">{{ copy.before }}</h2>
-                <ul class="m-0 pl-5 flex flex-col gap-2">
+            <UiCard class=":uno: flex flex-col gap-3">
+                <h2 class=":uno: t-d4 text-ink m-0">{{ copy.before }}</h2>
+                <ul class=":uno: m-0 pl-5 flex flex-col gap-2">
                     <li
                         v-for="tip in extras.tips"
                         :key="tip"
-                        class="t-body-s text-ink-2"
+                        class=":uno: t-body-s text-ink-2"
                     >
                         {{ tip }}
                     </li>
@@ -201,12 +201,12 @@ const sendJoin = async () => {
             </UiCard>
 
             <template #aside>
-                <UiCard class="flex flex-col gap-4"
-                    ><h2 class="t-d4 text-ink m-0">{{ copy.summary }}</h2>
+                <UiCard class=":uno: flex flex-col gap-4"
+                    ><h2 class=":uno: t-d4 text-ink m-0">{{ copy.summary }}</h2>
                     <MetaList :items="meta"
                 /></UiCard>
-                <UiCard class="flex flex-col gap-2"
-                    ><h2 class="t-d4 text-ink m-0">{{ copy.flow }}</h2>
+                <UiCard class=":uno: flex flex-col gap-2"
+                    ><h2 class=":uno: t-d4 text-ink m-0">{{ copy.flow }}</h2>
                     <UiTimeline :items="timeline"
                 /></UiCard>
             </template>

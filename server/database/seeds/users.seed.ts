@@ -35,8 +35,8 @@ export async function seedUsers(ctx: SeedContext) {
     hashPassword(SEED_CREDENTIALS.admin.password),
   ]);
 
-  const usedNames = new Set<string>(["Ayu Pramesti"]);
-  const usedUsernames = new Set<string>(["ayu.pramesti", "admin"]);
+  const usedNames = new Set<string>(["Alviro Malvin Brine"]);
+  const usedUsernames = new Set<string>(["alviro.malvin", "lyni"]);
 
   const people: (SeedStudent & {
     username: string;
@@ -49,12 +49,12 @@ export async function seedUsers(ctx: SeedContext) {
 
   const main = {
     id: SEED_USER_IDS.student,
-    fullName: "Ayu Pramesti",
+    fullName: "Alviro Malvin Brine",
     year: "2023",
     major: "Informatika",
     phone: "+6281239001001",
     status: "active" as const,
-    username: "ayu.pramesti",
+    username: "alviro.malvin",
     email: SEED_CREDENTIALS.student.email,
     nim: "2308561001",
     bio: "Mahasiswa Informatika yang suka algoritma dan basis data. Aktif mencari tim untuk GEMASTIK dan COMPFEST.",
@@ -144,11 +144,11 @@ export async function seedUsers(ctx: SeedContext) {
 
   rows.push({
     id: SEED_USER_IDS.admin,
-    username: "admin",
+    username: "lyni",
     email: SEED_CREDENTIALS.admin.email,
     password: adminHash,
     emailVerifiedAt: daysFromNow(-400, now),
-    fullName: "Administrator UniLink",
+    fullName: "Lyni",
     nim: "2000000001",
     phone: "+6281200000001",
     role: "admin" as never,

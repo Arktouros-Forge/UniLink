@@ -24,9 +24,9 @@
     },
     {
       "numeral": "03",
-      "title": "Minggu kuliah yang tertata.",
-      "text": "Jadwal mingguan, dosen, dan tugas dalam satu tempat. Hanya kamu yang melihat tugasmu.",
-      "points": ["Jadwal mingguan dengan dosen tertaut", "Tugas dengan tenggat dan mata kuliah", "Impor dan ekspor jadwal"],
+      "title": "Tugas kuliah yang tertata.",
+      "text": "Tugas, tenggat, dan mata kuliah dalam satu tempat. Hanya kamu yang melihat tugasmu.",
+      "points": ["Tugas dengan tenggat dan mata kuliah", "Prioritas dan penanda selesai", "Pribadi, hanya kamu yang melihat"],
       "tone": "yellow"
     }
   ],

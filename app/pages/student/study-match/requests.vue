@@ -1,7 +1,7 @@
 <script setup>
 import { requests as copy, studyMatch } from "@app/constants/student.json";
 
-definePageMeta({ layout: "student", middleware: "auth", title: "Permintaan belajar" });
+definePageMeta({ layout: "student", access: "student", title: "Permintaan belajar" });
 const api = useApi();
 const tab = ref("incoming");
 const { data, pending, refresh } = await useApiData("study-requests", "/student/study-match/requests", {
@@ -32,7 +32,7 @@ const cancel = respond("cancel", studyMatch.cancelled);
   </PageHeading>
   <UiTabs v-model="tab" :items="tabs" />
   <AutoSkeleton :loading="pending" id="requests-list">
-    <div class="flex flex-col gap-4">
+    <div class=":uno: flex flex-col gap-4">
       <RequestRow v-for="item in data.requests" :key="item.id" :item="item" actions @accept="accept.run($event)" @decline="decline.run($event)" @cancel="cancel.run($event)" />
       <UiEmpty v-if="!data.requests.length" :title="copy.emptyTitle" icon="inbox" />
     </div>

@@ -1,7 +1,7 @@
 import { db } from "@database/client";
-import { categories, lecturers, skills } from "@database/schema";
+import { categories, skills } from "@database/schema";
 
-import { categorySeeds, lecturerSeeds, skillSeeds } from "./data/reference";
+import { categorySeeds, skillSeeds } from "./data/reference";
 import type { SeedContext } from "./lib/context";
 import { seedUuid } from "./lib/context";
 import { slugify } from "./lib/random";
@@ -29,21 +29,8 @@ export async function seedReference(ctx: SeedContext) {
   await insertMany(categories, categoryRows);
   categoryRows.forEach((row) => ctx.ids.categories.set(row.name, row.id));
 
-  const lecturerRows = lecturerSeeds.map(
-    ([name, handle, nidn, bio], index) => ({
-      id: seedUuid(12, index + 1),
-      name,
-      email: `${handle}@unud.test`,
-      phone: `+62${ctx.rng.int(811, 859)}${ctx.rng.int(1000000, 9999999)}`,
-      nidn,
-      bio,
-    }),
-  );
-  await insertMany(lecturers, lecturerRows);
-  ctx.ids.lecturers = lecturerRows.map((row) => row.id);
-
   console.log(
-    `✓ Reference data: ${skillRows.length} skills, ${categoryRows.length} categories, ${lecturerRows.length} lecturers`,
+    `✓ Reference data: ${skillRows.length} skills, ${categoryRows.length} categories`,
   );
 }
 

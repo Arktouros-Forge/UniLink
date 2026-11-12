@@ -1,7 +1,7 @@
 <script setup>
 import { formatDate } from "@app/utils/format";
 
-definePageMeta({ layout: "admin", middleware: "auth", title: "Kompetisi" });
+definePageMeta({ layout: "admin", access: "admin", title: "Kompetisi" });
 const { data: categories } = await useCategoryOptions();
 const statusOptions = [
   { value: "published", label: "Terbit" },
@@ -59,7 +59,7 @@ const labels = Object.fromEntries(statusOptions.map((item) => [item.value, item.
     :failed="crud.status.value === 'error'" @add="crud.add" @edit="openEdit" @remove="crud.removing.value = $event" @retry="crud.refresh"
   >
     <template #cell-status="{ value }"><UiChip :tone="tones[value]" size="md">{{ labels[value] }}</UiChip></template>
-    <template #cell-deadlineLabel="{ value }"><span class="t-mono-s">{{ value }}</span></template>
+    <template #cell-deadlineLabel="{ value }"><span class=":uno: t-mono-s">{{ value }}</span></template>
   </AdminList>
   <EntityModal :open="crud.modalOpen.value" :title="crud.editing.value?.id ? 'Ubah kompetisi' : 'Tambah kompetisi'" :fields="fields" :initial="crud.editing.value || { status: 'published' }" :pending="crud.saving.value" :errors="crud.errors.value" @close="crud.modalOpen.value = false" @save="crud.save" />
   <ConfirmModal :open="!!crud.removing.value" title="Hapus kompetisi?" text="Tim yang terkait akan ikut terhapus." @close="crud.removing.value = null" @confirm="crud.confirmRemove()" />

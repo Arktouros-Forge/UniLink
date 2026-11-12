@@ -17,8 +17,7 @@ const { run, pending, error } = useAction(
       }
       throw failure;
     }
-    const target = String(route.query.redirect ?? "");
-    await navigateTo(target.startsWith("/") && !target.startsWith("//") ? target : auth.isVerified && !auth.isOnboarded ? "/onboarding/1" : auth.home);
+    await navigateTo(auth.landing(route.query.redirect));
   },
   { silent: true },
 );

@@ -18,26 +18,26 @@ const gridCols = computed(() => `${props.selectable ? "40px " : ""}${props.colum
 </script>
 
 <template>
-  <div class="surface overflow-x-auto">
-    <div class="min-w-[720px]">
-      <div class="grid items-center gap-4 px-4 h-[44px] bg-paper/60 border-b border-hairline t-body-s text-ink-2" :style="{ gridTemplateColumns: gridCols }">
+  <div class=":uno: surface overflow-x-auto">
+    <div class=":uno: min-w-[720px]">
+      <div class=":uno: grid items-center gap-4 px-4 h-[44px] bg-paper/60 border-b border-hairline t-body-s text-ink-2" :style="{ gridTemplateColumns: gridCols }">
         <UiCheckbox v-if="selectable" :model-value="allSelected" :indeterminate="selected.length > 0 && !allSelected" @update:model-value="toggleAll" />
         <span v-for="column in columns" :key="column.key">{{ column.label }}</span>
       </div>
       <div
         v-for="row in rows"
         :key="row.id"
-        class="grid items-center gap-4 px-4 h-[49px] border-b border-hairline last:border-0 t-body-s text-ink transition-colors"
-        :class="selected.includes(row.id) ? 'bg-blue-soft' : 'hover:bg-paper/60'"
+        class=":uno: grid items-center gap-4 px-4 h-[49px] border-b border-hairline last:border-0 t-body-s text-ink transition-colors"
+        :class="selected.includes(row.id) ? ':uno: bg-blue-soft' : ':uno: hover:bg-paper/60'"
         :style="{ gridTemplateColumns: gridCols }"
       >
         <UiCheckbox v-if="selectable" :model-value="selected.includes(row.id)" @update:model-value="toggleRow(row.id)" />
-        <div v-for="column in columns" :key="column.key" class="min-w-0 truncate">
+        <div v-for="column in columns" :key="column.key" class=":uno: min-w-0 truncate">
           <slot :name="`cell-${column.key}`" :row="row" :value="row[column.key]">{{ row[column.key] }}</slot>
         </div>
       </div>
       <slot v-if="!rows.length" name="empty" />
-      <div class="flex items-center justify-between gap-4 px-4 h-[44px] border-t border-hairline t-body-s text-ink-2">
+      <div class=":uno: flex items-center justify-between gap-4 px-4 h-[44px] border-t border-hairline t-body-s text-ink-2">
         <span>1–{{ rows.length }} dari {{ total || rows.length }} {{ noun }}<template v-if="selectable && selected.length"> · {{ selected.length }} dipilih</template></span>
         <UiPagination v-model="page" :pages="pages" />
       </div>
