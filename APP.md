@@ -298,4 +298,4 @@ bun run db:reset
 bun run dev
 ```
 
-Demo logins are in the [README](README.md). The Postman collection (`postman/`) runs end to end under Newman against a freshly seeded database.
+Demo logins are in the [README](README.md). The API collection (`api-tester/`) contains backup Postman and API Dog requests.
