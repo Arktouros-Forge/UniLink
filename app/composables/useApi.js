@@ -1,5 +1,6 @@
 import copy from "@app/constants/toast.json";
 import { invalidateFor, shareRequest } from "@app/utils/apiCache";
+import { firstErrors } from "@app/utils/fieldError";
 
 export class ApiRequestError extends Error {
   constructor(message, statusCode, errors) {
@@ -9,9 +10,7 @@ export class ApiRequestError extends Error {
   }
 
   fieldErrors() {
-    return Object.fromEntries(
-      this.errors.map((item) => [item.field, item.message]),
-    );
+    return firstErrors(this.errors);
   }
 }
 

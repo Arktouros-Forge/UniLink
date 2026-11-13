@@ -1,0 +1,75 @@
+{
+  "required": "Wajib diisi",
+  "rules": [
+    {
+      "pattern": "expected string to have >=(\\d+) characters",
+      "text": "Minimal $1 karakter"
+    },
+    {
+      "pattern": "expected string to have <=(\\d+) characters",
+      "text": "Maksimal $1 karakter"
+    },
+    {
+      "pattern": "expected array to have >=(\\d+) items",
+      "text": "Pilih minimal $1"
+    },
+    {
+      "pattern": "expected array to have <=(\\d+) items",
+      "text": "Pilih maksimal $1"
+    },
+    {
+      "pattern": ">=(\\d+)$",
+      "text": "Minimal $1"
+    },
+    {
+      "pattern": "<=(\\d+)$",
+      "text": "Maksimal $1"
+    },
+    {
+      "pattern": "received undefined|received null|expected string, received",
+      "text": "Wajib diisi"
+    },
+    {
+      "pattern": "Invalid email",
+      "text": "Format email tidak valid"
+    },
+    {
+      "pattern": "Invalid URL|Invalid url",
+      "text": "Alamat tautan tidak valid"
+    },
+    {
+      "pattern": "Must contain a letter",
+      "text": "Harus mengandung huruf"
+    },
+    {
+      "pattern": "Must contain a number",
+      "text": "Harus mengandung angka"
+    },
+    {
+      "pattern": "NIM must be",
+      "text": "NIM terdiri dari 8 sampai 15 angka"
+    },
+    {
+      "pattern": "NIM is required",
+      "text": "NIM wajib diisi"
+    },
+    {
+      "pattern": "Use YYYY-MM-DD",
+      "text": "Pilih tanggal yang valid"
+    },
+    {
+      "pattern": "Use HH:MM",
+      "text": "Format jam tidak valid"
+    },
+    {
+      "pattern": "Invalid input|Invalid option|Invalid enum",
+      "text": "Pilihan tidak valid"
+    },
+    {
+      "pattern": "Invalid UUID|Invalid uuid",
+      "text": "Pilihan tidak valid"
+    }
+  ],
+  "min": "Minimal $1 karakter",
+  "pick": "Pilih salah satu"
+}

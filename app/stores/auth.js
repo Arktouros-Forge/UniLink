@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import { useOnboardingStore } from "@app/stores/onboarding";
+import toast from "@app/constants/toast.json";
+import { notifySuccess } from "@app/utils/notify";
 
 const HOME = { student: "/student/dashboard", admin: "/admin" };
 
@@ -107,6 +109,7 @@ export const useAuthStore = defineStore("auth", () => {
     blocked.value = null;
     loaded.value = true;
     useOnboardingStore().reset();
+    notifySuccess(toast.messages.loggedOut);
   };
 
   const setBlocked = (reason) => {

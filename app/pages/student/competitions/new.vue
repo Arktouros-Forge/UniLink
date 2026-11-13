@@ -22,14 +22,6 @@ const toggle = (id) =>
     (form.categoryIds = form.categoryIds.includes(id)
         ? form.categoryIds.filter((entry) => entry !== id)
         : [...form.categoryIds, id].slice(0, 5));
-const valid = computed(
-    () =>
-        form.title &&
-        form.host &&
-        form.description.length >= 10 &&
-        form.deadline &&
-        form.categoryIds.length,
-);
 const { run, pending, fieldErrors } = useAction(
     async () => {
         const created = await api.post("/student/competitions", {
@@ -44,7 +36,17 @@ const { run, pending, fieldErrors } = useAction(
         });
         await navigateTo(`/student/competitions/${created.id}`);
     },
-    { success: copy.created },
+    {
+        success: copy.created,
+        validate: () =>
+            collect({
+                title: rule.required(form.title),
+                host: rule.required(form.host),
+                description: rule.min(form.description, 10),
+                deadline: rule.required(form.deadline),
+                categoryIds: rule.required(form.categoryIds),
+            }),
+    },
 );
 </script>
 
@@ -134,7 +136,6 @@ const { run, pending, fieldErrors } = useAction(
                 <UiButton
                     size="sm"
                     :loading="pending"
-                    :disabled="!valid"
                     @click="run()"
                     >{{ copy.submit }}</UiButton
                 >

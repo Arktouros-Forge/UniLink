@@ -1,5 +1,6 @@
 <script setup>
 import { forgot as copy } from "@app/constants/auth.json";
+import toast from "@app/constants/toast.json";
 
 definePageMeta({ layout: "auth", access: "guest" });
 const api = useApi();
@@ -11,7 +12,7 @@ const { run, pending, fieldErrors } = useAction(async () => {
     if (firebase.enabled)
         await firebase.resetPassword(email.value).catch(() => {});
     sent.value = true;
-});
+}, { success: toast.messages.resetSent, validate: () => collect({ email: rule.required(email.value) }) });
 </script>
 
 <template>
@@ -23,7 +24,7 @@ const { run, pending, fieldErrors } = useAction(async () => {
         <UiCallout v-if="sent" :title="copy.sentTitle" tone="info">{{
             copy.sentText
         }}</UiCallout>
-        <form class=":uno: flex flex-col gap-4" @submit.prevent="run()">
+        <form novalidate class=":uno: flex flex-col gap-4" @submit.prevent="run()">
             <FormField
                 :label="copy.email"
                 :error="fieldErrors.email"

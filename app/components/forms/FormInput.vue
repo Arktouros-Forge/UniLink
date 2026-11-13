@@ -1,5 +1,5 @@
 <script setup>
-defineProps({
+const props = defineProps({
     id: { type: String, default: undefined },
     type: { type: String, default: "text" },
     placeholder: { type: String, default: "" },
@@ -11,6 +11,7 @@ defineProps({
 });
 const model = defineModel({ type: [String, Number], default: "" });
 const emit = defineEmits(["icon"]);
+const { invalid: isInvalid, describedBy } = useFieldState(props);
 </script>
 
 <template>
@@ -27,14 +28,18 @@ const emit = defineEmits(["icon"]);
             :placeholder="placeholder"
             :readonly="locked"
             :disabled="disabled"
+            :aria-invalid="isInvalid || undefined"
+            :aria-describedby="describedBy"
             class=":uno: w-full h-10 rounded-md border bg-card text-ink t-body-s outline-none transition-shadow"
             :class="[
                 iconStart ? ':uno: pl-10' : ':uno: pl-3',
                 icon ? ':uno: pr-11' : ':uno: pr-3',
-                invalid ? ':uno: border-danger' : ':uno: border-hairline',
+                isInvalid ? ':uno: border-danger bg-danger-soft' : ':uno: border-hairline',
                 locked
                     ? ':uno: !bg-blue-soft'
-                    : ':uno: focus:border-blue focus:shadow-[0_0_0_2px_var(--canvas-paper),0_0_0_4px_var(--brand-blue)]',
+                    : isInvalid
+                      ? ':uno: focus:shadow-[0_0_0_2px_var(--canvas-paper),0_0_0_4px_var(--error)]'
+                      : ':uno: focus:border-blue focus:shadow-[0_0_0_2px_var(--canvas-paper),0_0_0_4px_var(--brand-blue)]',
             ]"
         />
         <button

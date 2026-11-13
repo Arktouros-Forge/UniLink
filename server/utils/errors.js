@@ -45,10 +45,6 @@ export const ERRORS = {
     "Team size is below the current member count",
   ],
   TASK_NOT_FOUND: [404, "Task not found"],
-  EVENT_OVERLAP: [
-    409,
-    "This event overlaps with another event on the same day",
-  ],
   SIGN_NOT_FOUND: [404, "Help sign not found"],
   SIGN_NOT_OPEN: [409, "This help sign is no longer open"],
   REQUEST_NOT_FOUND: [404, "Study request not found"],
@@ -74,8 +70,7 @@ export const ERRORS = {
   ALREADY_VERIFIED: [409, "Your email is already verified"],
   TOKEN_INVALID: [400, "This link is invalid or has expired"],
   RATE_LIMITED: [429, "Too many attempts. Please try again later"],
-  EMAIL_DOMAIN_NOT_ALLOWED: [422, "Please use your campus email address"],
-  IMPORT_EMPTY: [422, "No valid events found in the import file"],
+  EMAIL_DOMAIN_NOT_ALLOWED: [422, "Please use your valid email address"],
 };
 
 export class ApiError extends Error {

@@ -11,9 +11,10 @@ defineProps({
 const emit = defineEmits(["close", "confirm"]);
 const copy = modals.reason;
 const reason = ref("");
-const valid = computed(() => reason.value.trim().length >= 3);
+const { errors: shown, check } = useLocalCheck({});
 
 const submit = () => {
+    if (!check({ reason: rule.min(reason.value, 3) })) return;
     emit("confirm", reason.value.trim());
     reason.value = "";
 };
@@ -27,7 +28,6 @@ const submit = () => {
         :text="text"
         :submit="action"
         danger
-        :disabled="!valid"
         @close="emit('close')"
         @submit="submit"
     >
@@ -37,7 +37,7 @@ const submit = () => {
                 :options="copy.presets"
                 @update:model-value="reason = $event"
         /></FormField>
-        <FormField :label="label" v-slot="{ id }"
+        <FormField :label="label" :error="shown.reason" v-slot="{ id }"
             ><FormTextarea
                 :id="id"
                 v-model="reason"

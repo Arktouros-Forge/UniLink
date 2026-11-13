@@ -11,12 +11,14 @@ const props = defineProps({
     errors: { type: Object, default: () => ({}) },
 });
 const emit = defineEmits(["close", "save"]);
+const { errors: shown, check, reset } = useLocalCheck(toRef(props, "errors"));
 const text = modals.team;
 const form = reactive({ name: "", description: "", capacity: 1 });
 
 watch(
     () => [props.open, props.initial],
     () => {
+        reset();
         form.name = props.initial.name ?? "";
         form.description = props.initial.description ?? "";
         form.capacity = Number(props.initial.capacity ?? props.maxSize);
@@ -24,8 +26,8 @@ watch(
     { immediate: true },
 );
 
-const valid = computed(() => form.name.trim().length >= 2);
 const save = () =>
+    check({ name: rule.min(form.name, 2) }) &&
     emit("save", {
         name: form.name,
         description: form.description || null,
@@ -41,11 +43,10 @@ const save = () =>
         :text="text.text"
         :submit="copy.save"
         :pending="pending"
-        :disabled="!valid"
         @close="emit('close')"
         @submit="save"
     >
-        <FormField :label="copy.name" :error="errors.name" v-slot="{ id }"
+        <FormField :label="copy.name" :error="shown.name" v-slot="{ id }"
             ><FormInput
                 :id="id"
                 v-model="form.name"
@@ -55,7 +56,7 @@ const save = () =>
         <FormField
             :label="copy.description"
             optional
-            :error="errors.description"
+            :error="shown.description"
             v-slot="{ id }"
             ><FormTextarea
                 :id="id"
@@ -67,7 +68,7 @@ const save = () =>
         <FormField
             :label="copy.capacity"
             :hint="text.capacityHint"
-            :error="errors.maxMembers"
+            :error="shown.maxMembers"
         >
             <FormStepper
                 v-model="form.capacity"

@@ -16,7 +16,7 @@ const { run, pending, error, fieldErrors } = useAction(
         });
         await navigateTo("/auth/login");
     },
-    { success: copy.done, silent: true },
+    { success: copy.done },
 );
 const submit = () => !mismatch.value && run();
 </script>
@@ -29,7 +29,7 @@ const submit = () => !mismatch.value && run();
             </h1>
             <p class=":uno: t-body-s text-ink-2 m-0">{{ copy.text }}</p>
         </div>
-        <form class=":uno: flex flex-col gap-4" @submit.prevent="submit">
+        <form novalidate class=":uno: flex flex-col gap-4" @submit.prevent="submit">
             <FormField
                 :label="copy.password"
                 :hint="copy.strength"
@@ -52,15 +52,7 @@ const submit = () => !mismatch.value && run();
                     :type="show ? 'text' : 'password'"
                     :invalid="invalid"
             /></FormField>
-            <UiCallout
-                v-if="error && !fieldErrors.password"
-                tone="danger"
-                :title="copy.invalidTitle"
-                >{{ error.message }}
-                <NuxtLink to="/auth/forgot" class=":uno: text-ink"
-                    >{{ copy.requestNew }} →</NuxtLink
-                ></UiCallout
-            >
+            <NuxtLink v-if="error && !fieldErrors.password" to="/auth/forgot" class=":uno: t-body-s text-blue">{{ copy.requestNew }} →</NuxtLink>
             <UiButton
                 type="submit"
                 icon="check"

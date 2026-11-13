@@ -3,12 +3,33 @@
   "imageAlt": "UniLink: Beda keahlian. Satu tujuan.",
   "titleTemplate": "%s · UniLink",
   "pages": {
-    "home": { "title": "Teman belajar, tim kompetisi, tugas kuliah", "description": "UniLink membantu mahasiswa Universitas Udayana menemukan teman belajar sesuai keahlian, membentuk tim kompetisi, dan merapikan tugas kuliah." },
-    "how": { "title": "Cara kerja", "description": "Empat langkah singkat memakai UniLink: lengkapi profil, cari atau pasang tanda bantuan, lanjut di WhatsApp, lalu bentuk tim kompetisi." },
-    "help": { "title": "Bantuan", "description": "Pertanyaan umum seputar akun, Study Match, tim kompetisi, dan privasi nomor WhatsApp di UniLink." },
-    "privacy": { "title": "Kebijakan privasi", "description": "Bagaimana UniLink mengumpulkan, memakai, dan melindungi data mahasiswa, termasuk nomor WhatsApp." },
-    "terms": { "title": "Ketentuan layanan", "description": "Aturan penggunaan UniLink untuk mahasiswa Universitas Udayana." },
-    "login": { "title": "Masuk", "description": "Masuk ke UniLink dengan email kampusmu untuk melanjutkan kolaborasi." },
-    "register": { "title": "Daftar gratis", "description": "Buat akun UniLink gratis dan mulai terhubung dengan mahasiswa lain di Universitas Udayana." }
+    "home": {
+      "title": "Teman belajar, tim kompetisi, tugas kuliah",
+      "description": "UniLink membantu mahasiswa Universitas Udayana menemukan teman belajar sesuai keahlian, membentuk tim kompetisi, dan merapikan tugas kuliah."
+    },
+    "how": {
+      "title": "Cara kerja",
+      "description": "Empat langkah singkat memakai UniLink: lengkapi profil, cari atau pasang tanda bantuan, lanjut di WhatsApp, lalu bentuk tim kompetisi."
+    },
+    "help": {
+      "title": "Bantuan",
+      "description": "Pertanyaan umum seputar akun, Study Match, tim kompetisi, dan privasi nomor WhatsApp di UniLink."
+    },
+    "privacy": {
+      "title": "Kebijakan privasi",
+      "description": "Bagaimana UniLink mengumpulkan, memakai, dan melindungi data mahasiswa, termasuk nomor WhatsApp."
+    },
+    "terms": {
+      "title": "Ketentuan layanan",
+      "description": "Aturan penggunaan UniLink untuk mahasiswa Universitas Udayana."
+    },
+    "login": {
+      "title": "Masuk",
+      "description": "Masuk ke UniLink dengan emailmu untuk melanjutkan kolaborasi."
+    },
+    "register": {
+      "title": "Daftar gratis",
+      "description": "Buat akun UniLink gratis dan mulai terhubung dengan mahasiswa lain di Universitas Udayana."
+    }
   }
 }

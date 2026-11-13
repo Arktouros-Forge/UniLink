@@ -1,5 +1,10 @@
 <script setup>
 import { publicNav, publicActions } from "@app/constants/navigation.json";
+import { useAuthStore } from "@app/stores/auth";
+
+const auth = useAuthStore();
+
+const isAuthed = auth.isAuthed;
 
 const open = ref(false);
 const route = useRoute();
@@ -33,22 +38,40 @@ onBeforeUnmount(() => {
                     class=":uno: t-body-s text-ink hover:text-blue"
                     >{{ item.label }}</NuxtLink
                 >
+
                 <NuxtLink
-                    to="/auth/login"
+                    v-if="isAuthed"
+                    :to="auth.home"
                     class=":uno: t-label text-blue px-2"
-                    >{{ publicActions.login }}</NuxtLink
                 >
-                <UiButton size="sm" to="/auth/register" icon-end="arrowRight">{{
-                    publicActions.register
-                }}</UiButton>
+                    <UiAvatar :name="auth.user?.name ?? ''" :size="38" />
+                </NuxtLink>
+
+                <template v-else>
+                    <NuxtLink
+                        to="/auth/login"
+                        class=":uno: t-label text-blue px-2"
+                    >
+                        {{ publicActions.login }}
+                    </NuxtLink>
+
+                    <UiButton
+                        size="sm"
+                        to="/auth/register"
+                        icon-end="arrowRight"
+                    >
+                        {{ publicActions.register }}
+                    </UiButton>
+                </template>
             </nav>
-            <UiIconButton
-                class=":uno: md:hidden"
-                icon="menu"
-                label="Buka menu"
-                variant="outline"
-                @click="open = true"
-            />
+            <div class=":uno: md:hidden flex items-center gap-2">
+                <UiIconButton
+                    icon="menu"
+                    label="Buka menu"
+                    variant="outline"
+                    @click="open = true"
+                />
+            </div>
         </div>
         <ClientOnly
             ><Teleport to="body">

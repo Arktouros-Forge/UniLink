@@ -9,7 +9,6 @@ const year = ref("all");
 const skillId = ref("all");
 const { query, debounced, page } = useSearchPage([year, skillId]);
 const target = ref(null);
-const sent = ref(false);
 
 const yearOptions = [
     { value: "all", label: copy.allCohorts },
@@ -41,7 +40,6 @@ const { data, pending } = await useApiData(
 
 const onSent = () => {
     target.value = null;
-    sent.value = true;
 };
 </script>
 
@@ -59,9 +57,6 @@ const onSent = () => {
     <p class=":uno: t-body-s text-ink-2 m-0">
         {{ data.pagination.total }} {{ copy.matches }}
     </p>
-    <UiCallout v-if="sent" :title="copy.sentTitle" tone="info">{{
-        copy.sentText
-    }}</UiCallout>
     <AutoSkeleton :loading="pending" id="study-match-results">
         <div class=":uno: grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2">
             <HelperCard

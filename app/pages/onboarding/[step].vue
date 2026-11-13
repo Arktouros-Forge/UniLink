@@ -28,19 +28,7 @@ const normalizedPhone = computed(
     () =>
         `+62${form.phone.replace(/\D/g, "").replace(/^62/, "").replace(/^0+/, "")}`,
 );
-const stepReady = computed(
-    () =>
-        [
-            form.name.trim().length >= 2 &&
-                Boolean(form.cohort) &&
-                /^\d{8,15}$/.test(form.nim.trim()),
-            form.skills.length > 0,
-            /^\+62[0-9]{8,13}$/.test(normalizedPhone.value),
-            true,
-        ][step.value - 1],
-);
-
-const { run, pending, fieldErrors } = useAction(
+const { run, pending, fieldErrors: serverErrors } = useAction(
     async () => {
         const profile = await api.patch("/me", {
             fullName: form.name,
@@ -59,8 +47,24 @@ const { run, pending, fieldErrors } = useAction(
     { success: "Profil lengkap. Selamat datang!" },
 );
 
-const next = () =>
-    last.value ? run() : navigateTo(`/onboarding/${step.value + 1}`);
+const { errors: fieldErrors, check, reset } = useLocalCheck(serverErrors);
+const stepChecks = () =>
+    [
+        {
+            fullName: rule.min(form.name, 2),
+            nim: nimLocked ? "" : /^\d{8,15}$/.test(form.nim.trim()) ? "" : "NIM terdiri dari 8 sampai 15 angka",
+            year: rule.required(form.cohort),
+        },
+        { skills: rule.required(form.skills) },
+        { phone: /^\+62[0-9]{8,13}$/.test(normalizedPhone.value) ? "" : "Nomor WhatsApp tidak valid" },
+        {},
+    ][step.value - 1];
+
+const next = () => {
+    reset();
+    if (!check(stepChecks())) return;
+    return last.value ? run() : navigateTo(`/onboarding/${step.value + 1}`);
+};
 </script>
 
 <template>
@@ -108,7 +112,9 @@ const next = () =>
                 /></FormField>
             </template>
             <template v-else-if="step === 2">
-                <SkillPicker v-model="form.skills" />
+                <FormField label="Keahlian" :error="fieldErrors.skills"
+                    ><SkillPicker v-model="form.skills"
+                /></FormField>
             </template>
             <template v-else-if="step === 3">
                 <FormField label="Profil singkat" optional v-slot="{ id }"
@@ -162,7 +168,6 @@ const next = () =>
                 size="sm"
                 icon-end="arrowRight"
                 :loading="pending"
-                :disabled="!stepReady"
                 @click="next"
                 >{{ step >= onboarding.length ? "Mulai" : "Lanjut" }}</UiButton
             >

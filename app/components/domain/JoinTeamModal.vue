@@ -1,4 +1,5 @@
 <script setup>
+import toast from "@app/constants/toast.json";
 import { joinModal as copy, modals } from "@app/constants/student.json";
 
 const props = defineProps({
@@ -20,7 +21,7 @@ const left = computed(
 const { run, pending } = useAction(async () => {
     await api.post(`/student/teams/${props.team.id}/join`);
     emit("sent");
-});
+}, { success: toast.messages.joinSent });
 </script>
 
 <template>

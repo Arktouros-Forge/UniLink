@@ -1,11 +1,13 @@
 <script setup>
 const props = defineProps({
+    invalid: { type: Boolean, default: false },
     options: { type: Array, required: true },
     cols: { type: String, default: "" },
     stacked: { type: Boolean, default: false },
     center: { type: Boolean, default: false },
 });
 const model = defineModel({ type: [String, Number], default: "" });
+const { invalid: isInvalid } = useFieldState(props);
 const value = (option) => option.value ?? option;
 const label = (option) => option.label ?? option;
 </script>
@@ -13,6 +15,7 @@ const label = (option) => option.label ?? option;
 <template>
     <div
         role="radiogroup"
+        :aria-invalid="isInvalid || undefined"
         class=":uno: gap-2"
         :class="[
             cols ? `:uno: grid ${cols}` : ':uno: flex flex-wrap',
@@ -30,7 +33,9 @@ const label = (option) => option.label ?? option;
                 center ? ':uno: text-center items-center' : ':uno: text-left',
                 model === value(option)
                     ? ':uno: border-blue bg-blue-soft text-blue'
-                    : ':uno: border-hairline bg-card text-ink hover:border-ink-3',
+                    : isInvalid
+                      ? ':uno: border-danger bg-danger-soft text-ink'
+                      : ':uno: border-hairline bg-card text-ink hover:border-ink-3',
             ]"
             @click="model = value(option)"
         >

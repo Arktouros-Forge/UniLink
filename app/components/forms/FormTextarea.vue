@@ -1,5 +1,6 @@
 <script setup>
-defineProps({
+const props = defineProps({
+    invalid: { type: Boolean, default: false },
     id: { type: String, default: undefined },
     placeholder: { type: String, default: "" },
     rows: { type: Number, default: 4 },
@@ -7,6 +8,7 @@ defineProps({
     max: { type: Number, default: 0 },
 });
 const model = defineModel({ type: String, default: "" });
+const { invalid: isInvalid, describedBy } = useFieldState(props);
 </script>
 
 <template>
@@ -17,8 +19,15 @@ const model = defineModel({ type: String, default: "" });
             :rows="rows"
             :maxlength="max || undefined"
             :placeholder="placeholder"
-            :class="(min || max) && ':uno: pb-7'"
-            class=":uno: w-full rounded-md border border-hairline bg-card text-ink t-body-s p-3 outline-none resize-none focus:border-blue focus:shadow-[0_0_0_2px_var(--canvas-paper),0_0_0_4px_var(--brand-blue)]"
+            :aria-invalid="isInvalid || undefined"
+            :aria-describedby="describedBy"
+            :class="[
+                (min || max) && ':uno: pb-7',
+                isInvalid
+                    ? ':uno: border-danger bg-danger-soft focus:shadow-[0_0_0_2px_var(--canvas-paper),0_0_0_4px_var(--error)]'
+                    : ':uno: border-hairline bg-card focus:border-blue focus:shadow-[0_0_0_2px_var(--canvas-paper),0_0_0_4px_var(--brand-blue)]',
+            ]"
+            class=":uno: w-full rounded-md border text-ink t-body-s p-3 outline-none resize-none"
         />
         <span
             v-if="min || max"

@@ -1,11 +1,12 @@
 <script setup>
 import { firebase as copy } from "@app/constants/auth.json";
 import { useAuthStore } from "@app/stores/auth";
+import toast from "@app/constants/toast.json";
 
 const auth = useAuthStore();
 const route = useRoute();
 const firebase = useFirebaseAuth();
-const { run, pending, error } = useAction(
+const { run, pending } = useAction(
     async () => {
         try {
             await auth.loginWithGoogle();
@@ -21,8 +22,8 @@ const { run, pending, error } = useAction(
             throw failure;
         }
         await navigateTo(auth.landing(route.query.redirect));
+        notifySuccess(toast.messages.googleDone);
     },
-    { silent: true },
 );
 </script>
 
@@ -33,10 +34,6 @@ const { run, pending, error } = useAction(
             <span class=":uno: t-body-xs">{{ copy.or }}</span>
             <span class=":uno: flex-1 h-px bg-hairline" />
         </div>
-
-        <UiCallout v-if="error" tone="danger">
-            {{ error.message }}
-        </UiCallout>
 
         <UiButton variant="secondary" block :loading="pending" @click="run()">
             <span class=":uno: inline-flex items-center justify-center gap-2">

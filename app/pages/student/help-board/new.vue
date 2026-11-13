@@ -13,10 +13,6 @@ const form = reactive({ title: "", skillId: "", description: "", time: "" });
 const options = computed(() =>
     skillOptions.value.map((item) => ({ value: item.id, label: item.name })),
 );
-const valid = computed(
-    () =>
-        form.title.length >= 5 && form.skillId && form.description.length >= 10,
-);
 const { run, pending, fieldErrors } = useAction(
     async () => {
         const created = await api.post("/student/study-match/help-signs", {
@@ -28,7 +24,15 @@ const { run, pending, fieldErrors } = useAction(
         });
         await navigateTo(`/student/help-board/${created.id}`);
     },
-    { success: copy.created },
+    {
+        success: copy.created,
+        validate: () =>
+            collect({
+                title: rule.min(form.title, 5),
+                skillId: rule.required(form.skillId),
+                description: rule.min(form.description, 10),
+            }),
+    },
 );
 </script>
 
@@ -73,7 +77,6 @@ const { run, pending, fieldErrors } = useAction(
                 <UiButton
                     icon="flag"
                     :loading="pending"
-                    :disabled="!valid"
                     @click="run()"
                     >{{ copy.submit }}</UiButton
                 >

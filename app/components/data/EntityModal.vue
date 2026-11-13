@@ -8,21 +8,26 @@ const props = defineProps({
     errors: { type: Object, default: () => ({}) },
 });
 const emit = defineEmits(["close", "save"]);
+const { errors: shown, check, reset } = useLocalCheck(toRef(props, "errors"));
 const values = reactive({});
 watch(
     () => [props.open, props.initial],
     () => {
+        reset();
         props.fields.forEach(
             (field) => (values[field.key] = props.initial?.[field.key] ?? ""),
         );
     },
     { immediate: true },
 );
-const valid = computed(() =>
-    props.fields
-        .filter((field) => field.required)
-        .every((field) => values[field.key]),
-);
+const save = () =>
+    check(
+        Object.fromEntries(
+            props.fields
+                .filter((field) => field.required)
+                .map((field) => [field.payloadKey ?? field.key, rule.required(values[field.key])]),
+        ),
+    ) && emit("save", { ...props.initial, ...values });
 </script>
 
 <template>
@@ -32,9 +37,8 @@ const valid = computed(() =>
         :title="title"
         submit="Simpan"
         :pending="pending"
-        :disabled="!valid"
         @close="emit('close')"
-        @submit="emit('save', { ...initial, ...values })"
+        @submit="save"
     >
         <FormField
             v-for="field in fields"

@@ -1,5 +1,7 @@
 <script setup>
+const props = defineProps({ invalid: { type: Boolean, default: false } });
 const model = defineModel({ type: Array, default: () => [] });
+const { invalid: isInvalid } = useFieldState(props);
 const { data: options } = await useSkillOptions();
 const toggle = (id) => {
     model.value = model.value.includes(id)
@@ -9,7 +11,10 @@ const toggle = (id) => {
 </script>
 
 <template>
-    <div class=":uno: flex flex-wrap gap-2">
+    <div
+        class=":uno: flex flex-wrap gap-2"
+        :class="isInvalid && ':uno: p-2 rounded-md border border-danger bg-danger-soft'"
+    >
         <button
             v-for="item in options"
             :key="item.id"

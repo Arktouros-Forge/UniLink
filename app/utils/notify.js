@@ -1,13 +1,14 @@
 import { toast } from "vue-sonner";
 
 import copy from "@app/constants/toast.json";
+import { translateError } from "@app/utils/fieldError";
 
 const describe = (errors = []) =>
   errors
     .slice(0, 3)
     .map((item) =>
       item.field
-        ? `${copy.fieldLabels[item.field] ?? item.field}: ${item.message}`
+        ? `${copy.fieldLabels[item.field] ?? item.field}: ${translateError(item.message)}`
         : item.message,
     )
     .join("\n");
@@ -15,9 +16,11 @@ const describe = (errors = []) =>
 export const notifySuccess = (message) =>
   toast.success(message, { id: message });
 
+export const notifyInfo = (message) => toast.info(message, { id: message });
+
 export const notifyError = (failure) => {
   const status = failure?.statusCode ?? 0;
-  let title = failure?.message || copy.fallback;
+  let title = copy.apiMessages[failure?.message] ?? (failure?.message || copy.fallback);
   let description = describe(failure?.errors);
 
   if (status === 0) {

@@ -35,13 +35,10 @@ const { run: resend, pending: resending } = useAction(
     { success: copy.resent },
 );
 
-const recheck = useAction(
-    async () => {
-        if (!(await auth.syncVerification())) throw new Error(fb.stillPending);
-        state.value = "done";
-    },
-    { silent: true },
-);
+const recheck = useAction(async () => {
+    if (!(await auth.syncVerification())) return notifyInfo(fb.stillPending);
+    state.value = "done";
+});
 
 const signOut = async () => {
     await auth.logout();
@@ -102,9 +99,6 @@ onBeforeUnmount(() => clearInterval(timer));
                 copy.noticeText
             }}</UiCallout>
             <div class=":uno: flex flex-col gap-2">
-                <UiCallout v-if="recheck.error.value" tone="danger">{{
-                    recheck.error.value.message
-                }}</UiCallout>
                 <UiButton
                     v-if="firebase.enabled"
                     block

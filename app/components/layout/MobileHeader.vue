@@ -10,6 +10,7 @@ const auth = useAuthStore();
     >
         <NuxtLink to="/student/dashboard"><UiLogo /></NuxtLink>
         <div class=":uno: flex items-center gap-2">
+            <ThemeToggle />
             <NuxtLink to="/student/settings"
                 ><UiAvatar
                     :name="auth.user?.name ?? ''"

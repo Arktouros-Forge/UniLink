@@ -8,7 +8,6 @@ const props = defineProps({
 const emit = defineEmits(["close", "sent"]);
 const api = useApi();
 const form = reactive({ description: "", time: "" });
-const tooShort = computed(() => form.description.trim().length < 10);
 const { run, pending, fieldErrors } = useAction(
     async () => {
         await api.post(
@@ -19,7 +18,10 @@ const { run, pending, fieldErrors } = useAction(
         form.time = "";
         emit("sent");
     },
-    { success: copy.sent },
+    {
+        success: copy.sent,
+        validate: () => collect({ description: rule.min(form.description, 10) }),
+    },
 );
 </script>
 
@@ -31,7 +33,6 @@ const { run, pending, fieldErrors } = useAction(
         :text="modals.offer.text"
         :submit="copy.submit"
         :pending="pending"
-        :disabled="tooShort"
         @close="emit('close')"
         @submit="run()"
     >

@@ -8,6 +8,7 @@ const props = defineProps({
     errors: { type: Object, default: () => ({}) },
 });
 const emit = defineEmits(["close", "save"]);
+const { errors: shown, check, reset } = useLocalCheck(toRef(props, "errors"));
 const form = reactive({
     title: "",
     course: "",
@@ -20,6 +21,7 @@ const editing = computed(() => Boolean(props.initial.id));
 watch(
     () => [props.open, props.initial],
     () => {
+        reset();
         form.title = props.initial.title ?? "";
         form.course = props.initial.course ?? "";
         form.dueDate = props.initial.dueDate ?? "";
@@ -30,6 +32,7 @@ watch(
 );
 
 const save = () =>
+    check({ title: rule.required(form.title) }) &&
     emit("save", {
         title: form.title,
         course: form.course || null,
@@ -47,13 +50,12 @@ const save = () =>
         :text="copy.modal.text"
         :submit="editing ? copy.save : copy.create"
         :pending="pending"
-        :disabled="!form.title.trim()"
         @close="emit('close')"
         @submit="save"
     >
         <FormField
             :label="copy.fieldTitle"
-            :error="errors.title"
+            :error="shown.title"
             v-slot="{ id }"
             ><FormInput
                 :id="id"
@@ -64,7 +66,7 @@ const save = () =>
             <FormField
                 :label="copy.fieldCourse"
                 optional
-                :error="errors.course"
+                :error="shown.course"
                 v-slot="{ id }"
                 ><FormInput
                     :id="id"
@@ -74,7 +76,7 @@ const save = () =>
             <FormField
                 :label="copy.fieldDue"
                 optional
-                :error="errors.dueDate"
+                :error="shown.dueDate"
                 v-slot="{ id }"
                 ><FormInput :id="id" v-model="form.dueDate" type="date"
             /></FormField>
@@ -89,7 +91,7 @@ const save = () =>
         <FormField
             :label="copy.fieldNotes"
             optional
-            :error="errors.notes"
+            :error="shown.notes"
             v-slot="{ id }"
             ><FormTextarea
                 :id="id"

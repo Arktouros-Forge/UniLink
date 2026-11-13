@@ -1,10 +1,13 @@
 <script setup>
-defineProps({
+const props = defineProps({
+    invalid: { type: Boolean, default: false },
     id: { type: String, default: undefined },
     options: { type: Array, required: true },
     placeholder: { type: String, default: "" },
+    disabled: { type: Boolean, default: false },
 });
 const model = defineModel({ type: [String, Number], default: "" });
+const { invalid: isInvalid, describedBy } = useFieldState(props);
 </script>
 
 <template>
@@ -12,7 +15,15 @@ const model = defineModel({ type: [String, Number], default: "" });
         <select
             :id="id"
             v-model="model"
-            class=":uno: w-full h-10 appearance-none rounded-md border border-hairline bg-card text-ink t-body-s pl-3 pr-10 outline-none focus:border-blue"
+            :aria-invalid="isInvalid || undefined"
+            :aria-describedby="describedBy"
+            class=":uno: w-full h-10 appearance-none rounded-md border text-ink t-body-s pl-3 pr-10 outline-none"
+            :class="
+                isInvalid
+                    ? ':uno: border-danger bg-danger-soft'
+                    : ':uno: border-hairline bg-card focus:border-blue'
+            "
+            :disabled="disabled"
         >
             <option v-if="placeholder" value="" disabled>
                 {{ placeholder }}
@@ -26,7 +37,7 @@ const model = defineModel({ type: [String, Number], default: "" });
             </option>
         </select>
         <UiIcon
-            name="chevronDown"
+            :name="disabled ? 'lock' : 'chevronDown'"
             class=":uno: absolute right-3 top-1/2 -translate-y-1/2 text-ink-2 pointer-events-none"
         />
     </div>

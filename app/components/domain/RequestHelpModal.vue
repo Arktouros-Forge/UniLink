@@ -1,6 +1,7 @@
 <script setup>
 import { limits } from "@app/constants/options.json";
 import { modals } from "@app/constants/student.json";
+import toast from "@app/constants/toast.json";
 
 const copy = modals.request;
 const props = defineProps({
@@ -10,7 +11,6 @@ const props = defineProps({
 const emit = defineEmits(["close", "sent"]);
 const api = useApi();
 const form = reactive({ skill: "", message: "", time: "" });
-const tooShort = computed(() => form.message.trim().length < 20);
 const skillNames = computed(
     () => props.helper?.skills?.map((skill) => skill.name) ?? [],
 );
@@ -29,7 +29,7 @@ const { run, pending, fieldErrors } = useAction(async () => {
     form.message = "";
     form.time = "";
     emit("sent");
-});
+}, { success: toast.messages.requestSent, validate: () => collect({ description: rule.min(form.message, 20) }) });
 </script>
 
 <template>
@@ -40,7 +40,6 @@ const { run, pending, fieldErrors } = useAction(async () => {
         :text="copy.text"
         :submit="copy.submit"
         :pending="pending"
-        :disabled="tooShort"
         @close="emit('close')"
         @submit="run()"
     >

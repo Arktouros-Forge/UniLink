@@ -1,13 +1,14 @@
 <script setup>
 import { login as copy } from "@app/constants/auth.json";
 import { useAuthStore } from "@app/stores/auth";
+import toast from "@app/constants/toast.json";
 
 definePageMeta({ layout: "auth", access: "guest" });
 const auth = useAuthStore();
 const route = useRoute();
 const form = reactive({ email: "", password: "", remember: false });
 const show = ref(false);
-const { run, pending, error } = useAction(
+const { run, pending, error, fieldErrors } = useAction(
     async () => {
         try {
             await auth.login({ ...form });
@@ -23,9 +24,10 @@ const { run, pending, error } = useAction(
             throw failure;
         }
         await navigateTo(auth.landing(route.query.redirect));
+        notifySuccess(toast.messages.welcome);
     },
-    { silent: true },
 );
+const rejected = computed(() => error.value?.statusCode === 401);
 const submit = () => run();
 
 usePageSeo("login");
@@ -41,20 +43,23 @@ usePageSeo("login");
         </div>
         <div class=":uno: gap-4 flex flex-col">
             <form
+                novalidate
                 class=":uno: flex flex-col gap-4 pb-0"
                 @submit.prevent="submit"
             >
-                <FormField :label="copy.email" v-slot="{ id }"
+                <FormField :label="copy.email" :error="fieldErrors.email" v-slot="{ id }"
                     ><FormInput
                         :id="id"
                         v-model="form.email"
+                        :invalid="rejected"
                         type="email"
                         icon="mail"
                 /></FormField>
-                <FormField :label="copy.password" v-slot="{ id }"
+                <FormField :label="copy.password" :error="fieldErrors.password" v-slot="{ id }"
                     ><FormInput
                         :id="id"
                         v-model="form.password"
+                        :invalid="rejected"
                         :type="show ? 'text' : 'password'"
                         :icon="show ? 'eye' : 'eyeOff'"
                         @icon="show = !show"
@@ -70,9 +75,6 @@ usePageSeo("login");
                         >{{ copy.forgot }}</NuxtLink
                     >
                 </div>
-                <UiCallout v-if="error" tone="danger">{{
-                    error.message
-                }}</UiCallout>
                 <UiButton
                     type="submit"
                     icon="arrowRight"

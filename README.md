@@ -9,7 +9,7 @@ A small web app for Universitas Udayana students: find someone to study with, po
 You need [Bun](https://bun.sh) and a PostgreSQL database.
 
 ```bash
-cp .env.example .env      # put your DATABASE_URL in it, nothing else is required
+cp .env.example .env      # put your DATABASE_URL is required
 bun install
 bun run db:reset          # creates tables and fills demo data
 bun run dev               # http://localhost:3000
@@ -90,7 +90,7 @@ The full De Stijl design lives in Figma — colours, type scale, spacing, and ev
 
 ## API
 
-Import `postman/UniLink.postman_collection.json` and `postman/UniLink.local.postman_environment.json` into Postman, pick the environment, and run **Auth → Login (student)** once. The cookie is stored for you and every other request just works. All routes are also listed in [API.md](API.md); the client is described in [APP.md](APP.md).
+Import `postman/UniLink.postman_collection.json` and `postman/UniLink.local.postman_environment.json` into Postman, pick the environment, and run **00 Start here → Login (student)** once. The cookie is stored for you and every other request just works. Folders are numbered 00 to 08 and meant to run in order; each request has a test and saved example responses. All routes are also listed in [API.md](API.md); the client is described in [APP.md](APP.md).
 
 ## Handy commands
 
@@ -100,3 +100,7 @@ Import `postman/UniLink.postman_collection.json` and `postman/UniLink.local.post
 | `bun run db:reset` | wipe, migrate and reseed (needs `ALLOW_DB_RESET="true"`) |
 | `bun run db:seed`  | reseed an already migrated database                      |
 | `bun run build`    | production build                                         |
+
+## Feedback
+
+Every success and error is shown as a toast (copy in `app/constants/toast.json`, server messages are translated there). Invalid fields turn red with the reason under them and the first one is focused.

@@ -158,6 +158,13 @@ flowchart LR
 - **Help board sign detail:** only the sign owner sees Accept and Decline on offers; a helper sees the status of their own offer.
 - **Contacts:** phone and WhatsApp appear only after acceptance (requests, team members).
 
+## Feedback, validation and theme
+
+- **Toasts only.** `notifySuccess`, `notifyInfo` and `notifyError` (`app/utils/notify.js`, copy in `constants/toast.json`) are the one feedback channel. `useAction` toasts failures unless `silent`, and server messages are mapped through `apiMessages`. `UiCallout` is kept only for static guidance.
+- **Field errors.** `FormField` provides `fieldInvalid` to its input, so `FormInput`, `FormTextarea`, `FormSelect`, `FormChoice` and `SkillPicker` get a red border, `aria-invalid` and `aria-describedby` without extra props. Messages come from `constants/validation.json` through `translateError`.
+- **Local checks.** `useAction({ validate })` and `useLocalCheck` run rules from `utils/fieldError.js` before any request, focus the first invalid field and toast "check the highlighted fields". Server 422 `errors[]` fill the same fields.
+- **Theme.** `stores/ui.js` holds `mode` (light, dark, system) in the `unilink_theme` cookie and toggles `dark` on `<html>`; a head script in `nuxt.config.ts` applies it before paint. Colours are the `:root.dark` tokens in `assets/css/tokens.css`. `ThemeToggle` sits in the headers and Settings has the three way choice.
+
 ## SEO
 
 `@nuxtjs/robots`, `@nuxtjs/sitemap`, `nuxt-schema-org`, `nuxt-seo-utils` (not the `@nuxtjs/seo` bundle, because `nuxt-og-image` breaks under Bun). `usePageSeo(key)` reads `constants/seo.json`. Private routes are `noindex` through `routeRules`. The share image is the static `public/og-image.png`; set `NUXT_PUBLIC_SITE_URL` in production.

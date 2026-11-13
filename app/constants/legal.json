@@ -4,8 +4,14 @@
       "title": "Kebijakan Privasi",
       "intro": "Kami hanya mengumpulkan data yang dibutuhkan untuk mempertemukan mahasiswa.",
       "sections": [
-        { "title": "Data yang kami simpan", "text": "Nama, email kampus, angkatan, keahlian, dan nomor WhatsApp." },
-        { "title": "Nomor WhatsApp", "text": "Nomor hanya dibuka setelah permintaan belajar atau bergabung tim diterima." },
+        {
+          "title": "Data yang kami simpan",
+          "text": "Nama, email, angkatan, keahlian, dan nomor WhatsApp."
+        },
+        {
+          "title": "Nomor WhatsApp",
+          "text": "Nomor hanya dibuka setelah permintaan belajar atau bergabung tim diterima."
+        },
         { "title": "NIM", "text": "NIM tidak pernah tampil di profil publik." }
       ]
     },
@@ -13,9 +19,18 @@
       "title": "Ketentuan Layanan",
       "intro": "Dengan memakai UniLink kamu setuju menjaga etika kolaborasi kampus.",
       "sections": [
-        { "title": "Penggunaan", "text": "Gunakan UniLink untuk belajar bersama, bukan untuk meminta jawaban tugas." },
-        { "title": "Batas permintaan", "text": "Permintaan dan tanda bantuan dibatasi untuk menjaga kualitas." },
-        { "title": "Moderasi", "text": "Admin dapat memblokir akun yang melanggar ketentuan." }
+        {
+          "title": "Penggunaan",
+          "text": "Gunakan UniLink untuk belajar bersama, bukan untuk meminta jawaban tugas."
+        },
+        {
+          "title": "Batas permintaan",
+          "text": "Permintaan dan tanda bantuan dibatasi untuk menjaga kualitas."
+        },
+        {
+          "title": "Moderasi",
+          "text": "Admin dapat memblokir akun yang melanggar ketentuan."
+        }
       ]
     }
   }

@@ -5,10 +5,7 @@ import { useAuthStore } from "@app/stores/auth";
 definePageMeta({ layout: "auth", access: "guest" });
 const auth = useAuthStore();
 const form = reactive({ name: "", email: "", password: "", agree: false });
-const valid = computed(
-    () => form.name && form.email && form.password.length >= 8 && form.agree,
-);
-const { run, pending, fieldErrors, error } = useAction(
+const { run, pending, fieldErrors } = useAction(
     async () => {
         await auth.register({
             name: form.name,
@@ -17,9 +14,17 @@ const { run, pending, fieldErrors, error } = useAction(
         });
         await navigateTo(auth.destination);
     },
-    { success: copy.created, silent: true },
+    {
+        success: copy.created,
+        validate: () =>
+            collect({
+                name: rule.min(form.name, 2),
+                email: rule.required(form.email),
+                password: rule.min(form.password, 8),
+            }),
+    },
 );
-const submit = () => valid.value && run();
+const submit = () => run();
 
 usePageSeo("register");
 </script>
@@ -32,7 +37,7 @@ usePageSeo("register");
             </h1>
             <p class=":uno: t-body-s text-ink-2 m-0">{{ copy.text }}</p>
         </div>
-        <form class=":uno: flex flex-col gap-4" @submit.prevent="submit">
+        <form novalidate class=":uno: flex flex-col gap-4" @submit.prevent="submit">
             <FormField
                 :label="copy.name"
                 :error="fieldErrors.name"
@@ -75,15 +80,10 @@ usePageSeo("register");
                     {{ copy.termsSuffix }}
                 </p>
             </div>
-            <UiCallout
-                v-if="error && !Object.keys(fieldErrors).length"
-                tone="danger"
-                >{{ error.message }}</UiCallout
-            >
             <UiButton
                 type="submit"
                 icon="arrowRight"
-                :disabled="!valid"
+                :disabled="!form.agree"
                 :loading="pending"
                 block
                 >{{ copy.submit }}</UiButton

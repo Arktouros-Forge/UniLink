@@ -105,6 +105,14 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: "id" },
+      script: [
+        {
+          innerHTML:
+            '(function(){try{var m=(document.cookie.match(/(?:^|; )unilink_theme=([^;]*)/)||[])[1];var d=m==="dark"||(m!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d);var t=document.querySelector(\'meta[name=theme-color]\');if(t)t.setAttribute("content",d?"#16151a":"#f5f1e8")}catch(e){}})()',
+          tagPosition: "head",
+          tagPriority: "critical",
+        },
+      ],
       meta: [
         { name: "theme-color", content: "#f5f1e8" },
         { name: "application-name", content: "UniLink" },

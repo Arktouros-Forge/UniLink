@@ -27,7 +27,13 @@ import { sendVerification } from "../auth/auth.service.js";
 import { hashPassword, verifyPassword } from "../../utils/password.js";
 import { forgetSession } from "../../utils/auth.js";
 import { likePattern } from "../../utils/pagination.js";
-import { finishPage, ref, totalOver, userSkillsJson, whatsappUrl } from "../_sql.js";
+import {
+  finishPage,
+  ref,
+  totalOver,
+  userSkillsJson,
+  whatsappUrl,
+} from "../_sql.js";
 
 const publicFields = {
   id: users.id,
@@ -51,6 +57,7 @@ const privateFields = {
   onboardedAt: users.onboardedAt,
   emailVerifiedAt: users.emailVerifiedAt,
   createdAt: users.createdAt,
+  firebaseUid: users.firebaseUid,
 };
 
 export async function getMe(userId) {
@@ -59,8 +66,15 @@ export async function getMe(userId) {
     .from(users)
     .where(eq(users.id, userId))
     .limit(1);
+
   if (!user) fail("USER_NOT_FOUND");
-  return user;
+
+  const { firebaseUid, ...safeUser } = user;
+
+  return {
+    ...safeUser,
+    firebaseStatus: Boolean(firebaseUid),
+  };
 }
 
 export async function assertSkillsExist(executor, skillIds) {
@@ -165,10 +179,20 @@ export async function changePassword(userId, currentPassword, newPassword) {
       sessionVersion: sql`${users.sessionVersion} + 1`,
     })
     .where(eq(users.id, userId))
-    .returning({ id: users.id, role: users.role, sessionVersion: users.sessionVersion, email: users.email, fullName: users.fullName })
+    .returning({
+      id: users.id,
+      role: users.role,
+      sessionVersion: users.sessionVersion,
+      email: users.email,
+      fullName: users.fullName,
+    })
     .then(([row]) => row);
   forgetSession(userId);
-  sendMailSafely(composeMail("passwordChanged", updatedUser.email, { name: updatedUser.fullName }));
+  sendMailSafely(
+    composeMail("passwordChanged", updatedUser.email, {
+      name: updatedUser.fullName,
+    }),
+  );
   return updatedUser;
 }
 
