@@ -30,10 +30,15 @@ const reason = computed(() =>
             <p class=":uno: t-body-s text-ink-2 m-0">{{ copy.appealText }}</p>
         </UiCard>
         <div class=":uno: flex flex-wrap gap-3">
-            <UiButton :href="`mailto:${copy.adminEmail}`" icon="mail">{{
-                copy.contact
+            <UiButton
+                size="md"
+                :href="`mailto:${copy.adminEmail}`"
+                icon="mail"
+                >{{ copy.contact }}</UiButton
+            >
+            <UiButton size="md" to="/" variant="secondary">{{
+                copy.back
             }}</UiButton>
-            <UiButton to="/" variant="secondary">{{ copy.back }}</UiButton>
         </div>
     </AuthFrame>
 </template>

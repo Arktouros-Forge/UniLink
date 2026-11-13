@@ -30,8 +30,8 @@ const signOut = async () => {
         <NuxtLink
             :to="admin ? '/admin' : '/student/dashboard'"
             class=":uno: px-5 pt-8 pb-7"
-            ><UiLogo
-        /></NuxtLink>
+            ><div class=":uno: flex items-center justify-center"><UiLogo /></div
+        ></NuxtLink>
         <nav class=":uno: flex-1 overflow-y-auto flex flex-col pb-4">
             <section
                 v-for="section in sections"

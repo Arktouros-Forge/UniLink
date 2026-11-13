@@ -96,7 +96,7 @@ export function useFirebaseAuth() {
 
   return {
     enabled,
-    canFallback: (error) => LOCAL_FALLBACK.includes(error?.code),
+    isCredentialError: (error) => LOCAL_FALLBACK.includes(error?.code),
     signInWithPassword,
     signInWithGoogle,
     signUp,

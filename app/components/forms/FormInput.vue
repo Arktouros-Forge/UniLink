@@ -12,6 +12,13 @@ const props = defineProps({
 const model = defineModel({ type: [String, Number], default: "" });
 const emit = defineEmits(["icon"]);
 const { invalid: isInvalid, describedBy } = useFieldState(props);
+const nativeReveal = ref(false);
+onMounted(() => {
+    nativeReveal.value = /firefox/i.test(navigator.userAgent);
+});
+const showIcon = computed(
+    () => Boolean(props.icon) && !(nativeReveal.value && props.icon.startsWith("eye")),
+);
 </script>
 
 <template>
@@ -33,7 +40,7 @@ const { invalid: isInvalid, describedBy } = useFieldState(props);
             class=":uno: w-full h-10 rounded-md border bg-card text-ink t-body-s outline-none transition-shadow"
             :class="[
                 iconStart ? ':uno: pl-10' : ':uno: pl-3',
-                icon ? ':uno: pr-11' : ':uno: pr-3',
+                showIcon ? ':uno: pr-11' : ':uno: pr-3',
                 isInvalid ? ':uno: border-danger bg-danger-soft' : ':uno: border-hairline',
                 locked
                     ? ':uno: !bg-blue-soft'
@@ -43,7 +50,7 @@ const { invalid: isInvalid, describedBy } = useFieldState(props);
             ]"
         />
         <button
-            v-if="icon"
+            v-if="showIcon"
             type="button"
             tabindex="-1"
             class=":uno: absolute right-1 top-1 size-9 inline-flex items-center justify-center bg-transparent border-0 text-ink-2 cursor-pointer"

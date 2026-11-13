@@ -68,20 +68,31 @@ export const useAuthStore = defineStore("auth", () => {
     return fetchMe({ force: true });
   };
 
-  const login = async (payload) => {
-    if (firebase.enabled) {
-      try {
-        const firebaseUser = await firebase.signInWithPassword(
-          payload.email,
-          payload.password,
-        );
-        return await exchange(firebaseUser, { remember: payload.remember });
-      } catch (error) {
-        if (!firebase.canFallback(error.cause ?? error)) throw error;
-      }
-    }
+  const localLogin = async (payload) => {
     await api.post("/auth/login", payload);
     return fetchMe({ force: true });
+  };
+
+  const login = async (payload) => {
+    if (!firebase.enabled) return localLogin(payload);
+    let firebaseUser;
+    try {
+      firebaseUser = await firebase.signInWithPassword(
+        payload.email,
+        payload.password,
+      );
+    } catch (firebaseError) {
+      try {
+        return await localLogin(payload);
+      } catch (localError) {
+        throw firebase.isCredentialError(firebaseError)
+          ? localError
+          : firebaseError.code
+            ? firebaseError
+            : localError;
+      }
+    }
+    return exchange(firebaseUser, { remember: payload.remember });
   };
 
   const loginWithGoogle = async () =>

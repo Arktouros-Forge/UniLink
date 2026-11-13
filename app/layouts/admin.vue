@@ -1,9 +1,9 @@
 <script setup>
 import { workspace } from "@app/constants/site.json";
-import { adminNav } from "@app/constants/navigation.json";
+import { useUiStore } from "@app/stores/ui";
 
 const route = useRoute();
-const items = adminNav.flatMap((section) => section.items);
+const ui = useUiStore();
 const body = ref(null);
 watch(
     () => route.path,
@@ -22,24 +22,19 @@ watch(
             <SidebarNav class=":uno: hidden lg:flex" admin />
             <div class=":uno: h-full min-w-0 flex flex-col lg:flex-1">
                 <header
-                    class=":uno: lg:hidden shrink-0 flex items-center justify-between h-14 px-5 md:px-8 border-b border-hairline"
+                    class=":uno: lg:hidden shrink-0 flex items-center justify-between h-14 px-5 md:px-8 bg-paper border-b border-hairline"
                 >
-                    <UiLogo />
+                    <NuxtLink to="/admin"><UiLogo /></NuxtLink>
+                    <div class=":uno: flex items-center gap-2">
+                        <ThemeToggle />
+                        <UiIconButton
+                            icon="menu"
+                            label="Buka menu"
+                            variant="outline"
+                            @click="ui.sidebarOpen = true"
+                        />
+                    </div>
                 </header>
-                <nav
-                    class=":uno: lg:hidden shrink-0 flex gap-2 overflow-x-auto px-5 md:px-8 py-3 border-b border-hairline"
-                >
-                    <NuxtLink
-                        v-for="item in items"
-                        :key="item.to"
-                        :to="item.to"
-                        class=":uno: shrink-0"
-                    >
-                        <UiChip size="md" :outline="route.path === item.to">{{
-                            item.label
-                        }}</UiChip>
-                    </NuxtLink>
-                </nav>
                 <WorkspaceHeader
                     class=":uno: shrink-0"
                     :root="workspace.admin"
@@ -57,5 +52,6 @@ watch(
                 </main>
             </div>
         </div>
+        <AdminDrawer />
     </div>
 </template>
