@@ -25,6 +25,10 @@ export default defineNuxtConfig({
     },
   },
 
+  nitro: {
+    externals: { inline: ["zod"] },
+  },
+
   compatibilityDate: "2025-07-15",
   devtools: {
     enabled: true,
@@ -39,7 +43,6 @@ export default defineNuxtConfig({
     "~/assets/css/tokens.css",
     "~/assets/css/base.css",
   ],
-
 
   components: [{ path: "~/components", pathPrefix: false }],
 

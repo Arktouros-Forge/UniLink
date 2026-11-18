@@ -125,7 +125,7 @@ onBeforeUnmount(() => {
                     <div
                         class=":uno: container-wide shrink-0 flex flex-col gap-3 pt-4 pb-6 safe-bottom"
                     >
-                        <div v-if="!isAuthed">
+                        <div class=":uno: gap-3 flex flex-col" v-if="!isAuthed">
                             <UiButton
                                 to="/auth/register"
                                 icon-end="arrowRight"
