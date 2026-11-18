@@ -24,7 +24,7 @@ Demo logins:
 
 New accounts finish a short onboarding (name, NIM, year, skills, WhatsApp). The NIM can be entered once and is locked afterwards.
 
-Emails (verification, password reset) are printed to the terminal and listed at `/api/v1/dev/outbox` until you add a `RESEND_API_KEY`. Google sign-in appears only when the Firebase variables in `.env.example` are filled in; without them the app uses its own email and password login.
+Emails (verification, password reset) are printed to the terminal and listed at `/api/v1/dev/outbox` until you set one mail provider (see Email below). Google sign-in appears only when the Firebase variables in `.env.example` are filled in; without them the app uses its own email and password login.
 
 ## How it works
 
@@ -35,7 +35,7 @@ flowchart LR
   V --> S["services"]
   S --> D[("PostgreSQL<br/>Drizzle")]
   R -. "httpOnly JWT cookie" .- B
-  S -. "verify, reset mail" .-> M["Resend"]
+  S -. "verify, reset mail" .-> M["SMTP / Brevo / Resend"]
   B -. "optional" .-> F["Firebase Auth"]
   F -. "ID token" .-> R
 ```
@@ -104,3 +104,15 @@ Import `postman/UniLink.postman_collection.json` and `postman/UniLink.local.post
 ## Feedback
 
 Every success and error is shown as a toast (copy in `app/constants/toast.json`, server messages are translated there). Invalid fields turn red with the reason under them and the first one is focused.
+
+## Email
+
+Set one of these in `.env`. The first one found is used, and with none set mails only print to the terminal. No domain is needed for the first two.
+
+| Provider | Variables | Notes |
+| -------- | --------- | ----- |
+| Gmail or any SMTP | `SMTP_URL="smtps://you%40gmail.com:APP_PASSWORD@smtp.gmail.com:465"` | Free. Turn on 2-step verification, then create an App Password. Sender defaults to that Gmail address. Replace `@` with `%40` in the username. |
+| Brevo | `BREVO_API_KEY`, `MAIL_FROM="UniLink <you@gmail.com>"` | Free plan, 300 mails a day. Verify that single sender address in Brevo, no domain needed. |
+| Resend | `RESEND_API_KEY`, `MAIL_FROM` | Needs your own verified domain to reach other people. |
+
+`MAIL_FROM` is optional for SMTP and required for Brevo.

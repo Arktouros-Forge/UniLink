@@ -218,6 +218,7 @@ Deleting a user cascades to their skills, tokens, tasks, signs, requests and mem
 | `DATABASE_URL` | PostgreSQL connection string |
 | `AUTH_SECRET` | JWT signing key, 32+ characters |
 | `APP_URL`, `NUXT_PUBLIC_SITE_URL` | links in mails, canonical and sitemap origin |
-| `RESEND_API_KEY` | real mail; empty means the dev outbox |
+| `SMTP_URL` or `BREVO_API_KEY` or `RESEND_API_KEY` | real mail, first one set wins; none means the dev outbox |
+| `MAIL_FROM` | sender; optional for SMTP, required for Brevo |
 | `ALLOWED_EMAIL_DOMAINS` | comma list to restrict sign-ups |
 | `NUXT_PUBLIC_FIREBASE_*`, `FIREBASE_PROJECT_ID` | optional Google sign-in |

@@ -98,11 +98,20 @@ export const useAuthStore = defineStore("auth", () => {
   const loginWithGoogle = async () =>
     exchange(await firebase.signInWithGoogle());
 
-  const register = async (payload) => {
-    if (firebase.enabled)
-      return exchange(await firebase.signUp(payload), { name: payload.name });
+  const localRegister = async (payload) => {
     await api.post("/auth/register", payload);
     return fetchMe({ force: true });
+  };
+
+  const register = async (payload) => {
+    if (!firebase.enabled) return localRegister(payload);
+    let firebaseUser;
+    try {
+      firebaseUser = await firebase.signUp(payload);
+    } catch {
+      return localRegister(payload);
+    }
+    return exchange(firebaseUser, { name: payload.name });
   };
 
   const syncVerification = async () => {

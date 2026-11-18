@@ -27,6 +27,7 @@
     "drizzle-orm": "^0.45.4",
     "firebase": "^13.2.0",
     "jose": "^6.2.15",
+    "nodemailer": "^10.6.0",
     "nuxt": "^4.6.3",
     "nuxt-schema-org": "^7.0.1",
     "nuxt-seo-utils": "^9.0.1",

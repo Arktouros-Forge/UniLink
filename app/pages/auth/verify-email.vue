@@ -99,13 +99,7 @@ onBeforeUnmount(() => clearInterval(timer));
                 copy.noticeText
             }}</UiCallout>
             <div class=":uno: flex flex-col gap-2">
-                <UiButton
-                    v-if="firebase.enabled"
-                    block
-                    :loading="recheck.pending.value"
-                    @click="recheck.run()"
-                    >{{ fb.verifiedCheck }}</UiButton
-                >
+
                 <UiButton
                     variant="secondary"
                     block

@@ -39,9 +39,7 @@ export default defineNuxtConfig({
     "~/assets/css/tokens.css",
     "~/assets/css/base.css",
   ],
-  nitro: {
-    externals: { inline: ["zod"] },
-  },
+
 
   components: [{ path: "~/components", pathPrefix: false }],
 

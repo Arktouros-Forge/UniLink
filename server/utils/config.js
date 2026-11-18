@@ -9,7 +9,28 @@ export function authSecret() {
 
 export const appUrl = () => (process.env.APP_URL ?? "http://localhost:3000").replace(/\/$/, "");
 
-export const mailFrom = () => process.env.MAIL_FROM ?? "UniLink <onboarding@resend.dev>";
+export const smtpUrl = () => process.env.SMTP_URL ?? "";
+
+export const mailProvider = () => {
+  if (smtpUrl()) return "smtp";
+  if (process.env.BREVO_API_KEY) return "brevo";
+  if (process.env.RESEND_API_KEY) return "resend";
+  return "console";
+};
+
+const smtpUser = () => {
+  try {
+    return decodeURIComponent(new URL(smtpUrl()).username);
+  } catch {
+    return "";
+  }
+};
+
+export const mailFrom = () => {
+  if (process.env.MAIL_FROM) return process.env.MAIL_FROM;
+  if (mailProvider() === "smtp" && smtpUser().includes("@")) return `UniLink <${smtpUser()}>`;
+  return "UniLink <onboarding@resend.dev>";
+};
 
 export const allowedEmailDomains = () =>
   (process.env.ALLOWED_EMAIL_DOMAINS ?? "")

@@ -3,7 +3,7 @@
     { "label": "Cara kerja", "to": "/how-it-works" },
     { "label": "Kompetisi", "to": "/auth/login" }
   ],
-  "publicActions": { "login": "Masuk", "register": "Daftar gratis" },
+  "publicActions": { "login": "Masuk", "register": "Daftar gratis", "dashboard": "Dasbor" },
   "studentNav": [
     {
       "label": "Utama",

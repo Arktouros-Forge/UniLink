@@ -1,4 +1,5 @@
 import { appUrl } from "../utils/config.js";
+import UnilinkLogo from "../../public/logo.png"
 
 const COLORS = {
   paper: "#F5F1E8",
@@ -65,7 +66,7 @@ export function renderLayout({ preview, title, eyebrow, blocks, footer }) {
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:${COLORS.paper};"><tr><td align="center" style="padding:32px 16px;">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;">
 <tr><td style="padding:0 0 20px;"><a href="${site}" style="text-decoration:none;"><table role="presentation" cellspacing="0" cellpadding="0"><tr>
-<td style="padding-right:12px;"><img src="${site}/logo.png" width="40" height="40" alt="UniLink" style="display:block;border:0;outline:none;"></td>
+<td style="padding-right:12px;"><img src="${site}/${UnilinkLogo}" width="40" height="40" alt="UniLink" style="display:block;border:0;outline:none;"></td>
 <td style="font-family:${SERIF};font-size:28px;line-height:40px;font-weight:700;color:${COLORS.ink};">UniLink</td></tr></table></a></td></tr>
 <tr><td style="background:${COLORS.card};border:2px solid ${COLORS.ink};">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr><td width="34%" height="8" style="background:${COLORS.red};font-size:0;line-height:0;">&nbsp;</td><td width="33%" style="background:${COLORS.blue};font-size:0;line-height:0;">&nbsp;</td><td width="33%" style="background:${COLORS.yellow};font-size:0;line-height:0;">&nbsp;</td></tr></table>

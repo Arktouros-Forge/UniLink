@@ -125,15 +125,22 @@ onBeforeUnmount(() => {
                     <div
                         class=":uno: container-wide shrink-0 flex flex-col gap-3 pt-4 pb-6 safe-bottom"
                     >
-                        <UiButton
-                            to="/auth/register"
-                            icon-end="arrowRight"
-                            block
-                            >{{ publicActions.register }}</UiButton
-                        >
-                        <UiButton to="/auth/login" variant="secondary" block>{{
-                            publicActions.login
-                        }}</UiButton>
+                        <div v-if="!isAuthed">
+                            <UiButton
+                                to="/auth/register"
+                                icon-end="arrowRight"
+                                block
+                                >{{ publicActions.register }}</UiButton
+                            >
+                            <UiButton to="/auth/login" variant="secondary" block>{{
+                                publicActions.login
+                            }}</UiButton>
+                        </div>
+                        <div v-else>
+                            <UiButton :to="auth.home" block>{{
+                                publicActions.dashboard
+                            }}</UiButton>
+                        </div>
                     </div>
                 </div>
             </Teleport></ClientOnly

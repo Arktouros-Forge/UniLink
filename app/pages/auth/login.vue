@@ -78,6 +78,7 @@ usePageSeo("login");
                 <UiButton
                     type="submit"
                     icon="arrowRight"
+                    :disabled="!form.email || !form.password"
                     block
                     :loading="pending"
                     >{{ copy.submit }}</UiButton
